@@ -89,3 +89,10 @@ fos_user:
 #        sender_name: "%mailer_user%"
         address: 'test'
         sender_name: 'test'
+
+#doctrine migration
+doctrine_migrations:
+    dir_name: "%kernel.root_dir%/../src/AppBundle/DoctrineMigrations"
+    namespace: AppBundle\DoctrineMigrations
+    table_name: migration_versions
+    name: Debtor Migrations

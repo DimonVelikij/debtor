@@ -26,6 +26,9 @@ class AppKernel extends Kernel
 
             //fos user
             new FOS\UserBundle\FOSUserBundle(),
+
+            //doctrine migration
+            new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
             //next bundle
         ];
 
