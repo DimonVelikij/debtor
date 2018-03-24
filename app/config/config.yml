@@ -78,6 +78,16 @@ sonata_block:
 
 sonata_admin:
     title: 'Должники'
+    dashboard:
+        blocks:
+            - { position: left, type: sonata.admin.block.admin_list }
+        groups:
+            cms.user:
+                label: Пользователи
+                icon: '<i class="fa fa-user"></i>'
+                on_top: true
+                roles: [ROLE_SUPER_ADMIN]
+
 
 #fos user
 fos_user:
