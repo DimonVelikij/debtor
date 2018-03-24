@@ -24,6 +24,8 @@ class AppKernel extends Kernel
             new Knp\Bundle\MenuBundle\KnpMenuBundle(),
             new Sonata\AdminBundle\SonataAdminBundle(),
 
+            //fos user
+            new FOS\UserBundle\FOSUserBundle(),
             //next bundle
         ];
 
