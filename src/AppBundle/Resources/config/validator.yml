@@ -1,0 +1,7 @@
+services:
+    app.validator.old_password:
+      class: AppBundle\Validator\Constraints\OldPasswordValidator
+      arguments:
+          - "@security.password_encoder"
+      tags:
+          - { name: validator.constraint_validator, alias: old_password }

@@ -22,10 +22,96 @@ class User extends BaseUser
     protected $id;
 
     /**
+     * @ORM\Column(name="full_name", type="string", length=255, nullable=true)
+     */
+    protected $fullName;
+
+    /** @var  string */
+    protected $oldPassword;
+
+    /** @var  string */
+    protected $newPassword;
+
+    /**
      * User constructor.
      */
     public function __construct()
     {
         parent::__construct();
+    }
+
+    /**
+     * @param $fullName
+     * @return User
+     */
+    public function setFullName($fullName)
+    {
+        $this->fullName = $fullName;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFullName()
+    {
+        return $this->fullName;
+    }
+
+    /**
+     * последняя авторизация для вывода в панели администратора
+     * @return string
+     */
+    public function getLastLoginFromAdmin()
+    {
+        return $this->lastLogin->format('d.m.Y H:i');
+    }
+
+    /**
+     * название роли в виде строки
+     * @return string
+     */
+    public function getUserRole()
+    {
+        return $this->isSuperAdmin() ? 'ROLE_SUPER_ADMIN' : 'ROLE_ADMIN';
+    }
+
+    /**
+     * @param $oldPassword
+     * @return User
+     */
+    public function setOldPassword($oldPassword)
+    {
+        $this->oldPassword = $oldPassword;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOldPassword()
+    {
+        return $this->oldPassword;
+    }
+
+    /**
+     * @param $newPassword
+     * @return User
+     */
+    public function setNewPassword($newPassword)
+    {
+        $this->newPassword = $newPassword;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNewPassword()
+    {
+        return $this->newPassword;
     }
 }
