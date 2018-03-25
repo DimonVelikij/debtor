@@ -263,10 +263,12 @@ class UserAdmin extends AbstractAdmin
      */
     public function preUpdate($user)
     {
-        /** @var UserPasswordEncoder $userPasswordEncoder */
-        $userPasswordEncoder = $this->getContainer()->get('security.password_encoder');
+        if ($user->getNewPassword()) {
+            /** @var UserPasswordEncoder $userPasswordEncoder */
+            $userPasswordEncoder = $this->getContainer()->get('security.password_encoder');
 
-        $user->setPassword($userPasswordEncoder->encodePassword($user, $user->getNewPassword()));
+            $user->setPassword($userPasswordEncoder->encodePassword($user, $user->getNewPassword()));
+        }
     }
 
     /**
