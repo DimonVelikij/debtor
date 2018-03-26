@@ -5,3 +5,10 @@ services:
         tags:
             - { name: sonata.admin, manager_type: orm, group: cms.user, label: Пользователи }
         public: true
+
+    app.admin.company:
+        class: AppBundle\Admin\CompanyAdmin
+        arguments: [~, AppBundle\Entity\Company, SonataAdminBundle:CRUD]
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: cms.company, label: Управляющие компании }
+        public: true

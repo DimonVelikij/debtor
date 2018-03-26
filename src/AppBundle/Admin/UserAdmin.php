@@ -2,14 +2,17 @@
 
 namespace AppBundle\Admin;
 
+use AppBundle\Entity\Company;
 use AppBundle\Entity\User;
 use AppBundle\Validator\Constraints\OldPassword;
+use Doctrine\ORM\EntityRepository;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
@@ -54,6 +57,9 @@ class UserAdmin extends AbstractAdmin
             ->add('enabled', null, [
                 'label' =>  'Учетная запись включена'
             ])
+            ->add('company', null, [
+                'label' =>  'Управляющая компания'
+            ])
             ->add('lastLogin', 'doctrine_orm_date_range', [
                 'label'         =>  'Последняя авторизация',
                 'field_type'    => 'sonata_type_date_range_picker'
@@ -89,6 +95,9 @@ class UserAdmin extends AbstractAdmin
             ->add('enabled', null, [
                 'label'     =>  'Учетная запись включена'
             ])
+            ->add('company', EntityType::class, [
+                'label'     =>  'Управляющая компания'
+            ])
             ->add('lastLoginFromAdmin', null, [
                 'label'     =>  'Последняя авторизация',
                 'sortable'  =>  false
@@ -108,6 +117,16 @@ class UserAdmin extends AbstractAdmin
      */
     protected function configureFormFields(FormMapper $formMapper)
     {
+        $companyQb = $this->getDoctrine()
+            ->getRepository('AppBundle:Company')
+            ->createQueryBuilder('c');
+        $freeCompanies = (bool)$companyQb
+            ->select('count(c.id)')
+            ->leftJoin('c.user', 'u')
+            ->where($companyQb->expr()->isNull('u.id'))
+            ->getQuery()
+            ->getSingleScalarResult();
+
         /** @var User $user */
         $user = $this->getSubject();
 
@@ -143,6 +162,28 @@ class UserAdmin extends AbstractAdmin
                 ->add('enabled', CheckboxType::class, [
                     'label' => 'Включить учетную запись',
                     'required' => false
+                ])
+                ->add('company', EntityType::class, [
+                    'label'         =>  'Управляющая компания',
+                    'required'      =>  true,
+                    'choice_label'  =>  'title',
+                    'class'         =>  Company::class,
+                    'compound'      =>  false,
+                    'query_builder' =>  function(EntityRepository $er) use ($user) {
+                        $qb = $er->createQueryBuilder('c');
+                        $qb = $qb
+                            ->leftJoin('c.user', 'u')
+                            ->where($qb->expr()->isNull('u.id'));
+                        if ($user->getCompany()) {
+                            $qb = $qb
+                                ->orWhere('u.company = :company_id')
+                                ->setParameter('company_id', $user->getCompany()->getId());
+                        }
+                        return $qb->orderBy('c.title', 'DESC');
+                    },
+                    'help'          =>  $freeCompanies || $user->getCompany() ?
+                        "" :
+                        "<span style='color: red'>Для добавления пользователя необходимо <a target='_blank' href='{$this->getContainer()->get('router')->generate('admin_app_company_create')}'>добавить управляющую компанию</a></span>"
                 ]);
         }
 
@@ -215,6 +256,9 @@ class UserAdmin extends AbstractAdmin
      */
     protected function configureShowFields(ShowMapper $showMapper)
     {
+        /** @var User $user */
+        $user = $this->getSubject();
+
         $showMapper
             ->add('id')
             ->add('fullName', null, [
@@ -228,7 +272,16 @@ class UserAdmin extends AbstractAdmin
             ])
             ->add('enabled', null, [
                 'label' =>  'Учетная запись влючена'
-            ])
+            ]);
+
+        if (!$user->isSuperAdmin()) {
+            $showMapper
+                ->add('company', null, [
+                    'label' =>  'Управляющая компания'
+                ]);
+        }
+
+        $showMapper
             ->add('lastLoginFromAdmin', null, [
                 'label' =>  'Последняя авторизация'
             ])
@@ -277,5 +330,13 @@ class UserAdmin extends AbstractAdmin
     private function getContainer()
     {
         return $this->getConfigurationPool()->getContainer();
+    }
+
+    /**
+     * @return \Doctrine\ORM\EntityManager
+     */
+    private function getDoctrine()
+    {
+        return $this->getContainer()->get('doctrine.orm.default_entity_manager');
     }
 }

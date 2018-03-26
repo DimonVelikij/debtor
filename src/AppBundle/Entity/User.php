@@ -47,6 +47,16 @@ class User extends BaseUser
     }
 
     /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return !$this->getFullName() ?
+            (string)$this->getUsername() :
+            (string)$this->getFullName();
+    }
+
+    /**
      * @param $fullName
      * @return User
      */
@@ -95,6 +105,10 @@ class User extends BaseUser
      */
     public function getLastLoginFromAdmin()
     {
+        if (!$this->lastLogin) {
+            return '';
+        }
+
         return $this->lastLogin->format('d.m.Y H:i');
     }
 
