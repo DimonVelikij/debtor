@@ -57,54 +57,6 @@ class User extends BaseUser
     }
 
     /**
-     * Set fullName
-     *
-     * @param string $fullName
-     *
-     * @return User
-     */
-    public function setFullName($fullName)
-    {
-        $this->fullName = $fullName;
-
-        return $this;
-    }
-
-    /**
-     * Get fullName
-     *
-     * @return string
-     */
-    public function getFullName()
-    {
-        return $this->fullName;
-    }
-
-    /**
-     * Set company
-     *
-     * @param Company $company
-     *
-     * @return User
-     */
-    public function setCompany(Company $company = null)
-    {
-        $this->company = $company;
-
-        return $this;
-    }
-
-    /**
-     * Get company
-     *
-     * @return Company
-     */
-    public function getCompany()
-    {
-        return $this->company;
-    }
-
-    /**
      * последняя авторизация для вывода в панели администратора
      * @return string
      */

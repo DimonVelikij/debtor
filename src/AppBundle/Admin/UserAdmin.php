@@ -5,7 +5,6 @@ namespace AppBundle\Admin;
 use AppBundle\Entity\Company;
 use AppBundle\Entity\User;
 use AppBundle\Validator\Constraints\OldPassword;
-use Doctrine\ORM\EntityRepository;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
@@ -117,13 +116,10 @@ class UserAdmin extends AbstractAdmin
      */
     protected function configureFormFields(FormMapper $formMapper)
     {
-        $companyQb = $this->getDoctrine()
+        $countCompanies = (bool)$this->getDoctrine()
             ->getRepository('AppBundle:Company')
-            ->createQueryBuilder('c');
-        $freeCompanies = (bool)$companyQb
-            ->select('count(c.id)')
-            ->leftJoin('c.user', 'u')
-            ->where($companyQb->expr()->isNull('u.id'))
+            ->createQueryBuilder('c')
+            ->select('COUNT(c.id)')
             ->getQuery()
             ->getSingleScalarResult();
 
@@ -133,14 +129,19 @@ class UserAdmin extends AbstractAdmin
         $formMapper
             ->add('fullName', TextType::class, [
                 'label'         =>  'ФИО',
-                'required'      =>  false
+                'required'      =>  true,
+                'constraints'   =>  [
+                    new NotBlank([
+                        'message' => 'Укажите ФИО'
+                    ])
+                ]
             ])
             ->add('username', TextType::class, [
                 'label'         =>  'Логин',
                 'required'      =>  true,
                 'constraints'   =>  [
                     new NotBlank([
-                        'message'   =>  'Укажите ФИО'
+                        'message'   =>  'Укажите Логин'
                     ])
                 ]
             ])
@@ -168,22 +169,14 @@ class UserAdmin extends AbstractAdmin
                     'required'      =>  true,
                     'choice_label'  =>  'title',
                     'class'         =>  Company::class,
-                    'compound'      =>  false,
-                    'query_builder' =>  function(EntityRepository $er) use ($user) {
-                        $qb = $er->createQueryBuilder('c');
-                        $qb = $qb
-                            ->leftJoin('c.user', 'u')
-                            ->where($qb->expr()->isNull('u.id'));
-                        if ($user->getCompany()) {
-                            $qb = $qb
-                                ->orWhere('u.company = :company_id')
-                                ->setParameter('company_id', $user->getCompany()->getId());
-                        }
-                        return $qb->orderBy('c.title', 'DESC');
-                    },
-                    'help'          =>  $freeCompanies || $user->getCompany() ?
+                    'help'          =>  $countCompanies || $user->getCompany() ?
                         "" :
-                        "<span style='color: red'>Для добавления пользователя необходимо <a target='_blank' href='{$this->getContainer()->get('router')->generate('admin_app_company_create')}'>добавить управляющую компанию</a></span>"
+                        "<span style='color: red'>Для добавления пользователя необходимо <a target='_blank' href='{$this->getContainer()->get('router')->generate('admin_app_company_create')}'>добавить управляющую компанию</a></span>",
+                    'constraints'   =>  [
+                        new NotBlank([
+                            'message' => 'Выберите управлющую компанию'
+                        ])
+                    ]
                 ]);
         }
 

@@ -1,0 +1,70 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="companies")
+ *
+ * Class Company
+ * @package AppBundle\Entity
+ */
+class Company
+{
+    /**
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @ORM\Column(name="title", type="string", length=255, nullable=false)
+     */
+    private $title;
+
+    /**
+     * @ORM\Column(name="ogrn", type="string", length=50, nullable=false)
+     */
+    private $ogrn;
+
+    /**
+     * @ORM\Column(name="inn", type="string", length=50, nullable=false)
+     */
+    private $inn;
+
+    /**
+     * @ORM\Column(name="address", type="string", length=255, nullable=false)
+     */
+    private $address;
+
+    /**
+     * @ORM\Column(name="post_address", type="string", length=255, nullable=false)
+     */
+    private $postAddress;
+
+    /**
+     * @ORM\Column(name="phone", type="string", length=11, nullable=false)
+     */
+    private $phone;
+
+    /**
+     * @ORM\Column(name="email", type="string", length=255, nullable=false)
+     */
+    private $email;
+
+    /**
+     * @ORM\OneToMany(targetEntity="User", mappedBy="company")
+     */
+    private $user;
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->title ?: '';
+    }
+}

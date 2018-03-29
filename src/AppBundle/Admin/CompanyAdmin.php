@@ -9,6 +9,8 @@ use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class CompanyAdmin extends AbstractAdmin
 {
@@ -32,6 +34,24 @@ class CompanyAdmin extends AbstractAdmin
             ->add('title', null, [
                 'label' =>  'Название'
             ])
+            ->add('ogrn', null, [
+                'label' =>  'ОГРН'
+            ])
+            ->add('inn', null, [
+                'label' =>  'ИНН'
+            ])
+            ->add('address', null, [
+                'label' =>  'Адрес'
+            ])
+            ->add('postAddress', null, [
+                'label' =>  'Почтовый адрес'
+            ])
+            ->add('phone', null, [
+                'label' =>  'Телефон'
+            ])
+            ->add('email', null, [
+                'label' =>  'Email'
+            ])
         ;
     }
 
@@ -44,6 +64,24 @@ class CompanyAdmin extends AbstractAdmin
             ->add('id')
             ->add('title', null, [
                 'label' =>  'Название'
+            ])
+            ->add('ogrn', null, [
+                'label' =>  'ОГРН'
+            ])
+            ->add('inn', null, [
+                'label' =>  'ИНН'
+            ])
+            ->add('address', null, [
+                'label' =>  'Адрес'
+            ])
+            ->add('postAddress', null, [
+                'label' =>  'Почтовый адрес'
+            ])
+            ->add('phone', null, [
+                'label' =>  'Телефон'
+            ])
+            ->add('email', null, [
+                'label' =>  'Email'
             ])
             ->add('_action', null, array(
                 'label'     =>  'Действия',
@@ -65,6 +103,63 @@ class CompanyAdmin extends AbstractAdmin
                 'label'     =>  'Название',
                 'required'  =>  true
             ])
+            ->add('ogrn', TextType::class, [
+                'label'         =>  'ОГРН',
+                'required'      =>  true,
+                'constraints'   =>  [
+                    new NotBlank([
+                        'message' => 'Введите ОГРН'
+                    ])
+                ]
+            ])
+            ->add('inn', TextType::class, [
+                'label'         =>  'ИНН',
+                'required'      =>  true,
+                'constraints'   =>  [
+                    new NotBlank([
+                        'message' => 'Введите ИНН'
+                    ])
+                ]
+            ])
+            ->add('address', TextType::class, [
+                'label'         =>  'Адрес',
+                'required'      =>  true,
+                'constraints'   =>  [
+                    new NotBlank([
+                        'message' => 'Введите адрес'
+                    ])
+                ]
+            ])
+            ->add('postAddress', TextType::class, [
+                'label'         =>  'Почтовый адрес',
+                'required'      =>  true,
+                'constraints'   =>  [
+                    new NotBlank([
+                        'message' => 'Введите почтовый адрес'
+                    ])
+                ]
+            ])
+            ->add('phone', TextType::class, [
+                'label'         =>  'Телефон',
+                'required'      =>  true,
+                'constraints'   =>  [
+                    new NotBlank([
+                        'message' => 'Введите телефон'
+                    ])
+                ]
+            ])
+            ->add('email', TextType::class, [
+                'label'         =>  'Email',
+                'required'      =>  true,
+                'constraints'   =>  [
+                    new NotBlank([
+                        'message' => 'Введите Email'
+                    ]),
+                    new Email([
+                        'message' => 'Неверно введен Email'
+                    ])
+                ]
+            ])
         ;
     }
 
@@ -78,8 +173,26 @@ class CompanyAdmin extends AbstractAdmin
             ->add('title', null, [
                 'label' =>  'Название'
             ])
+            ->add('ogrn', null, [
+                'label' =>  'ОГРН'
+            ])
+            ->add('inn', null, [
+                'label' =>  'ИНН'
+            ])
+            ->add('address', null, [
+                'label' =>  'Адрес'
+            ])
+            ->add('postAddress', null, [
+                'label' =>  'Почтовый адрес'
+            ])
+            ->add('phone', null, [
+                'label' =>  'Телефон'
+            ])
+            ->add('email', null, [
+                'label' =>  'Email'
+            ])
             ->add('user', null, [
-                'label' =>  'Пользователь'
+                'label' =>  'Пользователи'
             ])
         ;
     }
