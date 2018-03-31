@@ -29,7 +29,9 @@ framework:
         save_path: '%kernel.project_dir%/var/sessions/%kernel.environment%'
     fragments: ~
     http_method_override: true
-    assets: ~
+    assets:
+        packages:
+            js: ~
     php_errors:
         log: true
 
@@ -114,3 +116,24 @@ doctrine_migrations:
     namespace: AppBundle\DoctrineMigrations
     table_name: migration_versions
     name: Debtor Migrations
+
+#assetic
+assetic:
+    debug:          '%kernel.debug%'
+    use_controller: false
+    assets:
+        libsjs:
+            inputs:
+                - 'bundles/app/js/libs.min.js'
+        cms_core:
+            inputs:
+                - 'bundles/app/js/cms/core/core.module.js'
+                - 'bundles/app/js/cms/core/core.config.js'
+                - 'bundles/app/js/cms/core/core.run.js'
+                - 'bundles/app/js/cms/core/services/*.js'
+                - 'bundles/app/js/cms/core/controllers/*.js'
+
+        cmsjs:
+            inputs:
+                - '@cms_core'
+                - 'bundles/app/js/cms/cms.js'

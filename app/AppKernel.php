@@ -30,6 +30,9 @@ class AppKernel extends Kernel
 
             //doctrine migration
             new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
+
+            //assetic bundle
+            new Symfony\Bundle\AsseticBundle\AsseticBundle(),
             //next bundle
         ];
 

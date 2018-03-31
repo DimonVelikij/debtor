@@ -15,6 +15,8 @@
 !var/SymfonyRequirements.php
 /vendor/
 /web/bundles/
+/web/assetic/
+/web/js/
 .idea/
 /node_modules
 /src/AppBundle/Resources/public/vendor
