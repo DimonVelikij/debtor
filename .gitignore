@@ -16,3 +16,6 @@
 /vendor/
 /web/bundles/
 .idea/
+/node_modules
+/src/AppBundle/Resources/public/vendor
+/src/AppBundle/Resources/public/js/libs.min.js

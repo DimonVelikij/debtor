@@ -1,0 +1,27 @@
+{
+  "name": "debtor.ru",
+  "version": "1.0.0",
+  "description": "Symfony Standard Edition ========================",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DimonVelikij/debtor.git"
+  },
+  "author": "dimonvelikij",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DimonVelikij/debtor/issues"
+  },
+  "homepage": "https://github.com/DimonVelikij/debtor#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.1",
+    "gulp-uglifyjs": "^0.6.2"
+  }
+}

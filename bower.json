@@ -1,0 +1,21 @@
+{
+  "name": "debtor.ru",
+  "homepage": "https://github.com/DimonVelikij/debtor",
+  "authors": [
+    "dborodin <DimonVelikii-1992@mail.ru>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "src/AppBundle/Resources/public/vendor/",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.6.9"
+  }
+}
