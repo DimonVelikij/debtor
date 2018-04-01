@@ -58,7 +58,12 @@ class Company
     /**
      * @ORM\OneToMany(targetEntity="User", mappedBy="company")
      */
-    private $user;
+    private $users;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Debtor", mappedBy="company")
+     */
+    private $debtors;
 
     /**
      * @return string
@@ -67,12 +72,14 @@ class Company
     {
         return $this->title ?: '';
     }
+
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->user = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->users = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->debtors = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -262,7 +269,7 @@ class Company
      */
     public function addUser(\AppBundle\Entity\User $user)
     {
-        $this->user[] = $user;
+        $this->users[] = $user;
 
         return $this;
     }
@@ -274,16 +281,50 @@ class Company
      */
     public function removeUser(\AppBundle\Entity\User $user)
     {
-        $this->user->removeElement($user);
+        $this->users->removeElement($user);
     }
 
     /**
-     * Get user
+     * Get users
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getUser()
+    public function getUsers()
     {
-        return $this->user;
+        return $this->users;
+    }
+
+    /**
+     * Add debtor
+     *
+     * @param \AppBundle\Entity\Debtor $debtor
+     *
+     * @return Company
+     */
+    public function addDebtor(\AppBundle\Entity\Debtor $debtor)
+    {
+        $this->debtors[] = $debtor;
+
+        return $this;
+    }
+
+    /**
+     * Remove debtor
+     *
+     * @param \AppBundle\Entity\Debtor $debtor
+     */
+    public function removeDebtor(\AppBundle\Entity\Debtor $debtor)
+    {
+        $this->debtors->removeElement($debtor);
+    }
+
+    /**
+     * Get debtors
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getDebtors()
+    {
+        return $this->debtors;
     }
 }

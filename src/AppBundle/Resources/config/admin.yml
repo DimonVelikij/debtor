@@ -12,3 +12,10 @@ services:
         tags:
             - { name: sonata.admin, manager_type: orm, group: cms.company, label: Управляющие компании }
         public: true
+
+    app.admin.debtor:
+        class: AppBundle\Admin\DebtorAdmin
+        arguments: [~, AppBundle\Entity\Debtor, SonataAdminBundle:CRUD]
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: cms.debtor, label: Должники }
+        public: true

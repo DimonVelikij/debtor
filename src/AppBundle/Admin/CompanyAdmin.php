@@ -191,7 +191,7 @@ class CompanyAdmin extends AbstractAdmin
             ->add('email', null, [
                 'label' =>  'Email'
             ])
-            ->add('user', null, [
+            ->add('users', null, [
                 'label' =>  'Пользователи'
             ])
         ;
