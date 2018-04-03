@@ -21,19 +21,40 @@ class Debtor
     private $id;
 
     /**
-     * @ORM\Column(name="name", type="string", length=255, nullable=true)
+     * ФИО или наименование организации
+     * @ORM\Column(name="name", type="string", length=255, nullable=false)
      */
     private $name;
 
     /**
+     * телефон
      * @ORM\Column(name="phone", type="string", length=255, nullable=false)
      */
     private $phone;
 
     /**
+     * email
      * @ORM\Column(name="email", type="string", length=255, nullable=false)
      */
     private $email;
+
+    /**
+     * место нахождения или жительства
+     * @ORM\Column(name="location", type="string", length=255, nullable=false)
+     */
+    private $location;
+
+    /**
+     * дата начала собственности
+     * @ORM\Column(name="start_date_ownership", type="date", nullable=true)
+     */
+    private $startDateOwnership;
+
+    /**
+     * дата конча собственности
+     * @ORM\Column(name="end_date_ownership", type="date", nullable=true)
+     */
+    private $endDateOwnership;
 
     /**
      * начало периода взыскания
@@ -96,21 +117,76 @@ class Debtor
     private $periodPayFine;
 
     /**
+     * архив
      * @ORM\Column(name="arhive", type="boolean", nullable=true)
      */
     private $arhive;
 
     /**
-     * @ORM\ManyToOne(targetEntity="DebtorStatus")
-     * @ORM\JoinColumn(name="debtor_status_id", referencedColumnName="id", nullable=false)
+     * дата рождения физ лица
+     * @ORM\Column(name="date_of_birth", type="date", nullable=true)
      */
-    private $debtorStatus;
+    private $dateOfBirth;
+
+    /**
+     * место рождения физ лица
+     * @ORM\Column(name="place_of_birth", type="string", length=255, nullable=true)
+     */
+    private $placeOfBirth;
+
+    /**
+     * ФИО собственника, если статус - законный представитель несовершеннолетнего собственника
+     * @ORM\Column(name="owner_name", type="string", length=255, nullable=true)
+     */
+    private $ownerName;
+
+    /**
+     * ОГРНИП индивидульного предпринимателя
+     * @ORM\Column(name="ogrnip", type="string", length=255, nullable=true)
+     */
+    private $ogrnip;
+
+    /**
+     * ИНН индивидуального предпринимателя или Юр. лица
+     * @ORM\Column(name="inn", type="string", length=255, nullable=true)
+     */
+    private $inn;
+
+    /**
+     * ОГРН Юр. лица
+     * @ORM\Column(name="ogrn", type="string", length=255, nullable=true)
+     */
+    private $ogrn;
+
+    /**
+     * ФИО руководителя Юр. лица
+     * @ORM\Column(name="boss_name", type="string", length=255, nullable=true)
+     */
+    private $bossName;
+
+    /**
+     * Должность руководителя Юр. лица
+     * @ORM\Column(name="boss_position", type="string", length=255, nullable=true)
+     */
+    private $bossPosition;
 
     /**
      * @ORM\ManyToOne(targetEntity="Company", inversedBy="debtors")
      * @ORM\JoinColumn(name="company_id", referencedColumnName="id", nullable=false)
      */
     private $company;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="DebtorType")
+     * @ORM\JoinColumn(name="debtor_status_id", referencedColumnName="id", nullable=false)
+     */
+    private $debtorStatus;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="OwnershipStatus")
+     * @ORM\JoinColumn(name="ownership_status_id", referencedColumnName="id")
+     */
+    private $ownershipStatus;
 
     /**
      * Get id
@@ -192,6 +268,78 @@ class Debtor
     public function getEmail()
     {
         return $this->email;
+    }
+
+    /**
+     * Set location
+     *
+     * @param string $location
+     *
+     * @return Debtor
+     */
+    public function setLocation($location)
+    {
+        $this->location = $location;
+
+        return $this;
+    }
+
+    /**
+     * Get location
+     *
+     * @return string
+     */
+    public function getLocation()
+    {
+        return $this->location;
+    }
+
+    /**
+     * Set startDateOwnership
+     *
+     * @param \DateTime $startDateOwnership
+     *
+     * @return Debtor
+     */
+    public function setStartDateOwnership($startDateOwnership)
+    {
+        $this->startDateOwnership = $startDateOwnership;
+
+        return $this;
+    }
+
+    /**
+     * Get startDateOwnership
+     *
+     * @return \DateTime
+     */
+    public function getStartDateOwnership()
+    {
+        return $this->startDateOwnership;
+    }
+
+    /**
+     * Set endDateOwnership
+     *
+     * @param \DateTime $endDateOwnership
+     *
+     * @return Debtor
+     */
+    public function setEndDateOwnership($endDateOwnership)
+    {
+        $this->endDateOwnership = $endDateOwnership;
+
+        return $this;
+    }
+
+    /**
+     * Get endDateOwnership
+     *
+     * @return \DateTime
+     */
+    public function getEndDateOwnership()
+    {
+        return $this->endDateOwnership;
     }
 
     /**
@@ -459,27 +607,195 @@ class Debtor
     }
 
     /**
-     * Set debtorStatus
+     * Set dateOfBirth
      *
-     * @param \AppBundle\Entity\DebtorStatus $debtorStatus
+     * @param \DateTime $dateOfBirth
      *
      * @return Debtor
      */
-    public function setDebtorStatus(\AppBundle\Entity\DebtorStatus $debtorStatus)
+    public function setDateOfBirth($dateOfBirth)
     {
-        $this->debtorStatus = $debtorStatus;
+        $this->dateOfBirth = $dateOfBirth;
 
         return $this;
     }
 
     /**
-     * Get debtorStatus
+     * Get dateOfBirth
      *
-     * @return \AppBundle\Entity\DebtorStatus
+     * @return \DateTime
      */
-    public function getDebtorStatus()
+    public function getDateOfBirth()
     {
-        return $this->debtorStatus;
+        return $this->dateOfBirth;
+    }
+
+    /**
+     * Set placeOfBirth
+     *
+     * @param string $placeOfBirth
+     *
+     * @return Debtor
+     */
+    public function setPlaceOfBirth($placeOfBirth)
+    {
+        $this->placeOfBirth = $placeOfBirth;
+
+        return $this;
+    }
+
+    /**
+     * Get placeOfBirth
+     *
+     * @return string
+     */
+    public function getPlaceOfBirth()
+    {
+        return $this->placeOfBirth;
+    }
+
+    /**
+     * Set ownerName
+     *
+     * @param string $ownerName
+     *
+     * @return Debtor
+     */
+    public function setOwnerName($ownerName)
+    {
+        $this->ownerName = $ownerName;
+
+        return $this;
+    }
+
+    /**
+     * Get ownerName
+     *
+     * @return string
+     */
+    public function getOwnerName()
+    {
+        return $this->ownerName;
+    }
+
+    /**
+     * Set ogrnip
+     *
+     * @param string $ogrnip
+     *
+     * @return Debtor
+     */
+    public function setOgrnip($ogrnip)
+    {
+        $this->ogrnip = $ogrnip;
+
+        return $this;
+    }
+
+    /**
+     * Get ogrnip
+     *
+     * @return string
+     */
+    public function getOgrnip()
+    {
+        return $this->ogrnip;
+    }
+
+    /**
+     * Set inn
+     *
+     * @param string $inn
+     *
+     * @return Debtor
+     */
+    public function setInn($inn)
+    {
+        $this->inn = $inn;
+
+        return $this;
+    }
+
+    /**
+     * Get inn
+     *
+     * @return string
+     */
+    public function getInn()
+    {
+        return $this->inn;
+    }
+
+    /**
+     * Set ogrn
+     *
+     * @param string $ogrn
+     *
+     * @return Debtor
+     */
+    public function setOgrn($ogrn)
+    {
+        $this->ogrn = $ogrn;
+
+        return $this;
+    }
+
+    /**
+     * Get ogrn
+     *
+     * @return string
+     */
+    public function getOgrn()
+    {
+        return $this->ogrn;
+    }
+
+    /**
+     * Set bossName
+     *
+     * @param string $bossName
+     *
+     * @return Debtor
+     */
+    public function setBossName($bossName)
+    {
+        $this->bossName = $bossName;
+
+        return $this;
+    }
+
+    /**
+     * Get bossName
+     *
+     * @return string
+     */
+    public function getBossName()
+    {
+        return $this->bossName;
+    }
+
+    /**
+     * Set bossPosition
+     *
+     * @param string $bossPosition
+     *
+     * @return Debtor
+     */
+    public function setBossPosition($bossPosition)
+    {
+        $this->bossPosition = $bossPosition;
+
+        return $this;
+    }
+
+    /**
+     * Get bossPosition
+     *
+     * @return string
+     */
+    public function getBossPosition()
+    {
+        return $this->bossPosition;
     }
 
     /**
@@ -504,5 +820,53 @@ class Debtor
     public function getCompany()
     {
         return $this->company;
+    }
+
+    /**
+     * Set debtorStatus
+     *
+     * @param \AppBundle\Entity\DebtorType $debtorStatus
+     *
+     * @return Debtor
+     */
+    public function setDebtorStatus(\AppBundle\Entity\DebtorType $debtorStatus)
+    {
+        $this->debtorStatus = $debtorStatus;
+
+        return $this;
+    }
+
+    /**
+     * Get debtorStatus
+     *
+     * @return \AppBundle\Entity\DebtorType
+     */
+    public function getDebtorStatus()
+    {
+        return $this->debtorStatus;
+    }
+
+    /**
+     * Set ownershipStatus
+     *
+     * @param \AppBundle\Entity\OwnershipStatus $ownershipStatus
+     *
+     * @return Debtor
+     */
+    public function setOwnershipStatus(\AppBundle\Entity\OwnershipStatus $ownershipStatus = null)
+    {
+        $this->ownershipStatus = $ownershipStatus;
+
+        return $this;
+    }
+
+    /**
+     * Get ownershipStatus
+     *
+     * @return \AppBundle\Entity\OwnershipStatus
+     */
+    public function getOwnershipStatus()
+    {
+        return $this->ownershipStatus;
     }
 }

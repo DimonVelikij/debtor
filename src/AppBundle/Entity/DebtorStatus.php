@@ -6,12 +6,12 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="debtor_statuses")
+ * @ORM\Table(name="debtor_types")
  *
- * Class DebtorStatus
+ * Class DebtorType
  * @package AppBundle\Entity
  */
-class DebtorStatus
+class DebtorType
 {
     /**
      * @ORM\Id
@@ -45,7 +45,7 @@ class DebtorStatus
      *
      * @param string $title
      *
-     * @return DebtorStatus
+     * @return DebtorType
      */
     public function setTitle($title)
     {
@@ -69,7 +69,7 @@ class DebtorStatus
      *
      * @param string $alias
      *
-     * @return DebtorStatus
+     * @return DebtorType
      */
     public function setAlias($alias)
     {
