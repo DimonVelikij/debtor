@@ -20,6 +20,9 @@ class DebtorAdmin extends AbstractAdmin
             ->add('name')
             ->add('phone')
             ->add('email')
+            ->add('location')
+            ->add('startDateOwnership')
+            ->add('endDateOwnership')
             ->add('startDebtPeriod')
             ->add('endDebtPeriod')
             ->add('dateFillDebt')
@@ -31,6 +34,14 @@ class DebtorAdmin extends AbstractAdmin
             ->add('periodAccruedFine')
             ->add('periodPayFine')
             ->add('arhive')
+            ->add('dateOfBirth')
+            ->add('placeOfBirth')
+            ->add('ownerName')
+            ->add('ogrnip')
+            ->add('inn')
+            ->add('ogrn')
+            ->add('bossName')
+            ->add('bossPosition')
         ;
     }
 
@@ -44,6 +55,9 @@ class DebtorAdmin extends AbstractAdmin
             ->add('name')
             ->add('phone')
             ->add('email')
+            ->add('location')
+            ->add('startDateOwnership')
+            ->add('endDateOwnership')
             ->add('startDebtPeriod')
             ->add('endDebtPeriod')
             ->add('dateFillDebt')
@@ -55,6 +69,14 @@ class DebtorAdmin extends AbstractAdmin
             ->add('periodAccruedFine')
             ->add('periodPayFine')
             ->add('arhive')
+            ->add('dateOfBirth')
+            ->add('placeOfBirth')
+            ->add('ownerName')
+            ->add('ogrnip')
+            ->add('inn')
+            ->add('ogrn')
+            ->add('bossName')
+            ->add('bossPosition')
             ->add('_action', null, array(
                 'actions' => array(
                     'show' => array(),
@@ -75,6 +97,9 @@ class DebtorAdmin extends AbstractAdmin
             ->add('name')
             ->add('phone')
             ->add('email')
+            ->add('location')
+            ->add('startDateOwnership')
+            ->add('endDateOwnership')
             ->add('startDebtPeriod')
             ->add('endDebtPeriod')
             ->add('dateFillDebt')
@@ -86,6 +111,14 @@ class DebtorAdmin extends AbstractAdmin
             ->add('periodAccruedFine')
             ->add('periodPayFine')
             ->add('arhive')
+            ->add('dateOfBirth')
+            ->add('placeOfBirth')
+            ->add('ownerName')
+            ->add('ogrnip')
+            ->add('inn')
+            ->add('ogrn')
+            ->add('bossName')
+            ->add('bossPosition')
         ;
     }
 
@@ -99,6 +132,9 @@ class DebtorAdmin extends AbstractAdmin
             ->add('name')
             ->add('phone')
             ->add('email')
+            ->add('location')
+            ->add('startDateOwnership')
+            ->add('endDateOwnership')
             ->add('startDebtPeriod')
             ->add('endDebtPeriod')
             ->add('dateFillDebt')
@@ -110,6 +146,14 @@ class DebtorAdmin extends AbstractAdmin
             ->add('periodAccruedFine')
             ->add('periodPayFine')
             ->add('arhive')
+            ->add('dateOfBirth')
+            ->add('placeOfBirth')
+            ->add('ownerName')
+            ->add('ogrnip')
+            ->add('inn')
+            ->add('ogrn')
+            ->add('bossName')
+            ->add('bossPosition')
         ;
     }
 }

@@ -180,7 +180,7 @@ class Debtor
      * @ORM\ManyToOne(targetEntity="DebtorType")
      * @ORM\JoinColumn(name="debtor_status_id", referencedColumnName="id", nullable=false)
      */
-    private $debtorStatus;
+    private $debtorType;
 
     /**
      * @ORM\ManyToOne(targetEntity="OwnershipStatus")
@@ -823,27 +823,27 @@ class Debtor
     }
 
     /**
-     * Set debtorStatus
+     * Set debtorType
      *
-     * @param \AppBundle\Entity\DebtorType $debtorStatus
+     * @param \AppBundle\Entity\DebtorType $debtorType
      *
      * @return Debtor
      */
-    public function setDebtorStatus(\AppBundle\Entity\DebtorType $debtorStatus)
+    public function setDebtorType(\AppBundle\Entity\DebtorType $debtorType)
     {
-        $this->debtorStatus = $debtorStatus;
+        $this->debtorType = $debtorType;
 
         return $this;
     }
 
     /**
-     * Get debtorStatus
+     * Get debtorType
      *
      * @return \AppBundle\Entity\DebtorType
      */
-    public function getDebtorStatus()
+    public function getDebtorType()
     {
-        return $this->debtorStatus;
+        return $this->debtorType;
     }
 
     /**
