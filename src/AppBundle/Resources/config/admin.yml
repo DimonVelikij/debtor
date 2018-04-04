@@ -15,7 +15,7 @@ services:
 
     app.admin.debtor:
         class: AppBundle\Admin\DebtorAdmin
-        arguments: [~, AppBundle\Entity\Debtor, SonataAdminBundle:CRUD]
+        arguments: [~, AppBundle\Entity\Debtor, AppBundle:Admin\Debtor]
         tags:
             - { name: sonata.admin, manager_type: orm, group: cms.debtor, label: Должники }
         public: true
