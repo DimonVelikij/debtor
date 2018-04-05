@@ -2,8 +2,10 @@
 
 namespace AppBundle\Controller\Admin;
 
+use JMS\Serializer\SerializationContext;
 use Sonata\AdminBundle\Controller\CRUDController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class DebtorController
@@ -24,8 +26,21 @@ class DebtorController extends CRUDController
         ]);
     }
 
+    /**
+     * получение типов должников
+     * @param Request $request
+     * @return Response
+     */
     public function typesAction(Request $request)
     {
-        dump(1);die;
+        $debtorTypes = $this->getDoctrine()->getRepository('AppBundle:DebtorType')->findAll();
+
+        return new Response(
+            $this->get('jms_serializer')->serialize(
+                $debtorTypes,
+                'json',
+                SerializationContext::create()->setGroups(['cms-debtor'])
+            )
+        );
     }
 }

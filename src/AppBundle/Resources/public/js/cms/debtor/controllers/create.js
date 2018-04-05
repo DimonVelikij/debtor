@@ -8,20 +8,44 @@
     DebtorCreateController.$inject = [
         '$scope',
         '$http',
-        'Initializer'
+        'Initializer',
+        'FormHelper'
     ];
 
     function DebtorCreateController (
         $scope,
         $http,
-        Initializer
+        Initializer,
+        FormHelper
     ) {
+        $scope.formData = {
+            debtorType: null
+        };
+
+        /**
+         * подгружаем типы должников
+         */
         $http.get(Initializer.Path.AdminDebtorTypes)
             .then(function (response) {
-                console.log(response);
-            }, function () {
-
+                $scope.debtorTypes = _.merge(response.data);
             });
+
+        $scope.submit = function ($event, form) {
+            $event.preventDefault();
+
+            FormHelper.forceDirty(form);
+
+            if (form.$invalid) {
+                return;
+            }
+
+            /*form['type'].errorMessages = {
+                backend: 'test'
+            };
+            form['type'].$setValidity('backend', false);
+            вынести в FormHelper.showBackendErrors
+            */
+        };
     }
 
 })(angular);

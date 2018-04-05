@@ -137,6 +137,7 @@ assetic:
                 - 'bundles/app/js/cms/core/core.run.js'
                 - 'bundles/app/js/cms/core/services/*.js'
                 - 'bundles/app/js/cms/core/controllers/*.js'
+                - 'bundles/app/js/cms/core/directives/*.js'
 
         cms_debtor:
             inputs:
