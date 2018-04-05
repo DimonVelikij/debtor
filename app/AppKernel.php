@@ -33,6 +33,9 @@ class AppKernel extends Kernel
 
             //assetic bundle
             new Symfony\Bundle\AsseticBundle\AsseticBundle(),
+
+            //jms serializer bundle
+            new JMS\SerializerBundle\JMSSerializerBundle(),
             //next bundle
         ];
 
