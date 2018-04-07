@@ -2,7 +2,8 @@
     "use strict";
 
     angular.module('cms.core', [
-        'ngMessages'
+        'ngMessages',
+        'ui.mask'
     ]);
 
 })(angular);

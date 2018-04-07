@@ -16,27 +16,34 @@
                                 </div>
                                 <div class="box-body">
                                     <div class="sonata-ba-collapsed-fields">
-                                        <div class="form-group" ng-class="{'has-error': debtor.type.$invalid && debtor.type.$dirty}">
-                                            <label for="type" class="control-label required">Тип должника</label>
-                                            <select name="type" id="type" ng-model="formData.debtorType" ng-options="debtorType as debtorType.title for debtorType in debtorTypes" required backend>
-                                                <option value="">--Выберите тип должника--</option>
-                                            </select>
-                                            <div class="help-block sonata-ba-field-error-messages" ng-if="debtor.type.$invalid && debtor.type.$dirty" ng-messages="debtor.type.$error">
-                                                <ul class="list-unstyled">
-                                                    <li ng-message="required"><i class="fa fa-exclamation-circle"></i>Выберите тип должника</li>
-                                                    <li ng-message="backend"><i class="fa fa-exclamation-circle"></i>[[ debtor.type.errorMessages.backend ]]</li>
-                                                </ul>
-                                            </div>
-                                        </div>
+                                        {% include '@App/Admin/Debtor/debtor_type.html.twig' %}
+                                        
                                         <div ng-if="formData.debtorType.alias == 'individual'">
                                             {#форма#}
                                         </div>
+                                        
                                         <div ng-if="formData.debtorType.alias == 'businessman'">
                                             {#форма#}
                                         </div>
+                                        
                                         <div ng-if="formData.debtorType.alias == 'legal_entity'">
                                             {#форма#}
                                         </div>
+    
+                                        <div class="box box-primary">
+                                            <div class="box-header">
+                                                <p class="box-title">Период взыскания</p>
+                                                {% include '@App/Admin/Debtor/debt_period.html.twig' %}
+                                            </div>
+                                        </div>
+    
+                                        <div class="box box-primary">
+                                            <div class="box-header">
+                                                <p class="box-title">Суммы задолженности</p>
+                                                {% include '@App/Admin/Debtor/sums_debts.html.twig' %}
+                                            </div>
+                                        </div>
+                                        
                                     </div>
                                 </div>
                                 <button ng-click="submit($event, debtor)">Сохранить</button>

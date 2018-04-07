@@ -19,7 +19,20 @@
         FormHelper
     ) {
         $scope.formData = {
-            debtorType: null
+            debtorType: null,
+
+            startDebtPeriod: null,
+            endDebtPeriod: null,
+
+            dateFillDebt: null,
+            sumDebt: null,
+            periodAccruedDebt: null,
+            periodPayDebt: null,
+
+            dateFillFine: null,
+            sumFine: null,
+            periodAccruedFine: null,
+            periodPayFine: null
         };
 
         /**
@@ -32,7 +45,7 @@
 
         $scope.submit = function ($event, form) {
             $event.preventDefault();
-
+console.log($scope.formData);
             FormHelper.forceDirty(form);
 
             if (form.$invalid) {
