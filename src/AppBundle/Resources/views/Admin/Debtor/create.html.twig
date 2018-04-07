@@ -28,6 +28,15 @@
                                                 </ul>
                                             </div>
                                         </div>
+                                        <div ng-if="formData.debtorType.alias == 'individual'">
+                                            {#форма#}
+                                        </div>
+                                        <div ng-if="formData.debtorType.alias == 'businessman'">
+                                            {#форма#}
+                                        </div>
+                                        <div ng-if="formData.debtorType.alias == 'legal_entity'">
+                                            {#форма#}
+                                        </div>
                                     </div>
                                 </div>
                                 <button ng-click="submit($event, debtor)">Сохранить</button>
@@ -38,4 +47,13 @@
             </div>
         </form>
     </div>
+{% endblock %}
+
+{% block sonata_javascript_pool %}
+    {{ parent() }}
+    {% javascripts
+        '@cms_debtor'
+    %}
+    <script type="text/javascript" src="{{ asset(asset_url, 'js') }}"></script>
+    {% endjavascripts %}
 {% endblock %}

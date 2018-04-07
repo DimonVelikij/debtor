@@ -141,11 +141,15 @@ assetic:
 
         cms_debtor:
             inputs:
-                - 'bundles/app/js/cms/debtor/debtor.module.js'
                 - 'bundles/app/js/cms/debtor/controllers/*.js'
                 - 'bundles/app/js/cms/debtor/services/*.js'
+
+        cms_modules:
+            inputs:
+                - 'bundles/app/js/cms/debtor/debtor.module.js'
 
         cmsjs:
             inputs:
                 - '@cms_core'
+                - '@cms_modules'
                 - 'bundles/app/js/cms/cms.js'
