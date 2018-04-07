@@ -21,6 +21,18 @@
         $scope.formData = {
             debtorType: null,
 
+            debtorInfo: {
+                ownerName: null,
+                ogrn: null,
+                inn: null,
+                location: null,
+                phone: null,
+                email: null,
+
+                bossName: null,
+                bossPosition: null
+            },
+
             startDebtPeriod: null,
             endDebtPeriod: null,
 
@@ -51,7 +63,7 @@ console.log($scope.formData);
             if (form.$invalid) {
                 return;
             }
-
+console.log('valid');
             /*form['type'].errorMessages = {
                 backend: 'test'
             };

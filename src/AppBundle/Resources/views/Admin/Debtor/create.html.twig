@@ -27,20 +27,22 @@
                                         </div>
                                         
                                         <div ng-if="formData.debtorType.alias == 'legal_entity'">
-                                            {#форма#}
+                                            {% include '@App/Admin/Debtor/legal_entity.html.twig' %}
                                         </div>
     
-                                        <div class="box box-primary">
-                                            <div class="box-header">
-                                                <p class="box-title">Период взыскания</p>
-                                                {% include '@App/Admin/Debtor/debt_period.html.twig' %}
+                                        <div ng-show="formData.debtorType">
+                                            <div class="box box-primary">
+                                                <div class="box-header">
+                                                    <p class="box-title">Период взыскания</p>
+                                                    {% include '@App/Admin/Debtor/debt_period.html.twig' %}
+                                                </div>
                                             </div>
-                                        </div>
-    
-                                        <div class="box box-primary">
-                                            <div class="box-header">
-                                                <p class="box-title">Суммы задолженности</p>
-                                                {% include '@App/Admin/Debtor/sums_debts.html.twig' %}
+        
+                                            <div class="box box-primary">
+                                                <div class="box-header">
+                                                    <p class="box-title">Суммы задолженности</p>
+                                                    {% include '@App/Admin/Debtor/sums_debts.html.twig' %}
+                                                </div>
                                             </div>
                                         </div>
                                         
