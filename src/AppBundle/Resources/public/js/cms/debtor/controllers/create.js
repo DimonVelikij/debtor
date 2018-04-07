@@ -29,6 +29,7 @@
                 phone: null,
                 email: null,
 
+                ogrnip: null,
                 bossName: null,
                 bossPosition: null
             },
