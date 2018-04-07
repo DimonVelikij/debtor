@@ -29,6 +29,8 @@
                 phone: null,
                 email: null,
 
+                dateOfBirth: null,
+                placeOfBirth: null,
                 ogrnip: null,
                 bossName: null,
                 bossPosition: null

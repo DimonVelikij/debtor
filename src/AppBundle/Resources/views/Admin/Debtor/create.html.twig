@@ -19,7 +19,7 @@
                                         {% include '@App/Admin/Debtor/debtor_type.html.twig' %}
                                         
                                         <div ng-if="formData.debtorType.alias == 'individual'">
-                                            {#форма#}
+                                            {% include '@App/Admin/Debtor/individual.html.twig' %}
                                         </div>
                                         
                                         <div ng-if="formData.debtorType.alias == 'businessman'">

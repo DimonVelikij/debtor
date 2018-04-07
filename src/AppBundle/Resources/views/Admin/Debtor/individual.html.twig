@@ -1,0 +1,36 @@
+<div class="box box-primary">
+    <div class="box-header">
+        <p class="box-title">Физическое лицо</p>
+        <div class="form-group">
+            <label for="ownerName" class="control-label">ФИО</label>
+            <input name="ownerName" id="ownerName" type="text" class="form-control" ng-model="formData.debtorInfo.ownerName">
+        </div>
+        <div class="form-group" ng-class="{'has-error': debtor.dateOfBirth.$error.pattern && debtor.dateOfBirth.$invalid && debtor.dateOfBirth.$dirty}">
+            <label for="dateOfBirth" class="control-label">Дата рождения</label>
+            <input name="dateOfBirth" id="dateOfBirth" type="text" class="form-control" ng-model="formData.debtorInfo.dateOfBirth" ui-mask="99.99.9999" ng-pattern="/^([0-2]\d|3[01])\.(0\d|1[012])\.(19|20)(\d\d)$/" backend>
+            <div class="help-block sonata-ba-field-error-messages" ng-if="debtor.dateOfBirth.$invalid && debtor.dateOfBirth.$dirty" ng-messages="debtor.dateOfBirth.$error">
+                <ul class="list-unstyled">
+                    <li ng-message="pattern"><i class="fa fa-exclamation-circle"></i>Неверно указана дата рождения</li>
+                    <li ng-message="backend"><i class="fa fa-exclamation-circle"></i>[[ debtor.dateOfBirth.errorMessages.backend ]]</li>
+                </ul>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="placeOfBirth" class="control-label">Место рождения</label>
+            <input name="placeOfBirth" id="placeOfBirth" type="text" class="form-control" ng-model="formData.debtorInfo.placeOfBirth">
+        </div>
+        {#статус#}
+        <div class="form-group" ng-class="{'has-error': debtor.location.$invalid && debtor.location.$dirty}">
+            <label for="location" class="control-label required">Место жительства</label>
+            <input name="location" id="location" type="text" class="form-control" ng-model="formData.debtorInfo.location" required backend>
+            <div class="help-block sonata-ba-field-error-messages" ng-if="debtor.location.$invalid && debtor.location.$dirty" ng-messages="debtor.location.$error">
+                <ul class="list-unstyled">
+                    <li ng-message="required"><i class="fa fa-exclamation-circle"></i>Укажите адрес местонаждения</li>
+                    <li ng-message="backend"><i class="fa fa-exclamation-circle"></i>[[ debtor.location.errorMessages.backend ]]</li>
+                </ul>
+            </div>
+        </div>
+        {% include '@App/Admin/Debtor/phone_field.html.twig' %}
+        {% include '@App/Admin/Debtor/email_field.html.twig' %}
+    </div>
+</div>
