@@ -36,7 +36,7 @@
         </div>
         <div class="form-group" ng-class="{'has-error': debtor.bossPosition.$invalid && debtor.bossPosition.$dirty}">
             <label for="bossPosition" class="control-label required">Должность руководителя</label>
-            <input name="bossPosition" id="bossPosition" type="text" class="form-control" ng-model="formData.bossPosition.bossName" required backend>
+            <input name="bossPosition" id="bossPosition" type="text" class="form-control" ng-model="formData.debtorInfo.bossPosition" required backend>
             <div class="help-block sonata-ba-field-error-messages" ng-if="debtor.bossPosition.$invalid && debtor.bossPosition.$dirty" ng-messages="debtor.bossPosition.$error">
                 <ul class="list-unstyled">
                     <li ng-message="required"><i class="fa fa-exclamation-circle"></i>Укажите должность руководителя</li>

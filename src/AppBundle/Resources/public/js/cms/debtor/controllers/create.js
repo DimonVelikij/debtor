@@ -60,13 +60,13 @@
 
         $scope.submit = function ($event, form) {
             $event.preventDefault();
-console.log($scope.formData);
+
             FormHelper.forceDirty(form);
 
             if (form.$invalid) {
                 return;
             }
-console.log('valid');
+console.log($scope.formData);
             /*form['type'].errorMessages = {
                 backend: 'test'
             };
