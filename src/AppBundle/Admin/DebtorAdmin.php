@@ -17,7 +17,9 @@ class DebtorAdmin extends AbstractAdmin
     protected function configureRoutes(RouteCollection $collection)
     {
         $collection
-            ->add('types', 'types');
+            ->add('types', 'types')
+            ->add('ownership_statuses', 'ownership_statuses')
+            ->add('save', 'save');
     }
 
     /**

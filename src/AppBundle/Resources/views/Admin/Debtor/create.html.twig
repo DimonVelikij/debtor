@@ -1,11 +1,13 @@
 {% extends '@SonataAdmin/CRUD/base_edit.html.twig' %}
 
 {% block form %}
-    <div class="sonata-ba-form" ng-controller="DebtorCreateCtrl">
+    <div class="sonata-ba-form" ng-controller="DebtorCreateCtrl" ng-cloak>
         <script type="text/ng-init" name="Path">{{ {
-                AdminDebtorTypes: path('admin_app_debtor_types')
+                AdminDebtorTypes: path('admin_app_debtor_types'),
+                AdminDebtorOwnershipStatuses: path('admin_app_debtor_ownership_statuses'),
+                AdminDebtorSave: path('admin_app_debtor_save')
             } |json_encode | raw }}</script>
-        <form name="debtor">
+        <form name="debtor" novalidate>
             <div class="row">
                 <div class="col-md-12">
                     <div class="row">

@@ -21,20 +21,19 @@
         $scope.formData = {
             debtorType: null,
 
-            debtorInfo: {
-                ownerName: null,
-                ogrn: null,
-                inn: null,
-                location: null,
-                phone: null,
-                email: null,
+            name: null,
+            ownershipStatus: null,
+            ogrn: null,
+            inn: null,
+            location: null,
+            phone: null,
+            email: null,
 
-                dateOfBirth: null,
-                placeOfBirth: null,
-                ogrnip: null,
-                bossName: null,
-                bossPosition: null
-            },
+            dateOfBirth: null,
+            placeOfBirth: null,
+            ogrnip: null,
+            bossName: null,
+            bossPosition: null,
 
             startDebtPeriod: null,
             endDebtPeriod: null,
@@ -58,6 +57,31 @@
                 $scope.debtorTypes = _.merge(response.data);
             });
 
+        $scope.$watch('formData.debtorType', function (newDebtorType) {
+            if (!newDebtorType) {
+                return;
+            }
+
+            loadOwnershipStatuses();
+        });
+
+        /**
+         * загрузка статусов собстенности
+         */
+        function loadOwnershipStatuses () {
+            var selectedOwnershipStatusId = $scope.formData.ownershipStatus ?
+                $scope.formData.ownershipStatus.id :
+                null,
+                url = Initializer.Path.AdminDebtorOwnershipStatuses + '?debtor_type=' + $scope.formData.debtorType.alias;
+
+            url += selectedOwnershipStatusId ? '&selected_status_id=' + selectedOwnershipStatusId : '';
+
+            $http.get(url)
+                .then(function (response) {
+                    // console.log(response);
+                });
+        }
+
         $scope.submit = function ($event, form) {
             $event.preventDefault();
 
@@ -66,13 +90,15 @@
             if (form.$invalid) {
                 return;
             }
-console.log($scope.formData);
-            /*form['type'].errorMessages = {
-                backend: 'test'
-            };
-            form['type'].$setValidity('backend', false);
-            вынести в FormHelper.showBackendErrors
-            */
+
+            $http.post(Initializer.Path.AdminDebtorSave, $scope.formData)
+                .then(function (response) {
+                    if (response.data.success) {
+
+                    } else {
+                        FormHelper.showBackendErrors(response.data.errors, form);
+                    }
+                });
         };
     }
 
