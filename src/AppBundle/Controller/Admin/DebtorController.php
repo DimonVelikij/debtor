@@ -3,10 +3,9 @@
 namespace AppBundle\Controller\Admin;
 
 use AppBundle\Entity\Debtor;
-use AppBundle\Entity\DebtorType;
-use AppBundle\Entity\OwnershipStatus;
 use AppBundle\Entity\User;
 use AppBundle\Service\DebtorValidator;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use JMS\Serializer\SerializationContext;
 use Sonata\AdminBundle\Controller\CRUDController;
@@ -45,6 +44,29 @@ class DebtorController extends CRUDController
         return new Response(
             $this->get('jms_serializer')->serialize(
                 $debtorTypes,
+                'json',
+                SerializationContext::create()->setGroups(['cms-debtor'])
+            )
+        );
+    }
+
+    /**
+     * Получение списка управляющих компаний
+     * @param Request $request
+     * @return Response
+     */
+    public function companiesAction(Request $request)
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $companies = $user->isSuperAdmin() ?
+            $this->getDoctrine()->getRepository('AppBundle:Company')->findAll():
+            [$user->getCompany()];
+
+        return new Response(
+            $this->get('jms_serializer')->serialize(
+                $companies,
                 'json',
                 SerializationContext::create()->setGroups(['cms-debtor'])
             )
@@ -105,6 +127,11 @@ class DebtorController extends CRUDController
         );
     }
 
+    /**
+     * сохранение данных пользователя
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function saveAction(Request $request)
     {
         /** @var DebtorValidator $debtorValidator */
@@ -116,55 +143,46 @@ class DebtorController extends CRUDController
             return new JsonResponse($validationResult);
         }
 
-        /** @var DebtorType $debtorType */
-        $debtorType = $this->getDoctrine()
-            ->getRepository('AppBundle:DebtorType')
-            ->find($debtorData['debtorType']['id']);
-
-        /** @var OwnershipStatus $ownershipStatus */
-        $ownershipStatus = $this->getDoctrine()
-            ->getRepository('AppBundle:OwnershipStatus')
-            ->find(18);
-
-        /** @var User $user */
-        $user = $this->getUser();
+        /** @var EntityManager $em */
+        $em = $this->getDoctrine()->getManager();
 
         $debtor = new Debtor();
         $debtor
-            ->setCompany($user->getCompany())
-            ->setDebtorType($debtorType)
-            ->setOwnershipStatus($ownershipStatus)
+            ->setCompany($em->getReference('AppBundle:Company', $debtorData['company']))
+            ->setDebtorType($em->getReference('AppBundle:DebtorType', $debtorData['debtorType']['id']))
+            ->setOwnershipStatus($em->getReference('AppBundle:OwnershipStatus', 18))
             ->setName($debtorData['name'])
             ->setPhone($debtorData['phone'])
             ->setEmail($debtorData['email'])
             ->setLocation($debtorData['location'])
             ->setStartDateOwnership(null)
             ->setEndDateOwnership(null)
-            ->setStartDebtPeriod(null/*\DateTime::createFromFormat('dmY', $debtorData['startDebtPeriod'])*/)
-            ->setEndDebtPeriod(null/*\DateTime::createFromFormat('dmY', $debtorData['endDebtPeriod'])*/)
-            ->setDateFillDebt(null/*\DateTime::createFromFormat('dmY', $debtorData['dateFillDebt'])*/)
-            ->setSumDebt($debtorData['sumDebt'])
+            ->setStartDebtPeriod($debtorData['startDebtPeriod'] ? \DateTime::createFromFormat('dmY', $debtorData['startDebtPeriod']) : null)
+            ->setEndDebtPeriod($debtorData['endDebtPeriod'] ? \DateTime::createFromFormat('dmY', $debtorData['endDebtPeriod']) : null)
+            ->setDateFillDebt($debtorData['dateFillDebt'] ? \DateTime::createFromFormat('dmY', $debtorData['dateFillDebt']) : null)
+            ->setSumDebt($debtorData['sumDebt'] ?? null)
             ->setPeriodAccruedDebt($debtorData['periodAccruedDebt'])
             ->setPeriodPayDebt($debtorData['periodPayDebt'])
-            ->setDateFillFine(null/*\DateTime::createFromFormat('dmY', $debtorData['dateFillFine'])*/)
-            ->setSumFine($debtorData['sumFine'])
+            ->setDateFillFine($debtorData['dateFillFine'] ? \DateTime::createFromFormat('dmY', $debtorData['dateFillFine']) : null)
+            ->setSumFine($debtorData['sumFine'] ?? null)
             ->setPeriodAccruedFine($debtorData['periodAccruedFine'])
             ->setPeriodPayFine($debtorData['periodPayFine'])
             ->setArhive(false)
-            ->setDateOfBirth(null/*\DateTime::createFromFormat('dmY', $debtorData['dateOfBirth'])*/)
-            ->setPlaceOfBirth($debtorData['placeOfBirth'])
+            ->setDateOfBirth($debtorData['dateOfBirth'] ? \DateTime::createFromFormat('dmY', $debtorData['dateOfBirth']) : null)
+            ->setPlaceOfBirth($debtorData['placeOfBirth'] ?? null)
             ->setOwnerName(null)
-            ->setOgrnip(null)
-            ->setInn(null)
-            ->setOgrn(null)
-            ->setBossName(null)
-            ->setBossPosition(null)
-        ;
+            ->setOgrnip($debtorData['ogrnip'] ?? null)
+            ->setInn($debtorData['inn'] ?? null)
+            ->setOgrn($debtorData['ogrn'] ?? null)
+            ->setBossName($debtorData['bossName'] ?? null)
+            ->setBossPosition($debtorData['bossPosition'] ?? null);
 
-        $em = $this->getDoctrine()->getManager();
         $em->persist($debtor);
         $em->flush();
 
-        //редирект на редактирование
+        return new JsonResponse([
+            'success'   =>  true,
+            'edit'      =>  $this->generateUrl('admin_app_debtor_edit', ['id' => $debtor->getId()])
+        ]);
     }
 }

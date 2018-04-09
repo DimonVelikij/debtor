@@ -4,6 +4,7 @@
     <div class="sonata-ba-form" ng-controller="DebtorCreateCtrl" ng-cloak>
         <script type="text/ng-init" name="Path">{{ {
                 AdminDebtorTypes: path('admin_app_debtor_types'),
+                AdminDebtorCompanies: path('admin_app_debtor_companies'),
                 AdminDebtorOwnershipStatuses: path('admin_app_debtor_ownership_statuses'),
                 AdminDebtorSave: path('admin_app_debtor_save')
             } |json_encode | raw }}</script>
@@ -19,6 +20,8 @@
                                 <div class="box-body">
                                     <div class="sonata-ba-collapsed-fields">
                                         {% include '@App/Admin/Debtor/debtor_type.html.twig' %}
+                                        
+                                        {% include '@App/Admin/Debtor/companies.html.twig' %}
                                         
                                         <div ng-if="formData.debtorType.alias == 'individual'">
                                             {% include '@App/Admin/Debtor/individual.html.twig' %}

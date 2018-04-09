@@ -38,6 +38,7 @@ class DebtorValidator
     {
         return [
             'debtorType'        =>  $debtorData['debtorType'] ?? null,
+            'company'           =>  $debtorData['company'] ?? null,
             'name'              =>  $debtorData['name'] ?? null,
             'phone'             =>  $debtorData['phone'] ?? null,
             'email'             =>  $debtorData['email'] ?? null,
@@ -45,7 +46,7 @@ class DebtorValidator
             'dateOfBirth'       =>  $debtorData['dateOfBirth'] ?? null,
             'placeOfBirth'      =>  $debtorData['placeOfBirth'] ?? null,
             'ogrnip'            =>  $debtorData['ogrnip'] ?? null,
-            'inn'               =>  $debtorData['ogrnip'] ?? null,
+            'inn'               =>  $debtorData['inn'] ?? null,
             'ogrn'              =>  $debtorData['ogrn'] ?? null,
             'bossName'          =>  $debtorData['bossName'] ?? null,
             'bossPosition'      =>  $debtorData['bossPosition'] ?? null,
@@ -85,7 +86,7 @@ class DebtorValidator
 
         $errors = [];
 
-        $constraints = $this->$constraintsMethod($debtorData);
+        $constraints = $this->$constraintsMethod();
 
         foreach ($constraints as $fieldName => $constraint) {
             $validationResult = $this->validator->validate($debtorData[$fieldName], $constraint);
@@ -165,16 +166,18 @@ class DebtorValidator
             'email'             =>  [
                 new NotBlank(['message' =>  'Укажите E-mail']),
                 new Email(['message'    =>  'Неверно введен E-mail'])
+            ],
+            'company'           =>  [
+                new NotBlank(['message' =>  'Выберите управлющую компанию'])
             ]
         ];
     }
 
     /**
      * ограничения для физических лиц
-     * @param array $debtorData
      * @return array
      */
-    private function getIndividualConstraints(array $debtorData)
+    private function getIndividualConstraints()
     {
         $baseConstraints = $this->getBaseConstraints();
         $individualConstraints = [
@@ -188,16 +191,40 @@ class DebtorValidator
                 new NotBlank(['message' =>  'Укажите адрес местонаждения'])
             ]
         ];
+
         return array_merge($baseConstraints, $individualConstraints);
     }
 
-    private function getBusinessmanConstraints(array $debtorType)
+    /**
+     * ограничения для бизнесменов
+     * @return array
+     */
+    private function getBusinessmanConstraints()
     {
+        $baseConstraints = $this->getBaseConstraints();
+        $businessmanConstraints = [
 
+        ];
+
+        return array_merge($baseConstraints, $businessmanConstraints);
     }
 
-    private function getLegalEntityConstraints(array $debtorType)
+    /**
+     * ограничения для юридических лиц
+     * @return array
+     */
+    private function getLegalEntityConstraints()
     {
+        $baseConstraints = $this->getBaseConstraints();
+        $legalEntityConstraints = [
+            'bossName'  =>  [
+                new NotBlank(['message' => 'Укажите ФИО руководителя'])
+            ],
+            'bossPosition'  =>  [
+                new NotBlank(['message' =>  'Укажите должность руководителя'])
+            ]
+        ];
 
+        return array_merge($baseConstraints, $legalEntityConstraints);
     }
 }

@@ -178,7 +178,7 @@ class Debtor
 
     /**
      * @ORM\ManyToOne(targetEntity="DebtorType")
-     * @ORM\JoinColumn(name="debtor_status_id", referencedColumnName="id", nullable=false)
+     * @ORM\JoinColumn(name="debtor_type_id", referencedColumnName="id", nullable=false)
      */
     private $debtorType;
 

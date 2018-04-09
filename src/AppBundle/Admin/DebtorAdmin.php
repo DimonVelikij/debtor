@@ -18,6 +18,7 @@ class DebtorAdmin extends AbstractAdmin
     {
         $collection
             ->add('types', 'types')
+            ->add('companies', 'companies')
             ->add('ownership_statuses', 'ownership_statuses')
             ->add('save', 'save');
     }
