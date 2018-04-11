@@ -74,11 +74,6 @@ class Company
     private $users;
 
     /**
-     * @ORM\OneToMany(targetEntity="Debtor", mappedBy="company")
-     */
-    private $debtors;
-
-    /**
      * @return string
      */
     public function __toString()
@@ -92,7 +87,6 @@ class Company
     public function __construct()
     {
         $this->users = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->debtors = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -305,39 +299,5 @@ class Company
     public function getUsers()
     {
         return $this->users;
-    }
-
-    /**
-     * Add debtor
-     *
-     * @param \AppBundle\Entity\Debtor $debtor
-     *
-     * @return Company
-     */
-    public function addDebtor(\AppBundle\Entity\Debtor $debtor)
-    {
-        $this->debtors[] = $debtor;
-
-        return $this;
-    }
-
-    /**
-     * Remove debtor
-     *
-     * @param \AppBundle\Entity\Debtor $debtor
-     */
-    public function removeDebtor(\AppBundle\Entity\Debtor $debtor)
-    {
-        $this->debtors->removeElement($debtor);
-    }
-
-    /**
-     * Get debtors
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getDebtors()
-    {
-        return $this->debtors;
     }
 }

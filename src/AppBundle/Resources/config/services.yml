@@ -1,6 +1,0 @@
-services:
-    app.service.debtor_validator:
-        class: AppBundle\Service\DebtorValidator
-        arguments:
-            - "@validator"
-            - "@translator"

@@ -97,12 +97,6 @@ sonata_admin:
                 icon: '<i class="fa fa-building"></i>'
                 on_top: true
                 roles: [ROLE_SUPER_ADMIN]
-            cms.debtor:
-                label: Должники
-                icon: '<i class="fa fa-address-card"></i>'
-                on_top: true
-                roles: [ROLE_ADMIN]
-
 
 #fos user
 fos_user:
@@ -139,17 +133,17 @@ assetic:
                 - 'bundles/app/js/cms/core/controllers/*.js'
                 - 'bundles/app/js/cms/core/directives/*.js'
 
-        cms_debtor:
-            inputs:
-                - 'bundles/app/js/cms/debtor/controllers/*.js'
-                - 'bundles/app/js/cms/debtor/services/*.js'
+#        cms_debtor:
+#            inputs:
+#                - 'bundles/app/js/cms/debtor/controllers/*.js'
+#                - 'bundles/app/js/cms/debtor/services/*.js'
 
-        cms_modules:
-            inputs:
-                - 'bundles/app/js/cms/debtor/debtor.module.js'
+#        cms_modules:
+#            inputs:
+#                - 'bundles/app/js/cms/debtor/debtor.module.js'
 
         cmsjs:
             inputs:
                 - '@cms_core'
-                - '@cms_modules'
+#                - '@cms_modules'
                 - 'bundles/app/js/cms/cms.js'

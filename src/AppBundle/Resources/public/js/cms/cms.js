@@ -2,8 +2,8 @@
     "use strict";
 
     angular.module('cms', [
-        'cms.core',
-        'cms.debtor'
+        'cms.core'
+        //добаляем новый модуль
     ]);
 
 })(angular);
