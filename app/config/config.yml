@@ -43,13 +43,15 @@ twig:
 # Doctrine Configuration
 doctrine:
     dbal:
-        driver: pdo_mysql
-        host: '%database_host%'
-        port: '%database_port%'
-        dbname: '%database_name%'
-        user: '%database_user%'
-        password: '%database_password%'
-        charset: UTF8
+        connections:
+            doctrine:
+                driver: pdo_mysql
+                host: '%database_host%'
+                port: '%database_port%'
+                dbname: '%database_name%'
+                user: '%database_user%'
+                password: '%database_password%'
+                charset: UTF8
         # if using pdo_sqlite as your database driver:
         #   1. add the path in parameters.yml
         #     e.g. database_path: '%kernel.project_dir%/var/data/data.sqlite'
@@ -58,9 +60,14 @@ doctrine:
         #path: '%database_path%'
 
     orm:
-        auto_generate_proxy_classes: '%kernel.debug%'
-        naming_strategy: doctrine.orm.naming_strategy.underscore
-        auto_mapping: true
+#        auto_generate_proxy_classes: '%kernel.debug%'
+#        naming_strategy: doctrine.orm.naming_strategy.underscore
+#        auto_mapping: true
+        entity_managers:
+            doctrine:
+                connection: doctrine
+                mappings:
+                    AppBundle: ~
 
 # Swiftmailer Configuration
 swiftmailer:
@@ -147,3 +154,10 @@ assetic:
                 - '@cms_core'
 #                - '@cms_modules'
                 - 'bundles/app/js/cms/cms.js'
+
+#doctrine extension
+stof_doctrine_extensions:
+    orm:
+        doctrine:
+            sluggable: true
+            timestampable: true

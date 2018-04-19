@@ -36,6 +36,9 @@ class AppKernel extends Kernel
 
             //jms serializer bundle
             new JMS\SerializerBundle\JMSSerializerBundle(),
+
+            //doctrine extension bundle
+            new Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle(),
             //next bundle
         ];
 
