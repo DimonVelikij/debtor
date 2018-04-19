@@ -7,12 +7,12 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="cities")
+ * @ORM\Table(name="streets")
  *
- * Class City
+ * Class Street
  * @package AppBundle\Entity
  */
-class City
+class Street
 {
     /**
      * @ORM\Id
@@ -27,15 +27,16 @@ class City
     private $title;
 
     /**
-     * @Gedmo\Slug(fields={"title"}, updatable=false, unique=true)
-     * @ORM\Column(length=255, unique=true)
+     * @Gedmo\Slug(fields={"title"}, updatable=false, unique=false)
+     * @ORM\Column(length=255, unique=false)
      */
     private $slug;
 
     /**
-     * @ORM\OneToMany(targetEntity="Street", mappedBy="city")
+     * @ORM\ManyToOne(targetEntity="City", inversedBy="streets")
+     * @ORM\JoinColumn(name="city_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      */
-    private $streets;
+    private $city;
 
     /**
      * @return string
@@ -43,14 +44,6 @@ class City
     public function __toString()
     {
         return $this->title ?? '';
-    }
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->streets = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -68,7 +61,7 @@ class City
      *
      * @param string $title
      *
-     * @return City
+     * @return Street
      */
     public function setTitle($title)
     {
@@ -92,7 +85,7 @@ class City
      *
      * @param string $slug
      *
-     * @return City
+     * @return Street
      */
     public function setSlug($slug)
     {
@@ -112,36 +105,26 @@ class City
     }
 
     /**
-     * Add street
+     * Set city
      *
-     * @param \AppBundle\Entity\Street $street
+     * @param \AppBundle\Entity\City $city
      *
-     * @return City
+     * @return Street
      */
-    public function addStreet(\AppBundle\Entity\Street $street)
+    public function setCity(\AppBundle\Entity\City $city)
     {
-        $this->streets[] = $street;
+        $this->city = $city;
 
         return $this;
     }
 
     /**
-     * Remove street
+     * Get city
      *
-     * @param \AppBundle\Entity\Street $street
+     * @return \AppBundle\Entity\City
      */
-    public function removeStreet(\AppBundle\Entity\Street $street)
+    public function getCity()
     {
-        $this->streets->removeElement($street);
-    }
-
-    /**
-     * Get streets
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getStreets()
-    {
-        return $this->streets;
+        return $this->city;
     }
 }

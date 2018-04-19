@@ -19,3 +19,10 @@ services:
         tags:
             - { name: sonata.admin, manager_type: orm, group: cms.home, label: Города }
         public: true
+
+    app.admin.street:
+        class: AppBundle\Admin\StreetAdmin
+        arguments: [~, AppBundle\Entity\Street, SonataAdminBundle:CRUD]
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: cms.home, label: Улицы }
+        public: true
