@@ -12,3 +12,10 @@ services:
         tags:
             - { name: sonata.admin, manager_type: orm, group: cms.company, label: Управляющие компании }
         public: true
+
+    app.admin.city:
+        class: AppBundle\Admin\CityAdmin
+        arguments: [~, AppBundle\Entity\City, SonataAdminBundle:CRUD]
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: cms.home, label: Города }
+        public: true
