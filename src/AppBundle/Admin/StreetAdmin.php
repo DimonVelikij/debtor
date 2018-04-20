@@ -80,6 +80,12 @@ class StreetAdmin extends AbstractAdmin
             "<span style='color: red'>Список городов пуст. Необходимо <a target='_blank' href='{$this->getRouter()->generate('admin_app_city_create')}'>добавить город</a> и обновить страницу</span>";
 
         $formMapper
+            ->add('city', 'entity', [
+                'label'         =>  'Город',
+                'class'         =>  'AppBundle\Entity\City',
+                'required'      =>  true,
+                'help'          =>  $cityHelp
+            ])
             ->add('title', TextType::class, [
                 'label'         =>  'Название',
                 'required'      =>  true,
@@ -92,12 +98,6 @@ class StreetAdmin extends AbstractAdmin
                 'required'      =>  false,
                 'sonata_help'   =>  'Сгенерируется автоматически по полю "Название"',
                 'disabled'      =>  true
-            ])
-            ->add('city', 'entity', [
-                'label'         =>  'Город',
-                'class'         =>  'AppBundle\Entity\City',
-                'required'      =>  true,
-                'help'          =>  $cityHelp
             ])
         ;
     }
