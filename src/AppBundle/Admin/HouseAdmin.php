@@ -82,6 +82,9 @@ class HouseAdmin extends AbstractAdmin
             ->getQuery()
             ->getResult();
 
+        $streetHelp = count($streets) ?
+            "<span style='color: blue;'>Если в списке нет нужной улицы, необнодимо <a target='_blank' href='{$this->getRouter()->generate('admin_app_street_create')}'>добавить улицу</a> и обновить страницу</span>" :
+            "<span style='color: red'>Список улиц пуст. Необходимо <a target='_blank' href='{$this->getRouter()->generate('admin_app_street_create')}'>добавить улицу</a> и обновить страницу</span>";
 
         $streetChoice = [];
 
@@ -96,7 +99,8 @@ class HouseAdmin extends AbstractAdmin
                 'choices'   =>  $streetChoice,
                 'group_by'  =>  function ($value, $key, $index) {
                     return $value->getCity()->getTitle();
-                }
+                },
+                'help'      =>  $streetHelp
             ])
             ->add('number', TextType::class, [
                 'label' =>  'Номер дома'
@@ -129,5 +133,13 @@ class HouseAdmin extends AbstractAdmin
     private function getEntityManager()
     {
         return $this->getConfigurationPool()->getContainer()->get('doctrine.orm.entity_manager');
+    }
+
+    /**
+     * @return \Symfony\Bundle\FrameworkBundle\Routing\Router
+     */
+    private function getRouter()
+    {
+        return $this->getConfigurationPool()->getContainer()->get('router');
     }
 }
