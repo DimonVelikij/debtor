@@ -32,11 +32,24 @@ class House
     private $street;
 
     /**
+     * @ORM\OneToMany(targetEntity="Flat", mappedBy="house")
+     */
+    private $flats;
+
+    /**
      * @return string
      */
     public function __toString()
     {
         return $this->number ? $this->getStreet()->getCity()->getTitle() . ', ' . $this->getStreet()->getTitle() . ', ' . $this->number : '';
+    }
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->flats = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -95,5 +108,39 @@ class House
     public function getStreet()
     {
         return $this->street;
+    }
+
+    /**
+     * Add flat
+     *
+     * @param \AppBundle\Entity\Flat $flat
+     *
+     * @return House
+     */
+    public function addFlat(\AppBundle\Entity\Flat $flat)
+    {
+        $this->flats[] = $flat;
+
+        return $this;
+    }
+
+    /**
+     * Remove flat
+     *
+     * @param \AppBundle\Entity\Flat $flat
+     */
+    public function removeFlat(\AppBundle\Entity\Flat $flat)
+    {
+        $this->flats->removeElement($flat);
+    }
+
+    /**
+     * Get flats
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getFlats()
+    {
+        return $this->flats;
     }
 }
