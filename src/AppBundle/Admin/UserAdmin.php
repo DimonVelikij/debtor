@@ -330,6 +330,6 @@ class UserAdmin extends AbstractAdmin
      */
     private function getDoctrine()
     {
-        return $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        return $this->getContainer()->get('doctrine.orm.entity_manager');
     }
 }

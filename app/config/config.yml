@@ -101,13 +101,13 @@ sonata_admin:
                 roles: [ROLE_SUPER_ADMIN]
             cms.company:
                 label: Управляющие компании
-                icon: '<i class="fa fa-building"></i>'
+                icon: '<i class="fa fa-calculator"></i>'
                 on_top: true
                 roles: [ROLE_SUPER_ADMIN]
             cms.home:
                 label:  Дома
                 icon: '<i class="fa fa-home"></i>'
-                roles: [ROLE_SUPER_ADMIN]
+                roles: [ROLE_ADMIN]
 
 #fos user
 fos_user:

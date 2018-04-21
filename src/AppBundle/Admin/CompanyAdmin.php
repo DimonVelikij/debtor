@@ -52,6 +52,18 @@ class CompanyAdmin extends AbstractAdmin
             ->add('email', null, [
                 'label' =>  'Email'
             ])
+            ->add('checkingAccount', null, [
+                'label' =>  'Расчетный счет'
+            ])
+            ->add('bankName', null, [
+                'label' =>  'Наименование банка'
+            ])
+            ->add('bik', null, [
+                'label' =>  'БИК'
+            ])
+            ->add('correspondentAccount', null, [
+                'label' =>  'Корреспондентский счет'
+            ])
         ;
     }
 
@@ -82,6 +94,18 @@ class CompanyAdmin extends AbstractAdmin
             ])
             ->add('email', null, [
                 'label' =>  'Email'
+            ])
+            ->add('checkingAccount', null, [
+                'label' =>  'Расчетный счет'
+            ])
+            ->add('bankName', null, [
+                'label' =>  'Наименование банка'
+            ])
+            ->add('bik', null, [
+                'label' =>  'БИК'
+            ])
+            ->add('correspondentAccount', null, [
+                'label' =>  'Корреспондентский счет'
             ])
             ->add('_action', null, array(
                 'label'     =>  'Действия',
@@ -160,6 +184,42 @@ class CompanyAdmin extends AbstractAdmin
                     ])
                 ]
             ])
+            ->add('checkingAccount', TextType::class, [
+                'label'         =>  'Расчетный счет',
+                'required'      =>  true,
+                'constraints'   =>  [
+                    new NotBlank([
+                        'message'   =>  'Введите расчетный счет'
+                    ])
+                ]
+            ])
+            ->add('bankName', TextType::class, [
+                'label'         =>  'Наименование банка',
+                'required'      =>  true,
+                'constraints'   =>  [
+                    new NotBlank([
+                        'message'   =>  'Введите наименование банка'
+                    ])
+                ]
+            ])
+            ->add('bik', TextType::class, [
+                'label'         =>  'БИК',
+                'required'      =>  true,
+                'constraints'   =>  [
+                    new NotBlank([
+                        'message'   =>  'Введите БИК'
+                    ])
+                ]
+            ])
+            ->add('correspondentAccount', TextType::class, [
+                'label'         =>  'Корреспондентский счет',
+                'required'      =>  true,
+                'constraints'   =>  [
+                    new NotBlank([
+                        'message'   =>  'Введите корреспондентский счет'
+                    ])
+                ]
+            ])
         ;
     }
 
@@ -193,6 +253,18 @@ class CompanyAdmin extends AbstractAdmin
             ])
             ->add('users', null, [
                 'label' =>  'Пользователи'
+            ])
+            ->add('checkingAccount', null, [
+                'label' =>  'Расчетный счет'
+            ])
+            ->add('bankName', null, [
+                'label' =>  'Наименование банка'
+            ])
+            ->add('bik', null, [
+                'label' =>  'БИК'
+            ])
+            ->add('correspondentAccount', null, [
+                'label' =>  'Корреспондентский счет'
             ])
         ;
     }

@@ -35,38 +35,80 @@ class Company
      * @JMS\Type("string")
      * @JMS\SerializedName("title")
      * @JMS\Groups({"cms-debtor"})
+     *
+     * название
      */
     private $title;
 
     /**
      * @ORM\Column(name="ogrn", type="string", length=255, nullable=false)
+     *
+     * ОГРН
      */
     private $ogrn;
 
     /**
      * @ORM\Column(name="inn", type="string", length=255, nullable=false)
+     *
+     * ИНН
      */
     private $inn;
 
     /**
      * @ORM\Column(name="address", type="string", length=255, nullable=false)
+     *
+     * адрес
      */
     private $address;
 
     /**
      * @ORM\Column(name="post_address", type="string", length=255, nullable=false)
+     *
+     * почтовый адрес
      */
     private $postAddress;
 
     /**
      * @ORM\Column(name="phone", type="string", length=255, nullable=false)
+     *
+     * телефон
      */
     private $phone;
 
     /**
      * @ORM\Column(name="email", type="string", length=255, nullable=false)
+     *
+     * e-mail
      */
     private $email;
+
+    /**
+     * @ORM\Column(name="checking_account", type="string", length=255, nullable=false)
+     *
+     * расчетный счет
+     */
+    private $checkingAccount;
+
+    /**
+     * @ORM\Column(name="bank_name", type="string", length=255, nullable=false)
+     *
+     * наименование банка
+     */
+    private $bankName;
+
+    /**
+     * @ORM\Column(name="bik", type="string", length=255, nullable=false)
+     *
+     * БИК
+     */
+    private $bik;
+
+    /**
+     * @ORM\Column(name="correspondent_account", type="string", length=255, nullable=false)
+     *
+     * корреспондентский счет
+     */
+    private $correspondentAccount;
 
     /**
      * @ORM\OneToMany(targetEntity="User", mappedBy="company")
@@ -265,6 +307,102 @@ class Company
     public function getEmail()
     {
         return $this->email;
+    }
+
+    /**
+     * Set checkingAccount
+     *
+     * @param string $checkingAccount
+     *
+     * @return Company
+     */
+    public function setCheckingAccount($checkingAccount)
+    {
+        $this->checkingAccount = $checkingAccount;
+
+        return $this;
+    }
+
+    /**
+     * Get checkingAccount
+     *
+     * @return string
+     */
+    public function getCheckingAccount()
+    {
+        return $this->checkingAccount;
+    }
+
+    /**
+     * Set bankName
+     *
+     * @param string $bankName
+     *
+     * @return Company
+     */
+    public function setBankName($bankName)
+    {
+        $this->bankName = $bankName;
+
+        return $this;
+    }
+
+    /**
+     * Get bankName
+     *
+     * @return string
+     */
+    public function getBankName()
+    {
+        return $this->bankName;
+    }
+
+    /**
+     * Set bik
+     *
+     * @param string $bik
+     *
+     * @return Company
+     */
+    public function setBik($bik)
+    {
+        $this->bik = $bik;
+
+        return $this;
+    }
+
+    /**
+     * Get bik
+     *
+     * @return string
+     */
+    public function getBik()
+    {
+        return $this->bik;
+    }
+
+    /**
+     * Set correspondentAccount
+     *
+     * @param string $correspondentAccount
+     *
+     * @return Company
+     */
+    public function setCorrespondentAccount($correspondentAccount)
+    {
+        $this->correspondentAccount = $correspondentAccount;
+
+        return $this;
+    }
+
+    /**
+     * Get correspondentAccount
+     *
+     * @return string
+     */
+    public function getCorrespondentAccount()
+    {
+        return $this->correspondentAccount;
     }
 
     /**
