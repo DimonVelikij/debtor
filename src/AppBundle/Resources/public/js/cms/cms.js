@@ -2,8 +2,8 @@
     "use strict";
 
     angular.module('cms', [
-        'cms.core'
-        //добаляем новый модуль
+        'cms.core',
+        'cms.flat'
     ]);
 
 })(angular);

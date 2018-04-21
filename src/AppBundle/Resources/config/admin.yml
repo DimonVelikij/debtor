@@ -33,3 +33,10 @@ services:
         tags:
             - { name: sonata.admin, manager_type: orm, group: cms.home, label: Дома }
         public: true
+
+    app.admin.flat:
+        class: AppBundle\Admin\FlatAdmin
+        arguments: [~, AppBundle\Entity\Flat, AppBundle:Admin\FlatAdmin]
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: cms.home, label: Помещения }
+        public: true

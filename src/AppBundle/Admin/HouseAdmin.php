@@ -11,6 +11,7 @@ use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class HouseAdmin extends AbstractAdmin
 {
@@ -83,7 +84,7 @@ class HouseAdmin extends AbstractAdmin
             ->getResult();
 
         $streetHelp = count($streets) ?
-            "<span style='color: blue;'>Если в списке нет нужной улицы, необнодимо <a target='_blank' href='{$this->getRouter()->generate('admin_app_street_create')}'>добавить улицу</a> и обновить страницу</span>" :
+            "<span style='color: blue;'>Если в списке нет нужной улицы, необходимо <a target='_blank' href='{$this->getRouter()->generate('admin_app_street_create')}'>добавить улицу</a> и обновить страницу</span>" :
             "<span style='color: red'>Список улиц пуст. Необходимо <a target='_blank' href='{$this->getRouter()->generate('admin_app_street_create')}'>добавить улицу</a> и обновить страницу</span>";
 
         $streetChoice = [];
@@ -95,15 +96,19 @@ class HouseAdmin extends AbstractAdmin
 
         $formMapper
             ->add('street', ChoiceType::class, [
-                'label'     =>  'Город, улица',
-                'choices'   =>  $streetChoice,
-                'group_by'  =>  function ($value, $key, $index) {
+                'label'         =>  'Город, улица',
+                'required'      =>  true,
+                'choices'       =>  $streetChoice,
+                'group_by'      =>  function ($value, $key, $index) {
                     return $value->getCity()->getTitle();
                 },
-                'help'      =>  $streetHelp
+                'help'          =>  $streetHelp,
+                'constraints'   =>  [
+                    new NotBlank(['message' => 'Укажите название улицы'])
+                ]
             ])
             ->add('number', TextType::class, [
-                'label' =>  'Номер дома'
+                'label'         =>  'Номер дома'
             ])
         ;
     }

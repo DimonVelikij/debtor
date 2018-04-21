@@ -144,19 +144,18 @@ assetic:
                 - 'bundles/app/js/cms/core/controllers/*.js'
                 - 'bundles/app/js/cms/core/directives/*.js'
 
-#        cms_debtor:
-#            inputs:
-#                - 'bundles/app/js/cms/debtor/controllers/*.js'
-#                - 'bundles/app/js/cms/debtor/services/*.js'
+        cms_flat:
+            inputs:
+                - 'bundles/app/js/cms/flat/controllers/*.js'
 
-#        cms_modules:
-#            inputs:
-#                - 'bundles/app/js/cms/debtor/debtor.module.js'
+        cms_modules:
+            inputs:
+                - 'bundles/app/js/cms/flat/flat.module.js'
 
         cmsjs:
             inputs:
                 - '@cms_core'
-#                - '@cms_modules'
+                - '@cms_modules'
                 - 'bundles/app/js/cms/cms.js'
 
 #doctrine extension

@@ -84,7 +84,10 @@ class StreetAdmin extends AbstractAdmin
                 'label'         =>  'Город',
                 'class'         =>  'AppBundle\Entity\City',
                 'required'      =>  true,
-                'help'          =>  $cityHelp
+                'help'          =>  $cityHelp,
+                'constraints'   =>  [
+                    new NotBlank(['message' => 'Укажите город'])
+                ]
             ])
             ->add('title', TextType::class, [
                 'label'         =>  'Название',
