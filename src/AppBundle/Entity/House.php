@@ -37,6 +37,12 @@ class House
     private $flats;
 
     /**
+     * @ORM\ManyToOne(targetEntity="Company", inversedBy="houses")
+     * @ORM\JoinColumn(name="company_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
+     */
+    private $company;
+
+    /**
      * @return string
      */
     public function __toString()
@@ -142,5 +148,29 @@ class House
     public function getFlats()
     {
         return $this->flats;
+    }
+
+    /**
+     * Set company
+     *
+     * @param \AppBundle\Entity\Company $company
+     *
+     * @return House
+     */
+    public function setCompany(\AppBundle\Entity\Company $company)
+    {
+        $this->company = $company;
+
+        return $this;
+    }
+
+    /**
+     * Get company
+     *
+     * @return \AppBundle\Entity\Company
+     */
+    public function getCompany()
+    {
+        return $this->company;
     }
 }

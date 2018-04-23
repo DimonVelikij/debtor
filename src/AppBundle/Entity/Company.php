@@ -116,6 +116,11 @@ class Company
     private $users;
 
     /**
+     * @ORM\OneToMany(targetEntity="House", mappedBy="company")
+     */
+    private $houses;
+
+    /**
      * @return string
      */
     public function __toString()
@@ -129,6 +134,7 @@ class Company
     public function __construct()
     {
         $this->users = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->houses = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -437,5 +443,39 @@ class Company
     public function getUsers()
     {
         return $this->users;
+    }
+
+    /**
+     * Add house
+     *
+     * @param \AppBundle\Entity\House $house
+     *
+     * @return Company
+     */
+    public function addHouse(\AppBundle\Entity\House $house)
+    {
+        $this->houses[] = $house;
+
+        return $this;
+    }
+
+    /**
+     * Remove house
+     *
+     * @param \AppBundle\Entity\House $house
+     */
+    public function removeHouse(\AppBundle\Entity\House $house)
+    {
+        $this->houses->removeElement($house);
+    }
+
+    /**
+     * Get houses
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getHouses()
+    {
+        return $this->houses;
     }
 }
