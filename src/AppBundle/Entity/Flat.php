@@ -42,28 +42,28 @@ class Flat
     private $endDebtPeriod;
 
     /**
-     * @ORM\Column(name="date_fill_debt", type="date", nullable=true)
+     * @ORM\Column(name="date_fill_debt", type="date", nullable=false)
      *
      * дата заполнения долга
      */
     private $dateFillDebt;
 
     /**
-     * @ORM\Column(name="sum_debt", type="float", precision=10, scale=2, nullable=true)
+     * @ORM\Column(name="sum_debt", type="float", precision=10, scale=2, nullable=false)
      *
      * сумма долга
      */
     private $sumDebt;
 
     /**
-     * @ORM\Column(name="period_accrued_debt", type="float", precision=10, scale=2, nullable=false)
+     * @ORM\Column(name="period_accrued_debt", type="float", precision=10, scale=2, nullable=true)
      *
      * за период начислено долга
      */
     private $periodAccruedDebt;
 
     /**
-     * @ORM\Column(name="period_pay_debt", type="float", precision=10, scale=2, nullable=false)
+     * @ORM\Column(name="period_pay_debt", type="float", precision=10, scale=2, nullable=true)
      *
      * за период оплачено долга
      */
@@ -84,14 +84,14 @@ class Flat
     private $sumFine;
 
     /**
-     * @ORM\Column(name="period_accrued_fine", type="float", precision=10, scale=2, nullable=false)
+     * @ORM\Column(name="period_accrued_fine", type="float", precision=10, scale=2, nullable=true)
      *
      * за период начислено пени
      */
     private $periodAccruedFine;
 
     /**
-     * @ORM\Column(name="period_pay_fine", type="float", precision=10, scale=2, nullable=false)
+     * @ORM\Column(name="period_pay_fine", type="float", precision=10, scale=2, nullable=true)
      *
      * за период оплачено пени
      */

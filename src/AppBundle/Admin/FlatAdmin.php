@@ -149,27 +149,27 @@ class FlatAdmin extends AbstractAdmin
             ->end()
             ->with('Основной долг', ['class' => 'col-md-6'])
                 ->add('dateFillDebt', DateType::class, [
-                    'label'     =>  'Дата заполнения основного долга',
-                    'required'  =>  false,
-                    'widget'    => 'single_text'
+                    'label'         =>  'Дата заполнения основного долга',
+                    'required'      =>  true,
+                    'widget'        => 'single_text',
+                    'constraints'   =>  [
+                        new NotBlank(['message' => 'Укажите дату заполнения основного долга'])
+                    ]
                 ])
                 ->add('sumDebt', TextType::class, [
-                    'label'     =>  'Сумма долга',
-                    'required'  =>  false
+                    'label'         =>  'Сумма долга',
+                    'required'      =>  true,
+                    'constraints'   =>  [
+                        new NotBlank(['message' => 'Укажите сумма долга'])
+                    ]
                 ])
                 ->add('periodAccruedDebt', TextType::class, [
                     'label'         =>  'За период начислено',
-                    'required'      =>  true,
-                    'constraints'   =>  [
-                        new NotBlank(['message' => 'Укажите сумму начисления долга'])
-                    ]
+                    'required'      =>  false
                 ])
                 ->add('periodPayDebt', TextType::class, [
                     'label'         =>  'За период оплачено',
-                    'required'      =>  true,
-                    'constraints'   =>  [
-                        new NotBlank(['message' => 'Укажите сумму оплаченного долга'])
-                    ]
+                    'required'      =>  false
                 ])
             ->end()
             ->with('Пени', ['class' => 'col-md-6'])
@@ -184,17 +184,11 @@ class FlatAdmin extends AbstractAdmin
                 ])
                 ->add('periodAccruedFine', TextType::class, [
                     'label'         =>  'За период начислено',
-                    'required'      =>  true,
-                    'constraints'   =>  [
-                        new NotBlank(['message' => 'Укажите сумму начисления пени'])
-                    ]
+                    'required'      =>  false
                 ])
                 ->add('periodPayFine', TextType::class, [
                     'label'         =>  'За период оплачено',
-                    'required'      =>  true,
-                    'constraints'   =>  [
-                        new NotBlank(['message' => 'Укажите сумму оплаченных пени'])
-                    ]
+                    'required'      =>  false
                 ])
             ->end()
         ;
