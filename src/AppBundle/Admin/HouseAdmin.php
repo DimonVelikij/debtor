@@ -2,7 +2,11 @@
 
 namespace AppBundle\Admin;
 
+use AppBundle\Admin\traits\UserTrait;
+use AppBundle\Entity\Company;
 use AppBundle\Entity\Street;
+use AppBundle\Entity\User;
+use Doctrine\ORM\QueryBuilder;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
@@ -15,6 +19,31 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class HouseAdmin extends AbstractAdmin
 {
+    use UserTrait;
+
+    /**
+     * @param string $context
+     * @return QueryBuilder|\Sonata\AdminBundle\Datagrid\ProxyQueryInterface
+     * @throws \Exception
+     */
+    public function createQuery($context = 'list')
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        /** @var QueryBuilder $query */
+        $query = parent::createQuery($context);
+
+        if (!$user->isSuperAdmin()) {
+            $query
+                ->andWhere(
+                    $query->expr()->eq('o.company', $user->getCompany()->getId())
+                );
+        }
+
+        return $query;
+    }
+
     /**
      * @param RouteCollection $collection
      */
@@ -31,6 +60,9 @@ class HouseAdmin extends AbstractAdmin
      */
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
+        /** @var User $user */
+        $user = $this->getUser();
+
         $datagridMapper
             ->add('id')
             ->add('number', null, [
@@ -43,6 +75,13 @@ class HouseAdmin extends AbstractAdmin
                 'label' =>  'Город'
             ])
         ;
+
+        if ($user->isSuperAdmin()) {
+            $datagridMapper
+                ->add('company', null, [
+                    'label' =>  'Управляющая компания'
+                ]);
+        }
     }
 
     /**
@@ -50,6 +89,9 @@ class HouseAdmin extends AbstractAdmin
      */
     protected function configureListFields(ListMapper $listMapper)
     {
+        /** @var User $user */
+        $user = $this->getUser();
+
         $listMapper
             ->add('id')
             ->add('number', null, [
@@ -60,6 +102,9 @@ class HouseAdmin extends AbstractAdmin
             ])
             ->add('street.city', null, [
                 'label' =>  'Город'
+            ])
+            ->add('company', $user->isSuperAdmin() ? null : 'text', [
+                'label' =>  'Управляющая компания'
             ])
             ->add('_action', null, array(
                 'label'     =>  'Действия',
@@ -76,6 +121,10 @@ class HouseAdmin extends AbstractAdmin
      */
     protected function configureFormFields(FormMapper $formMapper)
     {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        //получаем список улиц
         $streets = $this->getEntityManager()
             ->getRepository('AppBundle:Street')
             ->createQueryBuilder('s')
@@ -94,6 +143,25 @@ class HouseAdmin extends AbstractAdmin
             $streetChoice[$street->getCity()->getTitle() . ', ' . $street->getTitle()] = $street;
         }
 
+        //получаем список управляющих компаний
+        $companies = $this->getEntityManager()->getRepository('AppBundle:Company')->findAll();
+
+        $companyHelp = '';
+        $companyChoice = [];
+
+        if (!count($companies)) {
+            $companyHelp = '<span style="color: red;">Не удалось найти управляющие компании. Обратитесь к администратору</span>';
+        } else {
+            if ($user->isSuperAdmin()) {
+                /** @var Company $company */
+                foreach ($companies as $company) {
+                    $companyChoice[$company->getTitle()] = $company;
+                }
+            } else {
+                $companyChoice[$user->getCompany()->getTitle()] = $user->getCompany();
+            }
+        }
+
         $formMapper
             ->add('street', ChoiceType::class, [
                 'label'         =>  'Город, улица',
@@ -107,6 +175,16 @@ class HouseAdmin extends AbstractAdmin
                     new NotBlank(['message' => 'Укажите название улицы'])
                 ]
             ])
+            ->add('company', ChoiceType::class, [
+                'label'         =>  'Управляющая компания',
+                'required'      =>  true,
+                'choices'       =>  $companyChoice,
+                'data'          =>  current($companyChoice),
+                'constraints'   =>  [
+                    new NotBlank(['message' => 'Укажите управлющую компанию'])
+                ],
+                'help'          =>  $companyHelp
+            ])
             ->add('number', TextType::class, [
                 'label'         =>  'Номер дома'
             ])
@@ -118,6 +196,9 @@ class HouseAdmin extends AbstractAdmin
      */
     protected function configureShowFields(ShowMapper $showMapper)
     {
+        /** @var User $user */
+        $user = $this->getUser();
+
         $showMapper
             ->add('id')
             ->add('number', null, [
@@ -129,7 +210,18 @@ class HouseAdmin extends AbstractAdmin
             ->add('street.city', null, [
                 'label' =>  'Город'
             ])
+            ->add('company', $user->isSuperAdmin() ? null : 'text', [
+                'label' =>  'Управляющая компания'
+            ])
         ;
+    }
+
+    /**
+     * @return null|\Symfony\Component\DependencyInjection\ContainerInterface
+     */
+    public function getContainer()
+    {
+        return $this->getConfigurationPool()->getContainer();
     }
 
     /**
@@ -137,7 +229,7 @@ class HouseAdmin extends AbstractAdmin
      */
     private function getEntityManager()
     {
-        return $this->getConfigurationPool()->getContainer()->get('doctrine.orm.entity_manager');
+        return $this->getContainer()->get('doctrine.orm.entity_manager');
     }
 
     /**
@@ -145,6 +237,6 @@ class HouseAdmin extends AbstractAdmin
      */
     private function getRouter()
     {
-        return $this->getConfigurationPool()->getContainer()->get('router');
+        return $this->getContainer()->get('router');
     }
 }
