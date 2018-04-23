@@ -2,7 +2,10 @@
 
 namespace AppBundle\Admin;
 
+use AppBundle\Admin\traits\UserTrait;
 use AppBundle\Entity\House;
+use AppBundle\Entity\User;
+use Doctrine\ORM\QueryBuilder;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
@@ -17,6 +20,32 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class FlatAdmin extends AbstractAdmin
 {
+    use UserTrait;
+
+    /**
+     * @param string $context
+     * @return QueryBuilder|\Sonata\AdminBundle\Datagrid\ProxyQueryInterface
+     * @throws \Exception
+     */
+    public function createQuery($context = 'list')
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        /** @var QueryBuilder $query */
+        $query = parent::createQuery($context);
+
+        if (!$user->isSuperAdmin()) {
+            $query
+                ->innerJoin('o.house', 'house')
+                ->andWhere(
+                    $query->expr()->eq('house.company', $user->getCompany()->getId())
+                );
+        }
+
+        return $query;
+    }
+
     /**
      * @param $name
      * @return mixed|null|string
@@ -91,8 +120,20 @@ class FlatAdmin extends AbstractAdmin
      */
     protected function configureFormFields(FormMapper $formMapper)
     {
-        $houses = $this->getEntityManager()->getRepository('AppBundle:House')
-            ->createQueryBuilder('house')
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $houseQueryBuilder = $this->getEntityManager()->getRepository('AppBundle:House')
+            ->createQueryBuilder('house');
+
+        if (!$user->isSuperAdmin()) {
+            $houseQueryBuilder
+                ->andWhere(
+                    $houseQueryBuilder->expr()->eq('house.company', $user->getCompany()->getId())
+                );
+        }
+
+        $houses = $houseQueryBuilder
             ->innerJoin('house.street', 'street')
             ->orderBy('street.city')
             ->getQuery()
@@ -217,11 +258,19 @@ class FlatAdmin extends AbstractAdmin
     }
 
     /**
+     * @return null|\Symfony\Component\DependencyInjection\ContainerInterface
+     */
+    public function getContainer()
+    {
+        return $this->getConfigurationPool()->getContainer();
+    }
+
+    /**
      * @return \Doctrine\ORM\EntityManager
      */
     private function getEntityManager()
     {
-        return $this->getConfigurationPool()->getContainer()->get('doctrine.orm.entity_manager');
+        return $this->getContainer()->get('doctrine.orm.entity_manager');
     }
 
     /**
@@ -229,6 +278,6 @@ class FlatAdmin extends AbstractAdmin
      */
     private function getRouter()
     {
-        return $this->getConfigurationPool()->getContainer()->get('router');
+        return $this->getContainer()->get('router');
     }
 }
