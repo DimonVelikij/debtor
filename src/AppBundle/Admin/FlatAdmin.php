@@ -5,6 +5,7 @@ namespace AppBundle\Admin;
 use AppBundle\Admin\traits\UserTrait;
 use AppBundle\Entity\House;
 use AppBundle\Entity\User;
+use AppBundle\Service\AddressBookValidator;
 use Doctrine\ORM\QueryBuilder;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -16,6 +17,9 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class FlatAdmin extends AbstractAdmin
@@ -233,6 +237,15 @@ class FlatAdmin extends AbstractAdmin
                 ])
             ->end()
         ;
+
+        /** @var AddressBookValidator $addressBookValidator */
+        $addressBookValidator = $this->getContainer()->get('app.service.address_book_validator');
+        $formMapper->getFormBuilder()->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) use ($addressBookValidator) {
+            $error = $addressBookValidator->validateFlat($event->getData());
+            if ($error) {
+                $event->getForm()->get('number')->addError(new FormError($error));
+            }
+        });
     }
 
     /**

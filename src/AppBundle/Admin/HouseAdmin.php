@@ -6,6 +6,7 @@ use AppBundle\Admin\traits\UserTrait;
 use AppBundle\Entity\Company;
 use AppBundle\Entity\Street;
 use AppBundle\Entity\User;
+use AppBundle\Service\AddressBookValidator;
 use Doctrine\ORM\QueryBuilder;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -15,6 +16,9 @@ use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class HouseAdmin extends AbstractAdmin
@@ -162,6 +166,20 @@ class HouseAdmin extends AbstractAdmin
             }
         }
 
+        $companyOptions = [
+            'label'         =>  'Управляющая компания',
+            'required'      =>  true,
+            'choices'       =>  $companyChoice,
+            'constraints'   =>  [
+                new NotBlank(['message' => 'Укажите управлющую компанию'])
+            ],
+            'help'          =>  $companyHelp
+        ];
+
+        if (!$user->isSuperAdmin()) {
+            $companyOptions['data'] = current($companyChoice);
+        }
+
         $formMapper
             ->add('street', ChoiceType::class, [
                 'label'         =>  'Город, улица',
@@ -175,20 +193,20 @@ class HouseAdmin extends AbstractAdmin
                     new NotBlank(['message' => 'Укажите название улицы'])
                 ]
             ])
-            ->add('company', ChoiceType::class, [
-                'label'         =>  'Управляющая компания',
-                'required'      =>  true,
-                'choices'       =>  $companyChoice,
-                'data'          =>  current($companyChoice),
-                'constraints'   =>  [
-                    new NotBlank(['message' => 'Укажите управлющую компанию'])
-                ],
-                'help'          =>  $companyHelp
-            ])
+            ->add('company', ChoiceType::class, $companyOptions)
             ->add('number', TextType::class, [
                 'label'         =>  'Номер дома'
             ])
         ;
+
+        /** @var AddressBookValidator $addressBookValidator */
+        $addressBookValidator = $this->getContainer()->get('app.service.address_book_validator');
+        $formMapper->getFormBuilder()->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) use ($addressBookValidator) {
+            $error = $addressBookValidator->validateHouse($event->getData());
+            if ($error) {
+                $event->getForm()->get('number')->addError(new FormError($error));
+            }
+        });
     }
 
     /**
