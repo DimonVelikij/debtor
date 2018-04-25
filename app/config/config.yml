@@ -104,9 +104,14 @@ sonata_admin:
                 icon: '<i class="fa fa-calculator"></i>'
                 on_top: true
                 roles: [ROLE_SUPER_ADMIN]
-            cms.home:
-                label:  Дома
+            cms.address_book:
+                label: Справочник адресов
+                icon: '<i class="fa fa-book"></i>'
+                roles: [ROLE_ADMIN]
+            cms.flat:
+                label:  Помещения
                 icon: '<i class="fa fa-home"></i>'
+                on_top: true
                 roles: [ROLE_ADMIN]
 
 #fos user

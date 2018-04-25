@@ -85,7 +85,7 @@ class AddressBookValidator
             ->getOneOrNullResult();
 
         if ($searchHouse && $searchHouse->getId() != $house->getId()) {
-            return "Дом №{$searchHouse->getNumber()} уже существует на улице '{$searchHouse->getStreet()->getTitle()}' в городе '{$searchHouse->getStreet()->getCity()->getTitle()}'";
+            return "Дом №{$searchHouse->getNumber()} уже существует на улице '{$searchHouse->getStreet()->getTitle()}' в городе '{$searchHouse->getStreet()->getCity()->getTitle()}'. Обслуживается управляющей компанией '{$searchHouse->getCompany()->getTitle()}'";
         }
 
         return false;
@@ -114,7 +114,7 @@ class AddressBookValidator
             ->getOneOrNullResult();
 
         if ($searchFlat && $searchFlat->getId() != $flat->getId()) {
-            return "Помещение №{$searchFlat->getNumber()} уже существует в доме №{$searchFlat->getHouse()->getNumber()} на улице '{$searchFlat->getHouse()->getStreet()->getTitle()}' в городе '{$searchFlat->getHouse()->getStreet()->getCity()->getTitle()}'";
+            return "Помещение №{$searchFlat->getNumber()} уже существует в доме №{$searchFlat->getHouse()->getNumber()} на улице '{$searchFlat->getHouse()->getStreet()->getTitle()}' в городе '{$searchFlat->getHouse()->getStreet()->getCity()->getTitle()}'. Обслуживается управляющей компанией '{$searchFlat->getHouse()->getCompany()->getTitle()}'";
         }
 
         return false;

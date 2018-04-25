@@ -17,26 +17,26 @@ services:
         class: AppBundle\Admin\CityAdmin
         arguments: [~, AppBundle\Entity\City, SonataAdminBundle:CRUD]
         tags:
-            - { name: sonata.admin, manager_type: orm, group: cms.home, label: Города }
+            - { name: sonata.admin, manager_type: orm, group: cms.address_book, label: Города }
         public: true
 
     app.admin.street:
         class: AppBundle\Admin\StreetAdmin
         arguments: [~, AppBundle\Entity\Street, SonataAdminBundle:CRUD]
         tags:
-            - { name: sonata.admin, manager_type: orm, group: cms.home, label: Улицы }
+            - { name: sonata.admin, manager_type: orm, group: cms.address_book, label: Улицы }
         public: true
 
     app.admin.house:
         class: AppBundle\Admin\HouseAdmin
         arguments: [~, AppBundle\Entity\House, SonataAdminBundle:CRUD]
         tags:
-            - { name: sonata.admin, manager_type: orm, group: cms.home, label: Дома }
+            - { name: sonata.admin, manager_type: orm, group: cms.address_book, label: Дома }
         public: true
 
     app.admin.flat:
         class: AppBundle\Admin\FlatAdmin
         arguments: [~, AppBundle\Entity\Flat, AppBundle:Admin\FlatAdmin]
         tags:
-            - { name: sonata.admin, manager_type: orm, group: cms.home, label: Помещения }
+            - { name: sonata.admin, manager_type: orm, group: cms.flat, label: Помещения }
         public: true
