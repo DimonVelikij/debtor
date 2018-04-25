@@ -129,6 +129,12 @@ class Debtor
     private $flat;
 
     /**
+     * @ORM\ManyToOne(targetEntity="DebtorType")
+     * @ORM\JoinColumn(name="type_id", referencedColumnName="id", nullable=false)
+     */
+    private $type;
+
+    /**
      * Get id
      *
      * @return integer
@@ -568,5 +574,29 @@ class Debtor
     public function getFlat()
     {
         return $this->flat;
+    }
+
+    /**
+     * Set type
+     *
+     * @param \AppBundle\Entity\DebtorType $type
+     *
+     * @return Debtor
+     */
+    public function setType(\AppBundle\Entity\DebtorType $type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * Get type
+     *
+     * @return \AppBundle\Entity\DebtorType
+     */
+    public function getType()
+    {
+        return $this->type;
     }
 }
