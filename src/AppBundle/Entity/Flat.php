@@ -111,6 +111,11 @@ class Flat
     private $house;
 
     /**
+     * @ORM\OneToMany(targetEntity="Debtor", mappedBy="flat")
+     */
+    private $debtors;
+
+    /**
      * @return string
      */
     public function __toString()
@@ -120,6 +125,14 @@ class Flat
             $this->getHouse()->getStreet()->getTitle() . ', ' .
             $this->getHouse()->getNumber() . ($this->number ?: '') :
             '';
+    }
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->debtors = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -442,5 +455,39 @@ class Flat
     public function getHouse()
     {
         return $this->house;
+    }
+
+    /**
+     * Add debtor
+     *
+     * @param \AppBundle\Entity\Debtor $debtor
+     *
+     * @return Flat
+     */
+    public function addDebtor(\AppBundle\Entity\Debtor $debtor)
+    {
+        $this->debtors[] = $debtor;
+
+        return $this;
+    }
+
+    /**
+     * Remove debtor
+     *
+     * @param \AppBundle\Entity\Debtor $debtor
+     */
+    public function removeDebtor(\AppBundle\Entity\Debtor $debtor)
+    {
+        $this->debtors->removeElement($debtor);
+    }
+
+    /**
+     * Get debtors
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getDebtors()
+    {
+        return $this->debtors;
     }
 }
