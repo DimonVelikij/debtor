@@ -135,6 +135,12 @@ class Debtor
     private $type;
 
     /**
+     * @ORM\ManyToOne(targetEntity="OwnershipStatus")
+     * @ORM\JoinColumn(name="ownership_status_id", referencedColumnName="id", nullable=false)
+     */
+    private $ownershipStatus;
+
+    /**
      * Get id
      *
      * @return integer
@@ -598,5 +604,29 @@ class Debtor
     public function getType()
     {
         return $this->type;
+    }
+
+    /**
+     * Set ownershipStatus
+     *
+     * @param \AppBundle\Entity\OwnershipStatus $ownershipStatus
+     *
+     * @return Debtor
+     */
+    public function setOwnershipStatus(\AppBundle\Entity\OwnershipStatus $ownershipStatus)
+    {
+        $this->ownershipStatus = $ownershipStatus;
+
+        return $this;
+    }
+
+    /**
+     * Get ownershipStatus
+     *
+     * @return \AppBundle\Entity\OwnershipStatus
+     */
+    public function getOwnershipStatus()
+    {
+        return $this->ownershipStatus;
     }
 }
