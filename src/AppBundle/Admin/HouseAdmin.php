@@ -176,6 +176,7 @@ class HouseAdmin extends AbstractAdmin
             'help'          =>  $companyHelp
         ];
 
+        //если пользователь не суперадмин - устанавливаем компанию пользователя
         if (!$user->isSuperAdmin()) {
             $companyOptions['data'] = current($companyChoice);
         }
