@@ -6,7 +6,8 @@
     {% if object.id %}
         <div ng-controller="DebtorCtrl" ng-cloak>
             <script type="text/ng-init" name="Path">{{ {
-                    AdminDebtors: path('admin_app_flat_debtors')
+                    AdminDebtorList: path('admin_app_flat_debtor_list', {flat_id: object.id}),
+                    AdminDebtorTypes: path('admin_app_flat_debtor_types')
                 } |json_encode | raw }}</script>
             <div class="row">
                 <div class="col-md-12">
@@ -17,38 +18,7 @@
                                     <h4 class="box-title">Должники</h4>
                                 </div>
                                 <div class="box-body">
-                                    <div class="sonata-ba-collapsed-fields">
-                                        <table class="table table-bordered table-striped sonata-ba-list">
-                                            <thead>
-                                                <tr class="sonata-ba-list-field-header">
-                                                    <th>ФИО</th>
-                                                    <th>Статус</th>
-                                                    <th>Телефон</th>
-                                                    <th>Действия</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr ng-repeat-start="debtor in debtors">
-                                                    <td>[[ debtor.name ]]</td>
-                                                    <td>[[ debtor.status ]]</td>
-                                                    <td>[[ debtor.phone ]]</td>
-                                                    <td>
-                                                        <a class="btn btn-success" ng-click="toggleDebtorInfo(debtor)"><i class="fa fa-eye"></i> Показать</a>
-                                                        <a class="btn btn-success"><i class="fa fa-pencil"></i> Редактировать</a>
-                                                        <a class="btn btn-danger"><i class="fa fa-minus-circle"></i> Удалить</a>
-                                                    </td>
-                                                </tr>
-                                                <tr ng-repeat-end ng-show="isShowDebtorInfo(debtor)" style="background-color: #c9e2b3">
-                                                    <td colspan="4">
-                                                        <p><strong>ФИО: </strong>[[ debtor.name ]]</p>
-                                                        <p><strong>Статус: </strong>[[ debtor.status ]]</p>
-                                                        <p><strong>Телефон: </strong>[[ debtor.phone ]]</p>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                        <a href>Добавить должника</a>
-                                    </div>
+                                    {% include '@App/Admin/Flat/Debtor/debtor_list.html.twig' %}
                                 </div>
                             </div>
                         </div>
@@ -80,5 +50,11 @@
         %}
             <script type="text/javascript" src="{{ asset(asset_url, 'js') }}"></script>
         {% endjavascripts %}
+        {% stylesheets
+            'bundles/app/css/select.min.min.css'
+            filter='cssrewrite'
+        %}
+            <link rel="stylesheet" href="{{ asset(asset_url, 'css') }}">
+        {% endstylesheets %}
     {% endif %}
 {% endblock %}

@@ -3,7 +3,9 @@
 
     angular.module('cms.core', [
         'ngMessages',
-        'ui.mask'
+        'ui.mask',
+        'ui.select',
+        'ngSanitize'
     ]);
 
 })(angular);

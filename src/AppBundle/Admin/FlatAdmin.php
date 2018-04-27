@@ -64,7 +64,8 @@ class FlatAdmin extends AbstractAdmin
     protected function configureRoutes(RouteCollection $collection)
     {
         $collection
-            ->add('debtors', 'debtors')
+            ->add('debtor_list', 'debtor_list/{flat_id}')
+            ->add('debtor_types', 'debtor_types')
         ;
     }
 

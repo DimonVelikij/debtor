@@ -1,0 +1,12 @@
+<form name="{% block form_name %}{% endblock %}">
+
+    <ui-select ng-model="selected.value">
+        <ui-select-match>
+            <span ng-bind="$select.selected.title"></span>
+        </ui-select-match>
+        <ui-select-choices repeat="debtorType in debtorTypes track by debtorType.id">
+            <span ng-bind="debtorType.title"></span>
+        </ui-select-choices>
+    </ui-select>
+
+</form>

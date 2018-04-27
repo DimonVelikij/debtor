@@ -32,6 +32,7 @@ framework:
     assets:
         packages:
             js: ~
+            css: ~
     php_errors:
         log: true
 
@@ -136,6 +137,8 @@ doctrine_migrations:
 assetic:
     debug:          '%kernel.debug%'
     use_controller: false
+    filters:
+        cssrewrite: ~
     assets:
         libsjs:
             inputs:

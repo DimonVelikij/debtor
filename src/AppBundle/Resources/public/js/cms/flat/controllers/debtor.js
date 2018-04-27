@@ -19,41 +19,12 @@
         Initializer
     ) {
         $q.all([
-            $http.get(Initializer.Path.AdminDebtors)
+            $http.get(Initializer.Path.AdminDebtorList),
+            $http.get(Initializer.Path.AdminDebtorTypes)
         ]).then(function (response) {
-            console.log(response);
+            $scope.debtors = response[0].data;
+            $scope.debtorTypes = response[1].data;
         });
-
-        $scope.debtors = [
-            {
-                id: 1,
-                name: 'Иванов Иван',
-                status: 'Собственник',
-                phone: '+79223334455'
-            },
-            {
-                id: 2,
-                name: 'Петров Петр',
-                status: 'Собственник',
-                phone: '+79223334466'
-            }
-        ];
-
-        $scope.currentDebtorInfo = {};
-
-        $scope.toggleDebtorInfo = function (debtor) {
-            if ($scope.currentDebtorInfo[debtor.id]) {
-                delete $scope.currentDebtorInfo[debtor.id];
-
-                return;
-            }
-
-            $scope.currentDebtorInfo[debtor.id] = debtor;
-        };
-
-        $scope.isShowDebtorInfo = function (debtor) {
-            return $scope.currentDebtorInfo[debtor.id];
-        };
     }
 
 })(angular);

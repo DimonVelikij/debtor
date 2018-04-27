@@ -3,10 +3,13 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="debtors")
+ *
+ * @JMS\ExclusionPolicy("all")
  *
  * Class Debtor
  * @package AppBundle\Entity
@@ -17,12 +20,22 @@ class Debtor
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
+     *
+     * @JMS\Expose
+     * @JMS\Type("integer")
+     * @JMS\SerializedName("id")
+     * @JMS\Groups({"cms-debtor"})
      */
     private $id;
 
     /**
      * ФИО или наименование организации
      * @ORM\Column(name="name", type="string", length=255, nullable=false)
+     *
+     * @JMS\Expose
+     * @JMS\Type("string")
+     * @JMS\SerializedName("name")
+     * @JMS\Groups({"cms-debtor"})
      */
     private $name;
 
