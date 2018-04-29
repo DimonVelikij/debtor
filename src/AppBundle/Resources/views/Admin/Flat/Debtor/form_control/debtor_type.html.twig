@@ -1,0 +1,17 @@
+<div class="form-group" ng-class="{'has-error': debtor.debtorType.$invalid && debtor.debtorType.$dirty}">
+    <label for="debtorType" class="control-label required">Тип должника</label>
+    <ui-select id="debtorType" name="debtorType" ng-required="1" ng-model="currentDebtor.type">
+        <ui-select-match>
+            <span ng-bind="$select.selected.title"></span>
+        </ui-select-match>
+        <ui-select-choices repeat="debtorType in debtorTypes | filter: $select.search track by debtorType.id">
+            <span ng-bind="debtorType.title"></span>
+        </ui-select-choices>
+    </ui-select>
+    <div class="help-block sonata-ba-field-error-messages" ng-if="debtor.debtorType.$invalid && debtor.debtorType.$dirty" ng-messages="debtor.debtorType.$error">
+        <ul class="list-unstyled">
+            <li ng-message="required"><i class="fa fa-exclamation-circle"></i>Укажите тип должника</li>
+            <li ng-message="backend"><i class="fa fa-exclamation-circle"></i>[[ debtor.debtorType.errorMessages.backend ]]</li>
+        </ul>
+    </div>
+</div>

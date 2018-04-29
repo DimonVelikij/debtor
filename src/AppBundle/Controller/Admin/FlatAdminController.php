@@ -3,11 +3,15 @@
 namespace AppBundle\Controller\Admin;
 
 use AppBundle\Entity\Flat;
+use AppBundle\Entity\OwnershipStatus;
 use AppBundle\Entity\User;
+use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use JMS\Serializer\SerializationContext;
 use Sonata\AdminBundle\Controller\CRUDController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class FlatAdminController extends CRUDController
@@ -58,6 +62,51 @@ class FlatAdminController extends CRUDController
 
         return new Response(
             $this->get('jms_serializer')->serialize($debtorTypes, 'json', SerializationContext::create()->setGroups(['cms-debtor']))
+        );
+    }
+
+    /**
+     * получение статусов собственности
+     * @param Request $request
+     * @param null $alias
+     * @return Response
+     */
+    public function ownershipStatusesAction(Request $request, $alias = null)
+    {
+        /** @var EntityRepository $ownershipStatusRepo */
+        $ownershipStatusRepo = $this->getDoctrine()->getRepository('AppBundle:OwnershipStatus');
+
+        /** @var QueryBuilder $ownershipStatusQueryBuilder */
+        $ownershipStatusQueryBuilder = $ownershipStatusRepo
+            ->createQueryBuilder('status');
+
+        if ($alias) {
+            $ownershipStatuses = $ownershipStatusQueryBuilder
+                ->where('status.alias = :alias')
+                ->setParameter('alias', $alias)
+                ->getQuery()
+                ->getResult();
+
+            if (!$ownershipStatuses) {
+                throw new NotFoundHttpException("Undefined status by alias '{$alias}'");
+            }
+
+            /** @var OwnershipStatus $ownershipStatus */
+            $ownershipStatus = $ownershipStatuses[0];
+            $ownershipStatuses = $ownershipStatus->getChildren();
+        } else {
+            $ownershipStatuses = $ownershipStatusQueryBuilder
+                ->where($ownershipStatusQueryBuilder->expr()->isNull('status.parent'))
+                ->getQuery()
+                ->getResult();
+        }
+
+        return new Response(
+            $this->get('jms_serializer')->serialize(
+                $ownershipStatuses,
+                'json',
+                SerializationContext::create()->setGroups(['cms-debtor'])
+            )
         );
     }
 }

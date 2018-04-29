@@ -3,10 +3,13 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="ownership_statuses")
+ *
+ * @JMS\ExclusionPolicy("all")
  *
  * Class OwnershipStatus
  * @package AppBundle\Entity
@@ -17,27 +20,51 @@ class OwnershipStatus
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
+     *
+     * @JMS\Expose
+     * @JMS\Type("integer")
+     * @JMS\SerializedName("id")
+     * @JMS\Groups({"cms-debtor"})
      */
     private $id;
 
     /**
      * @ORM\Column(name="title", type="string", length=255, nullable=false)
+     *
+     * @JMS\Expose
+     * @JMS\Type("string")
+     * @JMS\SerializedName("title")
+     * @JMS\Groups({"cms-debtor"})
      */
     private $title;
 
     /**
      * @ORM\Column(name="alias", type="string", length=255, nullable=false)
+     *
+     * @JMS\Expose
+     * @JMS\Type("string")
+     * @JMS\SerializedName("alias")
+     * @JMS\Groups({"cms-debtor"})
      */
     private $alias;
 
     /**
      * @ORM\OneToMany(targetEntity="OwnershipStatus", mappedBy="parent")
+     *
+     * @JMS\Expose
+     * @JMS\Type("array")
+     * @JMS\SerializedName("children")
+     * @JMS\Groups({"cms-debtor"})
      */
     private $children;
 
     /**
      * @ORM\ManyToOne(targetEntity="OwnershipStatus", inversedBy="children")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", nullable=true)
+     *
+     * @JMS\Expose
+     * @JMS\SerializedName("parent")
+     * @JMS\Groups({"cms-debtor"})
      */
     private $parent;
 

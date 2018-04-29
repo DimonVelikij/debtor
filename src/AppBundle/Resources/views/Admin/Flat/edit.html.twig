@@ -7,7 +7,8 @@
         <div ng-controller="DebtorCtrl" ng-cloak>
             <script type="text/ng-init" name="Path">{{ {
                     AdminDebtorList: path('admin_app_flat_debtor_list', {flat_id: object.id}),
-                    AdminDebtorTypes: path('admin_app_flat_debtor_types')
+                    AdminDebtorTypes: path('admin_app_flat_debtor_types'),
+                    AdminDebtorOwnershipStatuses: path('admin_app_flat_ownership_statuses')
                 } |json_encode | raw }}</script>
             <div class="row">
                 <div class="col-md-12">

@@ -1,12 +1,26 @@
-<form name="{% block form_name %}{% endblock %}">
+<div>
+    <form name="debtor" novalidate>
+        {% include '@App/Admin/Flat/Debtor/form_control/debtor_type.html.twig' %}
 
-    <ui-select ng-model="selected.value">
-        <ui-select-match>
-            <span ng-bind="$select.selected.title"></span>
-        </ui-select-match>
-        <ui-select-choices repeat="debtorType in debtorTypes track by debtorType.id">
-            <span ng-bind="debtorType.title"></span>
-        </ui-select-choices>
-    </ui-select>
+        <div ng-show="currentDebtor.type">
 
-</form>
+            <div ng-if="currentDebtor.type.alias == 'individual'">
+                {% include '@App/Admin/Flat/Debtor/debtor_individual_form.html.twig' %}
+            </div>
+
+            <div ng-if="currentDebtor.type.alias == 'businessman'">
+                {% include '@App/Admin/Flat/Debtor/debtor_businessman_form.html.twig' %}
+            </div>
+
+            <div ng-if="currentDebtor.type.alias == 'legal'">
+                {% include '@App/Admin/Flat/Debtor/debtor_legal_form.html.twig' %}
+            </div>
+
+            <button class="btn btn-success" ng-click="submit($event, debtor)">
+                <i class="fa fa-save"></i>
+                Сохранить
+            </button>
+        </div>
+    </form>
+</div>
+
