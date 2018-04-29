@@ -1,3 +1,7 @@
 <div ng-controller="DebtorIndividualCtrl" ng-cloak>
     {% include '@App/Admin/Flat/Debtor/ownership_block.html.twig' %}
+
+    {% include '@App/Admin/Flat/Debtor/form_control/debtor_name.html.twig' with {'label': 'ФИО', 'error': 'Укажите ФИО'} %}
+
+    {% include '@App/Admin/Flat/Debtor/form_control/debtor_location.html.twig' with {'label': 'Место жительства'} %}
 </div>

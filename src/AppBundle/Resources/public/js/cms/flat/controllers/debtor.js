@@ -43,6 +43,11 @@
          */
         $scope.currentDebtor = {
             type: null,//тип должника
+            name: null,//фио или наименование организации
+            phone: null,//телефон
+            email: null,//email
+            location: null,//место нахождения или жительства
+
             ownershipStatus: null,//статус собстенности
             ownershipSubStatus: null,//доп статус
             shareSize: null,//размер доли

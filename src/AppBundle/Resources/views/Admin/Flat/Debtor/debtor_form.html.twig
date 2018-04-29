@@ -16,6 +16,10 @@
                 {% include '@App/Admin/Flat/Debtor/debtor_legal_form.html.twig' %}
             </div>
 
+            {% include '@App/Admin/Flat/Debtor/form_control/debtor_phone.html.twig' %}
+
+            {% include '@App/Admin/Flat/Debtor/form_control/debtor_email.html.twig' %}
+
             <button class="btn btn-success" ng-click="submit($event, debtor)">
                 <i class="fa fa-save"></i>
                 Сохранить

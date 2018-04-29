@@ -1,0 +1,9 @@
+<div class="form-group" ng-class="{'has-error': debtor.location.$invalid && debtor.location.$dirty}">
+    <label for="location" class="control-label">{{ label }}</label>
+    <input name="location" id="location" type="text" class="form-control" ng-model="currentDebtor.location" backend>
+    <div class="help-block sonata-ba-field-error-messages" ng-if="debtor.location.$invalid && debtor.location.$dirty" ng-messages="debtor.location.$error">
+        <ul class="list-unstyled">
+            <li ng-message="backend"><i class="fa fa-exclamation-circle"></i>[[ debtor.location.errorMessages.backend ]]</li>
+        </ul>
+    </div>
+</div>

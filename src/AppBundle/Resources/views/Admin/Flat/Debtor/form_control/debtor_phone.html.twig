@@ -1,0 +1,10 @@
+<div class="form-group" ng-class="{'has-error': debtor.phone.$invalid && debtor.phone.$dirty}">
+    <label for="phone" class="control-label">Телефон</label>
+    <input name="phone" id="phone" type="number" class="form-control" ng-model="currentDebtor.phone" ng-pattern="/^\d+$/" backend>
+    <div class="help-block sonata-ba-field-error-messages" ng-if="debtor.phone.$invalid && debtor.phone.$dirty" ng-messages="debtor.phone.$error">
+        <ul class="list-unstyled">
+            <li ng-message="pattern"><i class="fa fa-exclamation-circle"></i>Невено указан телефон</li>
+            <li ng-message="backend"><i class="fa fa-exclamation-circle"></i>[[ debtor.phone.errorMessages.backend ]]</li>
+        </ul>
+    </div>
+</div>
