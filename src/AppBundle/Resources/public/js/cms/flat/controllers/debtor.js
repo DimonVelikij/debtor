@@ -45,8 +45,22 @@
             type: null,//тип должника
             ownershipStatus: null,//статус собстенности
             ownershipSubStatus: null,//доп статус
-            shareSize: null//размер доли
+            shareSize: null,//размер доли
+            ownerName: null,//фио собственника
+            startDateOwnership: null,//дата начала собственности
+            endDateOwnership: null//дата окончания собственности
         };
+
+        /**
+         * отслеживаем изменение типа должника
+         */
+        $scope.$watch('currentDebtor.type', function (newType) {
+            if (!newType) {
+                return;
+            }
+
+            resetOwnershipSubStatuses();
+        });
 
         /**
          * отслеживаем изменение статуса собственности
@@ -58,11 +72,8 @@
 
             //обнуляем доп статусы или заменяем
             $scope.ownershipSubStatuses = newStatus.children ? newStatus.children : [];
-            //сбрасываем доп статус из модели
-            $scope.currentDebtor.ownershipSubStatus = null;
-            //сбрасываем размер доли
-            $scope.currentDebtor.shareSize = null;
-            //также сбрасывать все параметры связаные со статусом собственности
+
+            resetOwnershipSubStatus();
         });
 
         /**
@@ -73,9 +84,36 @@
                 return;
             }
 
+            resetAdditionalOwnershipStatus();
+        });
+
+        /**
+         * сброс списка доп статусов
+         */
+        function resetOwnershipSubStatuses() {
+            //сбрасываем список доп статусов
+            $scope.ownershipSubStatuses = [];
+            resetOwnershipSubStatus();
+        }
+
+        /**
+         * сброс доп статуса и доп параметров
+         */
+        function resetOwnershipSubStatus() {
+            //сбрасываем доп статус из модели
+            $scope.currentDebtor.ownershipSubStatus = null;
+            resetAdditionalOwnershipStatus();
+        }
+
+        /**
+         * сброс доп параметров статусов собственности
+         */
+        function resetAdditionalOwnershipStatus() {
             //сбрасываем размер доли
             $scope.currentDebtor.shareSize = null;
-        });
+            //сбрасываем фио собственника
+            $scope.currentDebtor.ownerName = null;
+        }
 
         $scope.submit = function ($event, form) {
             $event.preventDefault();

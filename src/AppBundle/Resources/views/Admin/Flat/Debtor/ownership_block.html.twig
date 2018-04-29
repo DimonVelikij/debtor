@@ -62,6 +62,45 @@
                             </div>
                         </div>
                     </div>
+
+                    {#если статус "Законный представитель несовершеннолетнего собсвенника", показываем поле "ФИО собстенника"#}
+                    <div ng-if="currentDebtor.ownershipStatus.alias == 'legal_representative_underage_owner'">
+                        <div class="form-group" ng-class="{'has-error': debtor.ownerName.$invalid && debtor.ownerName.$dirty}">
+                            <label for="ownerName" class="control-label required">ФИО собственника</label>
+                            <input id="ownerName" name="ownerName" type="text" class="form-control" ng-model="currentDebtor.ownerName" ng-required="1" backend>
+                            <div class="help-block sonata-ba-field-error-messages" ng-if="debtor.ownerName.$invalid && debtor.ownerName.$dirty" ng-messages="debtor.ownerName.$error">
+                                <ul class="list-unstyled">
+                                    <li ng-message="required"><i class="fa fa-exclamation-circle"></i>Укажите ФИО собственника</li>
+                                    <li ng-message="backend"><i class="fa fa-exclamation-circle"></i>[[ debtor.ownerName.errorMessages.backend ]]</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    {#дата начала собсвенности#}
+                    <div class="form-group" ng-class="{'has-error': debtor.startDateOwnership.$error.pattern && debtor.startDateOwnership.$invalid && debtor.startDateOwnership.$dirty}">
+                        <label for="startDateOwnership" class="control-label">Дата начала собсвенности</label>
+                        <input name="startDateOwnership" id="startDateOwnership" type="text" class="form-control" ng-model="currentDebtor.startDateOwnership" ui-mask="99.99.9999" ng-pattern="/^([0-2]\d|3[01])\.(0\d|1[012])\.(19|20)(\d\d)$/" backend>
+                        <div class="help-block sonata-ba-field-error-messages" ng-if="debtor.startDateOwnership.$invalid && debtor.startDateOwnership.$dirty" ng-messages="debtor.startDateOwnership.$error">
+                            <ul class="list-unstyled">
+                                <li ng-message="pattern"><i class="fa fa-exclamation-circle"></i>Неверно указана дата начала собственности</li>
+                                <li ng-message="backend"><i class="fa fa-exclamation-circle"></i>[[ debtor.startDateOwnership.errorMessages.backend ]]</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    {#дата окончания собственности#}
+                    <div class="form-group" ng-class="{'has-error': debtor.endDateOwnership.$error.pattern && debtor.endDateOwnership.$invalid && debtor.endDateOwnership.$dirty}">
+                        <label for="endDateOwnership" class="control-label">Дата окончания собсвенности</label>
+                        <input name="endDateOwnership" id="endDateOwnership" type="text" class="form-control" ng-model="currentDebtor.endDateOwnership" ui-mask="99.99.9999" ng-pattern="/^([0-2]\d|3[01])\.(0\d|1[012])\.(19|20)(\d\d)$/" backend>
+                        <div class="help-block sonata-ba-field-error-messages" ng-if="debtor.endDateOwnership.$invalid && debtor.endDateOwnership.$dirty" ng-messages="debtor.endDateOwnership.$error">
+                            <ul class="list-unstyled">
+                                <li ng-message="pattern"><i class="fa fa-exclamation-circle"></i>Неверно указана дата окончания собственности</li>
+                                <li ng-message="backend"><i class="fa fa-exclamation-circle"></i>[[ debtor.endDateOwnership.errorMessages.backend ]]</li>
+                            </ul>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
