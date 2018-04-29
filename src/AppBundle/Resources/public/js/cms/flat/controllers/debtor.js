@@ -47,9 +47,13 @@
             phone: null,//телефон
             email: null,//email
             location: null,//место нахождения или жительства
+            //физ лицо
             dateOfBirth: null,//дата рождения физ лица
             placeOfBirth: null,//место рождения физ лица
-
+            //индивидуальный предприниматель
+            ogrnip: null,//ОГРНИП
+            inn: null,//ИНН
+            //статус собственности
             ownershipStatus: null,//статус собстенности
             ownershipSubStatus: null,//доп статус
             shareSize: null,//размер доли
