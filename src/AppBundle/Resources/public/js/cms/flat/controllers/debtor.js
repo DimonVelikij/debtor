@@ -53,6 +53,10 @@
             //индивидуальный предприниматель
             ogrnip: null,//ОГРНИП
             inn: null,//ИНН
+            //юр лицо
+            ogrn: null,//ОГРН
+            bossName: null,//ФИО руководителя
+            bossPosition: null,//должность руководителя
             //статус собственности
             ownershipStatus: null,//статус собстенности
             ownershipSubStatus: null,//доп статус
