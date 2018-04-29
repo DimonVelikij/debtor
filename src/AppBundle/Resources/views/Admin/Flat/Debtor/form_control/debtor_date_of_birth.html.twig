@@ -1,0 +1,10 @@
+<div class="form-group" ng-class="{'has-error': debtor.dateOfBirth.$error.pattern && debtor.dateOfBirth.$invalid && debtor.dateOfBirth.$dirty}">
+    <label for="dateOfBirth" class="control-label">Дата рождения</label>
+    <input name="dateOfBirth" id="dateOfBirth" type="text" class="form-control" ng-model="currentDebtor.dateOfBirth" ui-mask="99.99.9999" ng-pattern="/^([0-2]\d|3[01])\.(0\d|1[012])\.(19|20)(\d\d)$/" backend>
+    <div class="help-block sonata-ba-field-error-messages" ng-if="debtor.dateOfBirth.$invalid && debtor.dateOfBirth.$dirty" ng-messages="debtor.dateOfBirth.$error">
+        <ul class="list-unstyled">
+            <li ng-message="pattern"><i class="fa fa-exclamation-circle"></i>Неверно указана дата рождения</li>
+            <li ng-message="backend"><i class="fa fa-exclamation-circle"></i>[[ debtor.dateOfBirth.errorMessages.backend ]]</li>
+        </ul>
+    </div>
+</div>

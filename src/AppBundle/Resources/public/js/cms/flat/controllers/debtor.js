@@ -47,6 +47,8 @@
             phone: null,//телефон
             email: null,//email
             location: null,//место нахождения или жительства
+            dateOfBirth: null,//дата рождения физ лица
+            placeOfBirth: null,//место рождения физ лица
 
             ownershipStatus: null,//статус собстенности
             ownershipSubStatus: null,//доп статус
