@@ -5,15 +5,15 @@
         <div ng-show="currentDebtor.type">
 
             <div ng-if="currentDebtor.type.alias == 'individual'">
-                {% include '@App/Admin/Flat/Debtor/debtor_individual_form.html.twig' %}
+                {% include '@App/Admin/Flat/Debtor/individual_form.html.twig' %}
             </div>
 
             <div ng-if="currentDebtor.type.alias == 'businessman'">
-                {% include '@App/Admin/Flat/Debtor/debtor_businessman_form.html.twig' %}
+                {% include '@App/Admin/Flat/Debtor/businessman_form.html.twig' %}
             </div>
 
             <div ng-if="currentDebtor.type.alias == 'legal'">
-                {% include '@App/Admin/Flat/Debtor/debtor_legal_form.html.twig' %}
+                {% include '@App/Admin/Flat/Debtor/legal_form.html.twig' %}
             </div>
 
             {% include '@App/Admin/Flat/Debtor/form_control/phone.html.twig' %}
