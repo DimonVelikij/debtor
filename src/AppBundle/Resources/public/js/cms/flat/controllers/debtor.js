@@ -47,6 +47,8 @@
             phone: null,//телефон
             email: null,//email
             location: null,//место нахождения или жительства
+            archive: false,//является ли арфивным должник
+            subscriber: false,//является абонентом
             //физ лицо
             dateOfBirth: null,//дата рождения физ лица
             placeOfBirth: null,//место рождения физ лица

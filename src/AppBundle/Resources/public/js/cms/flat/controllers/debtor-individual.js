@@ -3,15 +3,15 @@
 
     angular
         .module('cms.flat')
-        .controller('DebtorIndividualCtrl', DebtorIndividualCtrl);
+        .controller('DebtorIndividualCtrl', DebtorLegalCtrl);
 
-    DebtorIndividualCtrl.$inject = [
+    DebtorLegalCtrl.$inject = [
         '$scope',
         '$http',
         'Initializer'
     ];
 
-    function DebtorIndividualCtrl (
+    function DebtorLegalCtrl (
         $scope,
         $http,
         Initializer
@@ -19,7 +19,7 @@
         /**
          * загрузка статусов собственности
          */
-        $http.get(Initializer.Path.AdminDebtorOwnershipStatuses)
+        $http.get(Initializer.Path.AdminDebtorOwnershipStatuses + '/owner')
             .then(function (response) {
                 $scope.ownershipStatuses = response.data;
             })
