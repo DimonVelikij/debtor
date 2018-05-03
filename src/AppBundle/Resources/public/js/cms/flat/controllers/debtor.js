@@ -3,20 +3,16 @@
 
     angular
         .module('cms.flat')
-        .controller('DebtorCtrl', DebtorCtrl)
-        .constant('CREATE', 'create')
-        .constant('EDIT', 'edit')
-    ;
+        .controller('DebtorCtrl', DebtorCtrl);
 
     DebtorCtrl.$inject = [
         '$scope',
         '$http',
         '$q',
         '$filter',
+        '_',
         'Initializer',
-        'FormHelper',
-        'CREATE',
-        'EDIT'
+        'FormHelper'
     ];
 
     function DebtorCtrl(
@@ -24,10 +20,9 @@
         $http,
         $q,
         $filter,
+        _,
         Initializer,
-        FormHelper,
-        CREATE,
-        EDIT
+        FormHelper
     ) {
         /**
          * форма
@@ -85,6 +80,7 @@
             $scope.debtors = response[0].data;
             //типы должников
             $scope.debtorTypes = response[1].data;
+
             //статусы собственности
             $scope.ownershipStatuses = {
                 individual: response[2].data,
@@ -102,6 +98,10 @@
                 return;
             }
 
+            var treeStatuses = $scope.state.currentDebtor.ownershipStatus ?
+                getTreeOwnershipStatuses($scope.ownershipStatuses[newDebtorType.alias], $scope.state.currentDebtor.ownershipStatus.alias, []) :
+                [];
+
             $scope.currentDebtor = {
                 name: $scope.state.currentDebtor.name,
                 phone: $scope.state.currentDebtor.phone ? parseInt($scope.state.currentDebtor.phone) : null,
@@ -114,8 +114,38 @@
                 startDateOwnership: $filter('date')($scope.state.currentDebtor.startDateOwnership),
                 endDateOwnership: $filter('date')($scope.state.currentDebtor.endDateOwnership)
             };
-            console.log($scope.ownershipStatuses, newDebtorType);
+
+            /**
+             * получение списка статусов по убыванию от родительского к дочернему
+             * @param ownershipStatuses
+             * @param selectedOwnershipStatusAlias
+             * @param tree
+             * @returns {*}
+             */
+            function getTreeOwnershipStatuses(ownershipStatuses, selectedOwnershipStatusAlias, tree) {
+                if (!selectedOwnershipStatusAlias) {
+                    return null;
+                }
+
+                for (var i = 0; i < ownershipStatuses.length; i++) {
+                    if (ownershipStatuses[i].children.length) {
+                        tree.push(ownershipStatuses[i]);
+                        if (Array.isArray(getTreeOwnershipStatuses(ownershipStatuses[i].children, selectedOwnershipStatusAlias, tree))) {
+                            return tree;
+                        } else {
+                            tree.pop();
+                        }
+                    }
+
+                    if (ownershipStatuses[i].alias === selectedOwnershipStatusAlias) {
+                        tree.push(ownershipStatuses[i]);
+
+                        return tree;
+                    }
+                }
+            }
         });
+
 
 
 

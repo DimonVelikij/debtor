@@ -61,10 +61,6 @@ class OwnershipStatus
     /**
      * @ORM\ManyToOne(targetEntity="OwnershipStatus", inversedBy="children")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", nullable=true)
-     *
-     * @JMS\Expose
-     * @JMS\SerializedName("parent")
-     * @JMS\Groups({"cms-debtor"})
      */
     private $parent;
 

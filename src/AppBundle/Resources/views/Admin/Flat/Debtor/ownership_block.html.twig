@@ -26,12 +26,11 @@
                     </div>
 
                     {#если у статуса есть дочерние статусы - показываем этот селект#}
-                    <div {#ng-if="ownershipSubStatuses.length"#}ng-if="currentDebtor.ownershipStatus.children.length" class="form-group" ng-class="{'has-error': debtor.ownershipSubStatus.$invalid && debtor.ownershipSubStatus.$dirty}">
+                    <div ng-if="currentDebtor.ownershipStatus.children.length" class="form-group" ng-class="{'has-error': debtor.ownershipSubStatus.$invalid && debtor.ownershipSubStatus.$dirty}">
                         <ui-select id="ownershipSubStatus" name="ownershipSubStatus" ng-model="currentDebtor.ownershipSubStatus" ng-required="1" backend>
                             <ui-select-match>
                                 <span ng-bind="$select.selected.title"></span>
                             </ui-select-match>
-                            {#<ui-select-choices repeat="ownershipSubStatus in ownershipSubStatuses track by ownershipSubStatus.id">#}
                             <ui-select-choices repeat="ownershipSubStatus in currentDebtor.ownershipStatus.children track by ownershipSubStatus.id">
                                 <span ng-bind="ownershipSubStatus.title"></span>
                             </ui-select-choices>
