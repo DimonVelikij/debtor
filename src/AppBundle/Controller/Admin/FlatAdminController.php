@@ -68,10 +68,9 @@ class FlatAdminController extends CRUDController
     /**
      * получение статусов собственности
      * @param Request $request
-     * @param null $alias
      * @return Response
      */
-    public function ownershipStatusesAction(Request $request, $alias = null)
+    public function ownershipStatusesAction(Request $request)
     {
         /** @var EntityRepository $ownershipStatusRepo */
         $ownershipStatusRepo = $this->getDoctrine()->getRepository('AppBundle:OwnershipStatus');
@@ -80,26 +79,10 @@ class FlatAdminController extends CRUDController
         $ownershipStatusQueryBuilder = $ownershipStatusRepo
             ->createQueryBuilder('status');
 
-        if ($alias) {
-            $ownershipStatuses = $ownershipStatusQueryBuilder
-                ->where('status.alias = :alias')
-                ->setParameter('alias', $alias)
-                ->getQuery()
-                ->getResult();
-
-            if (!$ownershipStatuses) {
-                throw new NotFoundHttpException("Undefined status by alias '{$alias}'");
-            }
-
-            /** @var OwnershipStatus $ownershipStatus */
-            $ownershipStatus = $ownershipStatuses[0];
-            $ownershipStatuses = $ownershipStatus->getChildren();
-        } else {
-            $ownershipStatuses = $ownershipStatusQueryBuilder
-                ->where($ownershipStatusQueryBuilder->expr()->isNull('status.parent'))
-                ->getQuery()
-                ->getResult();
-        }
+        $ownershipStatuses = $ownershipStatusQueryBuilder
+            ->where($ownershipStatusQueryBuilder->expr()->isNull('status.parent'))
+            ->getQuery()
+            ->getResult();
 
         return new Response(
             $this->get('jms_serializer')->serialize(

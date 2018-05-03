@@ -1,6 +1,6 @@
 <div class="form-group" ng-class="{'has-error': debtor.debtorType.$invalid && debtor.debtorType.$dirty}">
     <label for="debtorType" class="control-label required">Тип должника</label>
-    <ui-select id="debtorType" name="debtorType" ng-required="1" ng-model="currentDebtor.type" backend>
+    <ui-select id="debtorType" name="debtorType" ng-required="1" ng-model="state.currentDebtorType" backend>
         <ui-select-match>
             <span ng-bind="$select.selected.title"></span>
         </ui-select-match>

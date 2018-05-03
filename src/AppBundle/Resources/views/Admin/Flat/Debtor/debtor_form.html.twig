@@ -1,34 +1,18 @@
-<div>
-    <form name="debtor" novalidate>
-        {% include '@App/Admin/Flat/Debtor/form_control/type.html.twig' %}
+<div ng-show="state.openedDebtorForm">
+    {% include '@App/Admin/Flat/Debtor/form_control/type.html.twig' %}
 
-        <div ng-show="currentDebtor.type">
-
-            <div ng-if="currentDebtor.type.alias == 'individual'">
-                {% include '@App/Admin/Flat/Debtor/individual_form.html.twig' %}
-            </div>
-
-            <div ng-if="currentDebtor.type.alias == 'businessman'">
-                {% include '@App/Admin/Flat/Debtor/businessman_form.html.twig' %}
-            </div>
-
-            <div ng-if="currentDebtor.type.alias == 'legal'">
-                {% include '@App/Admin/Flat/Debtor/legal_form.html.twig' %}
-            </div>
-
-            {% include '@App/Admin/Flat/Debtor/form_control/phone.html.twig' %}
-
-            {% include '@App/Admin/Flat/Debtor/form_control/email.html.twig' %}
-
-            {% include '@App/Admin/Flat/Debtor/form_control/subscriber.html.twig' %}
-
-            {% include '@App/Admin/Flat/Debtor/form_control/archive.html.twig' %}
-
-            <button class="btn btn-success" ng-click="submit($event, debtor)">
-                <i class="fa fa-save"></i>
-                Сохранить
-            </button>
+    <div ng-show="state.currentDebtorType">
+        <div ng-if="state.currentDebtorType.alias == 'individual'">
+            {% include '@App/Admin/Flat/Debtor/individual_form.html.twig' %}
         </div>
-    </form>
+
+        <div ng-if="state.currentDebtorType.alias == 'businessman'">
+            {% include '@App/Admin/Flat/Debtor/businessman_form.html.twig' %}
+        </div>
+
+        <div ng-if="state.currentDebtorType.alias == 'legal'">
+            {% include '@App/Admin/Flat/Debtor/legal_form.html.twig' %}
+        </div>
+    </div>
 </div>
 

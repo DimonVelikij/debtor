@@ -42,96 +42,179 @@ class Debtor
     /**
      * телефон
      * @ORM\Column(name="phone", type="string", length=255, nullable=true)
+     *
+     * @JMS\Expose
+     * @JMS\Type("string")
+     * @JMS\SerializedName("phone")
+     * @JMS\Groups({"cms-debtor"})
      */
     private $phone;
 
     /**
      * email
      * @ORM\Column(name="email", type="string", length=255, nullable=true)
+     *
+     * @JMS\Expose
+     * @JMS\Type("string")
+     * @JMS\SerializedName("email")
+     * @JMS\Groups({"cms-debtor"})
      */
     private $email;
 
     /**
      * место нахождения или жительства
      * @ORM\Column(name="location", type="string", length=255, nullable=true)
+     *
+     * @JMS\Expose
+     * @JMS\Type("string")
+     * @JMS\SerializedName("location")
+     * @JMS\Groups({"cms-debtor"})
      */
     private $location;
 
     /**
      * дата начала собственности
      * @ORM\Column(name="start_date_ownership", type="date", nullable=true)
+     *
+     * @JMS\Expose
+     * @JMS\Type("string")
+     * @JMS\SerializedName("startDateOwnership")
+     * @JMS\Accessor(getter="getStartDateOwnershipString")
+     * @JMS\Groups({"cms-debtor"})
      */
     private $startDateOwnership;
 
     /**
      * дата конча собственности
      * @ORM\Column(name="end_date_ownership", type="date", nullable=true)
+     *
+     * @JMS\Expose
+     * @JMS\Type("string")
+     * @JMS\SerializedName("endDateOwnership")
+     * @JMS\Accessor(getter="getEndDateOwnershipString")
+     * @JMS\Groups({"cms-debtor"})
      */
     private $endDateOwnership;
 
     /**
      * архив
      * @ORM\Column(name="archive", type="boolean", nullable=true)
+     *
+     * @JMS\Expose
+     * @JMS\Type("boolean")
+     * @JMS\SerializedName("archive")
+     * @JMS\Groups({"cms-debtor"})
      */
     private $archive;
 
     /**
      * является ли абонентом
      * @ORM\Column(name="subscriber", type="boolean", nullable=true)
+     *
+     * @JMS\Expose
+     * @JMS\Type("boolean")
+     * @JMS\SerializedName("subscriber")
+     * @JMS\Groups({"cms-debtor"})
      */
     private $subscriber;
 
     /**
      * размер доли, если статус собственности долевой
      * @ORM\Column(name="share_size", type="string", length=255, nullable=true)
+     *
+     * @JMS\Expose
+     * @JMS\Type("string")
+     * @JMS\SerializedName("shareSize")
+     * @JMS\Groups({"cms-debtor"})
      */
     private $shareSize;
 
     /**
      * дата рождения физ лица
      * @ORM\Column(name="date_of_birth", type="date", nullable=true)
+     *
+     * @JMS\Expose
+     * @JMS\Type("string")
+     * @JMS\SerializedName("dateOfBirth")
+     * @JMS\Accessor(getter="getDateOfBirthString")
+     * @JMS\Groups({"cms-debtor"})
      */
     private $dateOfBirth;
 
     /**
      * место рождения физ лица
      * @ORM\Column(name="place_of_birth", type="string", length=255, nullable=true)
+     *
+     * @JMS\Expose
+     * @JMS\Type("string")
+     * @JMS\SerializedName("placeOfBirth")
+     * @JMS\Groups({"cms-debtor"})
      */
     private $placeOfBirth;
 
     /**
      * ФИО собственника, если статус - законный представитель несовершеннолетнего собственника
      * @ORM\Column(name="owner_name", type="string", length=255, nullable=true)
+     *
+     * @JMS\Expose
+     * @JMS\Type("string")
+     * @JMS\SerializedName("ownerName")
+     * @JMS\Groups({"cms-debtor"})
      */
     private $ownerName;
 
     /**
      * ОГРНИП индивидульного предпринимателя
      * @ORM\Column(name="ogrnip", type="string", length=255, nullable=true)
+     *
+     * @JMS\Expose
+     * @JMS\Type("string")
+     * @JMS\SerializedName("ogrnip")
+     * @JMS\Groups({"cms-debtor"})
      */
     private $ogrnip;
 
     /**
      * ИНН индивидуального предпринимателя или Юр. лица
      * @ORM\Column(name="inn", type="string", length=255, nullable=true)
+     *
+     * @JMS\Expose
+     * @JMS\Type("string")
+     * @JMS\SerializedName("inn")
+     * @JMS\Groups({"cms-debtor"})
      */
     private $inn;
 
     /**
      * ОГРН Юр. лица
      * @ORM\Column(name="ogrn", type="string", length=255, nullable=true)
+     *
+     * @JMS\Expose
+     * @JMS\Type("string")
+     * @JMS\SerializedName("ogrn")
+     * @JMS\Groups({"cms-debtor"})
      */
     private $ogrn;
 
     /**
      * ФИО руководителя Юр. лица
      * @ORM\Column(name="boss_name", type="string", length=255, nullable=true)
+     *
+     * @JMS\Expose
+     * @JMS\Type("string")
+     * @JMS\SerializedName("bossName")
+     * @JMS\Groups({"cms-debtor"})
      */
     private $bossName;
 
     /**
      * Должность руководителя Юр. лица
      * @ORM\Column(name="boss_position", type="string", length=255, nullable=true)
+     *
+     * @JMS\Expose
+     * @JMS\Type("string")
+     * @JMS\SerializedName("bossPosition")
+     * @JMS\Groups({"cms-debtor"})
      */
     private $bossPosition;
 
@@ -144,14 +227,58 @@ class Debtor
     /**
      * @ORM\ManyToOne(targetEntity="DebtorType")
      * @ORM\JoinColumn(name="type_id", referencedColumnName="id", nullable=false)
+     *
+     * @JMS\Expose
+     * @JMS\SerializedName("type")
+     * @JMS\Groups({"cms-debtor"})
      */
     private $type;
 
     /**
      * @ORM\ManyToOne(targetEntity="OwnershipStatus")
      * @ORM\JoinColumn(name="ownership_status_id", referencedColumnName="id", nullable=false)
+     *
+     * @JMS\Expose
+     * @JMS\SerializedName("ownershipStatus")
+     * @JMS\Groups({"cms-debtor"})
      */
     private $ownershipStatus;
+
+    /**
+     * @return null|string
+     */
+    public function getStartDateOwnershipString()
+    {
+        if ($this->startDateOwnership instanceof \DateTime) {
+            return $this->startDateOwnership->format('dmY');
+        }
+
+        return null;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getEndDateOwnershipString()
+    {
+        if ($this->endDateOwnership instanceof \DateTime) {
+            return $this->endDateOwnership->format('dmY');
+        }
+
+        return null;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getDateOfBirthString()
+    {
+        if ($this->dateOfBirth instanceof \DateTime) {
+            return $this->dateOfBirth->format('dmY');
+        }
+
+        return null;
+    }
 
     /**
      * Get id

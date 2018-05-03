@@ -1,33 +1,70 @@
 <div class="sonata-ba-collapsed-fields">
     <table class="table table-bordered table-striped sonata-ba-list">
-        {#<thead>
+        <thead>
             <tr class="sonata-ba-list-field-header">
                 <th>ФИО</th>
-                <th>Статус</th>
+                <th>Тип</th>
                 <th>Телефон</th>
+                <th>Место жительства/расположения</th>
+                <th>Абонент</th>
                 <th>Действия</th>
             </tr>
         </thead>
         <tbody>
-        <tr ng-repeat-start="debtor in debtors">
-            <td>[[ debtor.name ]]</td>
-            <td>[[ debtor.status ]]</td>
-            <td>[[ debtor.phone ]]</td>
-            <td>
-                <a class="btn btn-success" ng-click="toggleDebtorInfo(debtor)"><i class="fa fa-eye"></i> Показать</a>
-                <a class="btn btn-success"><i class="fa fa-pencil"></i> Редактировать</a>
-                <a class="btn btn-danger"><i class="fa fa-minus-circle"></i> Удалить</a>
-            </td>
-        </tr>
-        <tr ng-repeat-end ng-show="isShowDebtorInfo(debtor)" style="background-color: #c9e2b3">
-            <td colspan="4">
-                <p><strong>ФИО: </strong>[[ debtor.name ]]</p>
-                <p><strong>Статус: </strong>[[ debtor.status ]]</p>
-                <p><strong>Телефон: </strong>[[ debtor.phone ]]</p>
-            </td>
-        </tr>
-        </tbody>#}
+            <tr ng-repeat-start="debtor in debtors">
+                <td>[[ debtor.name ]]</td>
+                <td>[[ debtor.type.title ]]</td>
+                <td>[[ debtor.phone ]]</td>
+                <td>[[ debtor.location ]]</td>
+                <td>
+                    <span class="label label-success" ng-if="debtor.subscriber">да</span>
+                    <span class="label label-danger" ng-if="!debtor.subscriber">нет</span>
+                </td>
+                <td>
+                    <a class="btn btn-success" ng-click="debtor.isShow = !debtor.isShow"><i class="fa fa-eye"></i> Показать</a>
+                    <a class="btn btn-success" ng-click="openDebtorForm(debtor)"><i class="fa fa-pencil"></i> Редактировать</a>
+                </td>
+            </tr>
+            <tr ng-repeat-end ng-show="debtor.isShow" style="background-color: #c9e2b3">
+                <td colspan="6">
+                    <div ng-if="debtor.type.alias == 'individual'">
+                        <p>ФИО: <strong>[[ debtor.name ]]</strong></p>
+                        <p>Дата рождения: <strong>[[ debtor.dateOfBirth ]]</strong></p>
+                        <p>Место рождения: <strong>[[ debtor.placeOfBirth ]]</strong></p>
+                        <p>Место жительства: <strong>[[ debtor.location ]]</strong></p>
+                    </div>
+                    <div ng-if="debtor.type.alias == 'businessman'">
+                        <p>ФИО: <strong>[[ debtor.name ]]</strong></p>
+                        <p>ОГРНИП: <strong>[[ debtor.ogrnip ]]</strong></p>
+                        <p>ИНН: <strong>[[ debtor.inn ]]</strong></p>
+                        <p>Место жительства: <strong>[[ debtor.location ]]</strong></p>
+                    </div>
+                    <div ng-if="debtor.type.alias == 'legal'">
+                        <p>Наименование: <strong>[[ debtor.name ]]</strong></p>
+                        <p>ОГРН: <strong>[[ debtor.ogrn ]]</strong></p>
+                        <p>ИНН: <strong>[[ debtor.inn ]]</strong></p>
+                        <p>Адрес местонахождения: <strong>[[ debtor.location ]]</strong></p>
+                        <p>ФИО руководителя: <strong>[[ debtor.bossName ]]</strong></p>
+                        <p>Должность руководителя: <strong>[[ debtor.bossPosition ]]</strong></p>
+                    </div>
+                    <p>Телефон: <strong>[[ debtor.phone ]]</strong></p>
+                    <p>E-mail: <strong>[[ debtor.email ]]</strong></p>
+                    <div style="background-color: #00a157">
+                        <p>Статус:<strong><span ng-if="debtor.ownershipStatus.parent">[[ debtor.ownershipStatus.parent.title ]] -</span> [[ debtor.ownershipStatus.title ]]</strong></p>
+                        <p>Дата начала: <strong>[[ debtor.startDateOwnership ]]</strong></p>
+                        <p>Дата окончания: <strong>[[ debtor.endDateOwnership ]]</strong></p>
+                        <p ng-if="debtor.ownershipStatus.alias == 'owner_shared' || debtor.ownershipStatus.alias == 'legal_representative_underage_owner_shared'">
+                            Размер доли: <strong>[[ debtor.shareSize ]]</strong>
+                        </p>
+                        <p ng-if="debtor.ownershipStatus.alias == 'legal_representative_underage_owner'">
+                            ФИО собственника: <strong>[[ debtor.ownerName ]]</strong>
+                        </p>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
     </table>
-    <a href>Добавить должника</a>
+    <a href ng-click="openDebtorForm()" ng-show="!state.openedDebtorForm">Добавить должника</a>
+    <a href ng-click="closeDebtorForm()" ng-show="state.openedDebtorForm">Закрыть форму</a>
     {% include '@App/Admin/Flat/Debtor/debtor_form.html.twig' %}
 </div>

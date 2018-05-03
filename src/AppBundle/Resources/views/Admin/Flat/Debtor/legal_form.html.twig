@@ -1,4 +1,6 @@
-<div ng-controller="DebtorLegalCtrl" ng-cloak>
+{% extends '@App/Admin/Flat/Debtor/base_form.html.twig' %}
+
+{% block customFields %}
     {% include '@App/Admin/Flat/Debtor/ownership_block.html.twig' %}
 
     {% include '@App/Admin/Flat/Debtor/form_control/name.html.twig' with {'label': 'Наименование', 'error': 'Укажите наименование'} %}
@@ -12,4 +14,4 @@
     {% include '@App/Admin/Flat/Debtor/form_control/boss_position.html.twig' %}
 
     {% include '@App/Admin/Flat/Debtor/form_control/location.html.twig' with {'label': 'Адрес местонахождения'} %}
-</div>
+{% endblock %}
