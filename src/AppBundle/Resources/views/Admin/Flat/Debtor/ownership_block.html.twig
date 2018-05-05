@@ -78,8 +78,8 @@
                     </div>
 
                     {#дата начала собсвенности#}
-                    <div class="form-group" ng-class="{'has-error': debtor.startDateOwnership.$error.pattern && debtor.startDateOwnership.$invalid && debtor.startDateOwnership.$dirty}">
-                        <label for="startDateOwnership" class="control-label">Дата начала собсвенности</label>
+                    <div class="form-group" ng-class="{'has-error': debtor.startDateOwnership.$invalid && debtor.startDateOwnership.$dirty}">
+                        <label for="startDateOwnership" class="control-label">Дата начала собственности</label>
                         <input name="startDateOwnership" id="startDateOwnership" type="text" class="form-control" ng-model="currentDebtor.startDateOwnership" ui-mask="99.99.9999" ng-pattern="/^([0-2]\d|3[01])\.(0\d|1[012])\.(19|20)(\d\d)$/" backend>
                         <div class="help-block sonata-ba-field-error-messages" ng-if="debtor.startDateOwnership.$invalid && debtor.startDateOwnership.$dirty" ng-messages="debtor.startDateOwnership.$error">
                             <ul class="list-unstyled">
@@ -90,8 +90,8 @@
                     </div>
 
                     {#дата окончания собственности#}
-                    <div class="form-group" ng-class="{'has-error': debtor.endDateOwnership.$error.pattern && debtor.endDateOwnership.$invalid && debtor.endDateOwnership.$dirty}">
-                        <label for="endDateOwnership" class="control-label">Дата окончания собсвенности</label>
+                    <div class="form-group" ng-class="{'has-error': debtor.endDateOwnership.$invalid && debtor.endDateOwnership.$dirty}">
+                        <label for="endDateOwnership" class="control-label">Дата окончания собственности</label>
                         <input name="endDateOwnership" id="endDateOwnership" type="text" class="form-control" ng-model="currentDebtor.endDateOwnership" ui-mask="99.99.9999" ng-pattern="/^([0-2]\d|3[01])\.(0\d|1[012])\.(19|20)(\d\d)$/" backend>
                         <div class="help-block sonata-ba-field-error-messages" ng-if="debtor.endDateOwnership.$invalid && debtor.endDateOwnership.$dirty" ng-messages="debtor.endDateOwnership.$error">
                             <ul class="list-unstyled">

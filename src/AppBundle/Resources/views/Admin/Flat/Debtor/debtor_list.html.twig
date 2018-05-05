@@ -1,5 +1,5 @@
 <div class="sonata-ba-collapsed-fields">
-    <table class="table table-bordered table-striped sonata-ba-list">
+    <table class="table table-bordered table-striped sonata-ba-list" ng-show="debtors.length">
         <thead>
             <tr class="sonata-ba-list-field-header">
                 <th>ФИО</th>
@@ -21,7 +21,8 @@
                     <span class="label label-danger" ng-if="!debtor.subscriber">нет</span>
                 </td>
                 <td>
-                    <a class="btn btn-success" ng-click="debtor.isShow = !debtor.isShow"><i class="fa fa-eye"></i> Показать</a>
+                    <a class="btn btn-success" ng-click="debtor.isShow = !debtor.isShow" ng-hide="debtor.isShow"><i class="fa fa-eye"></i> Показать</a>
+                    <a class="btn btn-success" ng-click="debtor.isShow = !debtor.isShow" ng-show="debtor.isShow"><i class="fa fa-eye"></i> Скрыть</a>
                     <a class="btn btn-success" ng-click="openDebtorForm(debtor)"><i class="fa fa-pencil"></i> Редактировать</a>
                 </td>
             </tr>
@@ -64,7 +65,8 @@
             </tr>
         </tbody>
     </table>
-    <a href ng-click="openDebtorForm()" ng-show="!state.openedDebtorForm">Добавить должника</a>
+    <p ng-hide="debtors.length">Список должников пуст</p>
+    <a href ng-click="openDebtorForm()" ng-hide="state.openedDebtorForm">Добавить должника</a>
     <a href ng-click="closeDebtorForm()" ng-show="state.openedDebtorForm">Закрыть форму</a>
     {% include '@App/Admin/Flat/Debtor/debtor_form.html.twig' %}
 </div>

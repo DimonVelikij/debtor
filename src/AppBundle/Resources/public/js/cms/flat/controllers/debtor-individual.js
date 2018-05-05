@@ -24,7 +24,7 @@
             }
 
             var submitData = $scope.getBaseSubmitData();
-            submitData.dateOfBirth = $scope.currentDebtor.dateOfBirth;
+            submitData.dateOfBirth = $scope.currentDebtor.dateOfBirth ? $scope.currentDebtor.dateOfBirth.replace(/\./g, '') : null;
             submitData.placeOfBirth = $scope.currentDebtor.placeOfBirth;
 
             $scope.baseSubmit(form, submitData);

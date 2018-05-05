@@ -215,8 +215,8 @@
                 archive: $scope.currentDebtor.archive,
                 subscriber: $scope.currentDebtor.subscriber,
                 ownershipStatus: $scope.currentDebtor.ownershipSubStatus ? $scope.currentDebtor.ownershipSubStatus : $scope.currentDebtor.ownershipStatus,
-                startDateOwnership: $scope.currentDebtor.startDateOwnership,
-                endDateOwnership: $scope.currentDebtor.endDateOwnership
+                startDateOwnership: $scope.currentDebtor.startDateOwnership ? $scope.currentDebtor.startDateOwnership.replace(/\./g, '') : null,
+                endDateOwnership: $scope.currentDebtor.endDateOwnership ? $scope.currentDebtor.endDateOwnership.replace(/\./g, '') : null
             };
 
             if (baseSubmitData.ownershipStatus) {
@@ -248,7 +248,18 @@
             $http.post(Initializer.Path.AdminSubmitDebtor, submitData)
                 .then(function (response) {
                     if (response.data.success) {
-                        console.log(response.data);
+                        if (!$scope.currentDebtor.id) {
+                            //добавляем в список нового должника
+                            $scope.debtors.unshift(response.data.debtor);
+                        } else {
+                            //меняем инофрмацию о должнике
+                            _.forEach($scope.debtors, function (debtor, index) {
+                                if ($scope.debtors[index].id === response.data.debtor.id) {
+                                    $scope.debtors[index] = response.data.debtor;
+                                }
+                            });
+                        }
+                        $scope.closeDebtorForm();
                     } else {
                         FormHelper.showBackendErrors(response.data.errors, form);
                     }
