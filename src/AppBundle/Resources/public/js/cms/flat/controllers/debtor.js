@@ -11,7 +11,8 @@
         '$q',
         '$filter',
         '_',
-        'Initializer'
+        'Initializer',
+        'FormHelper'
     ];
 
     function DebtorCtrl(
@@ -20,7 +21,8 @@
         $q,
         $filter,
         _,
-        Initializer
+        Initializer,
+        FormHelper
     ) {
         /**
          * форма
@@ -32,13 +34,13 @@
          * состояние формы
          * @type {{
              * openedDebtorForm: boolean, открыта ли форма создания или редактирования должника
-             * currentDebtorType: null, текущий тип должника
+             * type: null, текущий тип должника
              * currentDebtor: null редактируемый должник
              * }}
          */
         $scope.state = {
             openedDebtorForm: false,
-            currentDebtorType: null,
+            type: null,
             currentDebtor: {}
         };
 
@@ -52,7 +54,7 @@
                 currentDebtor: debtor ? debtor : {}
             };
 
-            $scope.state.currentDebtorType = debtor ? debtor.type : null;
+            $scope.state.type = debtor ? debtor.type : null;
         };
 
         /**
@@ -61,7 +63,7 @@
         $scope.closeDebtorForm = function () {
             $scope.state = {
                 openedDebtorForm: false,
-                currentDebtorType: null,
+                type: null,
                 currentDebtor: {}
             };
         };
@@ -77,7 +79,7 @@
             //список должников
             $scope.debtors = response[0].data;
             //типы должников
-            $scope.debtorTypes = response[1].data;
+            $scope.types = response[1].data;
 
             //статусы собственности
             $scope.ownershipStatuses = {
@@ -94,7 +96,7 @@
         /**
          * отслеживаем изменение типа должника
          */
-        $scope.$watch('state.currentDebtorType', function (newDebtorType) {
+        $scope.$watch('state.type', function (newDebtorType) {
             if (!newDebtorType) {
                 return;
             }
@@ -105,6 +107,7 @@
 
             //проставляем общие данные
             $scope.currentDebtor = {
+                id: $scope.state.currentDebtor.id ? $scope.state.currentDebtor.id : null,//id дожника
                 name: $scope.state.currentDebtor.name,//имя
                 phone: $scope.state.currentDebtor.phone ? parseInt($scope.state.currentDebtor.phone) : null,//телефон
                 email: $scope.state.currentDebtor.email,//email
@@ -202,6 +205,9 @@
          */
         $scope.getBaseSubmitData = function () {
             var baseSubmitData = {
+                flatId: Initializer.Settings.FlatId,
+                id: $scope.currentDebtor.id,
+                type: $scope.state.type,
                 name: $scope.currentDebtor.name,
                 phone: $scope.currentDebtor.phone,
                 email: $scope.currentDebtor.email,
@@ -231,6 +237,27 @@
             }
 
             return baseSubmitData;
+        };
+
+        /**
+         * отправка запроса на сохранение|обновление должника
+         * @param form
+         * @param submitData
+         */
+        $scope.baseSubmit = function (form, submitData) {
+            $http.post(Initializer.Path.AdminSubmitDebtor, submitData)
+                .then(function (response) {
+                    if (response.data.success) {
+                        console.log(response.data);
+                    } else {
+                        FormHelper.showBackendErrors(response.data.errors, form);
+                    }
+                }, function (error) {
+
+                })
+                .finally(function () {
+
+                });
         };
     }
 

@@ -67,6 +67,7 @@ class FlatAdmin extends AbstractAdmin
             ->add('debtor_list', 'debtor_list/{flat_id}')
             ->add('debtor_types', 'debtor_types')
             ->add('ownership_statuses', 'ownership_statuses')
+            ->add('submit_debtor', 'submit_debtor')
         ;
     }
 

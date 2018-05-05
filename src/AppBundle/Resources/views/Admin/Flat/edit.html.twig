@@ -8,8 +8,12 @@
             <script type="text/ng-init" name="Path">{{ {
                     AdminDebtorList: path('admin_app_flat_debtor_list', {flat_id: object.id}),
                     AdminDebtorTypes: path('admin_app_flat_debtor_types'),
-                    AdminDebtorOwnershipStatuses: path('admin_app_flat_ownership_statuses')
-                } |json_encode | raw }}</script>
+                    AdminDebtorOwnershipStatuses: path('admin_app_flat_ownership_statuses'),
+                    AdminSubmitDebtor: path('admin_app_flat_submit_debtor')
+                } | json_encode | raw }}</script>
+            <script type="text/ng-init" name="Settings">{{ {
+                    FlatId: object.id
+                } | json_encode | raw }}</script>
             <div class="row">
                 <div class="col-md-12">
                     <div class="row">

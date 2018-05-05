@@ -23,7 +23,11 @@
                 return;
             }
 
+            var submitData = $scope.getBaseSubmitData();
+            submitData.ogrnip = $scope.currentDebtor.ogrnip;
+            submitData.inn = $scope.currentDebtor.inn;
 
+            $scope.baseSubmit(form, submitData);
         };
     }
 

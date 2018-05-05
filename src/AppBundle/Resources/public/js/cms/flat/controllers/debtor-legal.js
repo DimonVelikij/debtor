@@ -23,7 +23,13 @@
                 return;
             }
 
+            var submitData = $scope.getBaseSubmitData();
+            submitData.ogrn = $scope.currentDebtor.ogrn;
+            submitData.inn = $scope.currentDebtor.inn;
+            submitData.bossName = $scope.currentDebtor.bossName;
+            submitData.bossPosition = $scope.currentDebtor.bossPosition;
 
+            $scope.baseSubmit(form, submitData);
         };
     }
 

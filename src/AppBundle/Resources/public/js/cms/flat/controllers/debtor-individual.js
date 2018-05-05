@@ -26,6 +26,8 @@
             var submitData = $scope.getBaseSubmitData();
             submitData.dateOfBirth = $scope.currentDebtor.dateOfBirth;
             submitData.placeOfBirth = $scope.currentDebtor.placeOfBirth;
+
+            $scope.baseSubmit(form, submitData);
         };
     }
 

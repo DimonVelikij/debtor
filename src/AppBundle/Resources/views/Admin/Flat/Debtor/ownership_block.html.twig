@@ -13,7 +13,7 @@
                             <ui-select-match>
                                 <span ng-bind="$select.selected.title"></span>
                             </ui-select-match>
-                            <ui-select-choices repeat="ownershipStatus in ownershipStatuses[state.currentDebtorType.alias] track by ownershipStatus.id">
+                            <ui-select-choices repeat="ownershipStatus in ownershipStatuses[state.type.alias] track by ownershipStatus.id">
                                 <span ng-bind="ownershipStatus.title"></span>
                             </ui-select-choices>
                         </ui-select>

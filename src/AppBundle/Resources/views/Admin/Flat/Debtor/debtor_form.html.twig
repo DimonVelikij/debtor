@@ -1,16 +1,16 @@
 <div ng-show="state.openedDebtorForm">
     {% include '@App/Admin/Flat/Debtor/form_control/type.html.twig' %}
 
-    <div ng-show="state.currentDebtorType">
-        <div ng-if="state.currentDebtorType.alias == 'individual'">
+    <div ng-show="state.type">
+        <div ng-if="state.type.alias == 'individual'">
             {% include '@App/Admin/Flat/Debtor/individual_form.html.twig' %}
         </div>
 
-        <div ng-if="state.currentDebtorType.alias == 'businessman'">
+        <div ng-if="state.type.alias == 'businessman'">
             {% include '@App/Admin/Flat/Debtor/businessman_form.html.twig' %}
         </div>
 
-        <div ng-if="state.currentDebtorType.alias == 'legal'">
+        <div ng-if="state.type.alias == 'legal'">
             {% include '@App/Admin/Flat/Debtor/legal_form.html.twig' %}
         </div>
     </div>
