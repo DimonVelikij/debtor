@@ -1,5 +1,7 @@
 {% extends '@App/Admin/Flat/Debtor/base_form.html.twig' %}
 
+{% block ngController %}ng-controller="DebtorLegalCtrl"{% endblock %}
+
 {% block customFields %}
     {% include '@App/Admin/Flat/Debtor/ownership_block.html.twig' %}
 

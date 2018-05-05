@@ -3,14 +3,14 @@
 
     angular
         .module('cms.flat')
-        .controller('DebtorIndividualCtrl', DebtorIndividualCtrl);
+        .controller('DebtorLegalCtrl', DebtorLegalCtrl);
 
-    DebtorIndividualCtrl.$inject= [
+    DebtorLegalCtrl.$inject= [
         '$scope',
         'FormHelper'
     ];
 
-    function DebtorIndividualCtrl (
+    function DebtorLegalCtrl (
         $scope,
         FormHelper
     ) {
@@ -23,9 +23,7 @@
                 return;
             }
 
-            var submitData = $scope.getBaseSubmitData();
-            submitData.dateOfBirth = $scope.currentDebtor.dateOfBirth;
-            submitData.placeOfBirth = $scope.currentDebtor.placeOfBirth;
+
         };
     }
 
