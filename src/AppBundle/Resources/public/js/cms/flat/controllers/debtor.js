@@ -31,30 +31,16 @@
         $scope.debtor = {};
 
         /**
-         * состояние формы
-         * @type {{
-             * openedDebtorForm: boolean, открыта ли форма создания или редактирования должника
-             * type: null, текущий тип должника
-             * currentDebtor: null редактируемый должник
-             * }}
-         */
-        $scope.state = {
-            openedDebtorForm: false,
-            type: null,
-            currentDebtor: {}
-        };
-
-        /**
          * открытие формы создания|редактирования должника
          * @param debtor
          */
         $scope.openDebtorForm = function (debtor) {
             $scope.state = {
                 openedDebtorForm: true,
-                currentDebtor: debtor ? debtor : {}
+                type: debtor ? debtor.type : null,
+                currentDebtor: debtor ? debtor : {},
+                isChangeOwnershipStatus: false
             };
-
-            $scope.state.type = debtor ? debtor.type : null;
         };
 
         /**
@@ -64,8 +50,11 @@
             $scope.state = {
                 openedDebtorForm: false,
                 type: null,
-                currentDebtor: {}
+                currentDebtor: {},
+                isChangeOwnershipStatus: false
             };
+
+            $scope.ownershipSubStatuses = null;
         };
 
         /**
@@ -195,8 +184,13 @@
 
             //получаем список дочерних статусов
             $scope.ownershipSubStatuses = newOwnershipStatus.children ? newOwnershipStatus.children : [];
-            //сбрасываем дочерние статусы
-            $scope.currentDebtor.ownershipSubStatus = null;
+
+            if ($scope.state.isChangeOwnershipStatus) {
+                //сбрасываем дочерние статусы
+                $scope.currentDebtor.ownershipSubStatus = null;
+            }
+
+            $scope.state.isChangeOwnershipStatus = true;
         });
 
         /**
