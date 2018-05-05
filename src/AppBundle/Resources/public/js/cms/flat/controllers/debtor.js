@@ -54,6 +54,7 @@
                 isChangeOwnershipStatus: false
             };
 
+            //сбрасываем доп статусы
             $scope.ownershipSubStatuses = null;
         };
 
@@ -69,7 +70,6 @@
             $scope.debtors = response[0].data;
             //типы должников
             $scope.types = response[1].data;
-
             //статусы собственности
             $scope.ownershipStatuses = {
                 individual: response[2].data,
@@ -90,6 +90,7 @@
                 return;
             }
 
+            //получаем статусы собственности от родительского к дочернему
             var treeStatuses = $scope.state.currentDebtor.ownershipStatus ?
                 getTreeOwnershipStatuses($scope.ownershipStatuses[newDebtorType.alias], $scope.state.currentDebtor.ownershipStatus.alias, []) :
                 [];
