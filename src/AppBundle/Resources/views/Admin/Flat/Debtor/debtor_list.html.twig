@@ -58,7 +58,11 @@
                             <p ng-if="debtor.ownershipStatus.alias == 'owner_shared' || debtor.ownershipStatus.alias == 'legal_representative_underage_owner_shared'">
                                 Размер доли: <strong>[[ debtor.shareSize ]]</strong>
                             </p>
-                            <p ng-if="debtor.ownershipStatus.alias == 'legal_representative_underage_owner'">
+                            <p ng-if="
+                                debtor.ownershipStatus.alias == 'legal_representative_underage_owner_individual' ||
+                                debtor.ownershipStatus.alias == 'legal_representative_underage_owner_shared' ||
+                                debtor.ownershipStatus.alias == 'legal_representative_underage_owner_joint'
+                            ">
                                 ФИО собственника: <strong>[[ debtor.ownerName ]]</strong>
                             </p>
                         </div>

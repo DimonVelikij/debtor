@@ -1,0 +1,48 @@
+{% extends '@SonataAdmin/CRUD/base_show_field.html.twig' %}
+
+{% block field %}
+    {% if not object.debtors | length %}
+        <p>Список пуст</p>
+    {% else %}
+        {% for debtor in object.debtors %}
+            {% if debtor.type.alias == 'individual' %}
+                <p>ФИО: <strong>{{ debtor.name }}</strong></p>
+                <p>Дата рождения: <strong>{{ debtor.dateOfBirth ? debtor.dateOfBirth.format('d.m.Y') : '-' }}</strong></p>
+                <p>Место рождения: <strong>{{ debtor.placeOfBirth ? debtor.placeOfBirth : '-' }}</strong></p>
+                <p>Место жительства: <strong>{{ debtor.location ? debtor.location : '-' }}</strong></p>
+            {% endif %}
+            {% if debtor.type.alias == 'businessman' %}
+                <p>ФИО: <strong>{{ debtor.name }}</strong></p>
+                <p>ОГРНИП: <strong>{{ debtor.ogrnip ? debtor.ogrnip : '-' }}</strong></p>
+                <p>ИНН: <strong>{{ debtor.inn ? debtor.inn : '-' }}</strong></p>
+                <p>Место жительства: <strong>{{ debtor.location ? debtor.location : '-' }}</strong></p>
+            {% endif %}
+            {% if debtor.type.alias == 'legal' %}
+                <p>Наименование: <strong>{{ debtor.name }}</strong></p>
+                <p>ОГРН: <strong>{{ debtor.ogrn ? debtor.ogrn : '-' }}</strong></p>
+                <p>ИНН: <strong>{{ debtor.inn ? debtor.inn : '-' }}</strong></p>
+                <p>Адрес местонахождения: <strong>{{ debtor.location ? debtor.location : '-' }}</strong></p>
+                <p>ФИО руководителя: <strong>{{ debtor.bossName ? debtor.bossName : '-' }}</strong></p>
+                <p>Должность руководителя: <strong>{{ debtor.bossPosition ? debtor.bossPosition : '-' }}</strong></p>
+            {% endif %}
+            <p>Телефон: <strong>{{ debtor.phone ? debtor.phone : '-' }}</strong></p>
+            <p>E-mail: <strong>{{ debtor.email ? debtor.email : '-' }}</strong></p>
+            <div>
+                <p>Статус: <strong>{% if debtor.ownershipStatus.parent %}{{ debtor.ownershipStatus.parent.title }} - {% endif %}{{ debtor.ownershipStatus.title }}</strong></p>
+                <p>Дата начала: <strong>{{ debtor.startDateOwnership ? debtor.startDateOwnership.format('d.m.Y') : '-' }}</strong></p>
+                <p>Дата окончания: <strong>{{ debtor.endDateOwnership ? debtor.endDateOwnership.format('d.m.Y') : '-' }}</strong></p>
+                {% if debtor.ownershipStatus.alias == 'owner_shared' or debtor.ownershipStatus.alias == 'legal_representative_underage_owner_shared' %}
+                <p>Размер доли: <strong>{{ debtor.shareSize }}</strong></p>
+                {% endif %}
+                {% if
+                    debtor.ownershipStatus.alias == 'legal_representative_underage_owner_individual' or
+                    debtor.ownershipStatus.alias == 'legal_representative_underage_owner_shared' or
+                    debtor.ownershipStatus.alias == 'legal_representative_underage_owner_joint'
+                %}
+                    <p>ФИО собственника: <strong>{{ debtor.ownerName }}</strong></p>
+                {% endif %}
+            </div>
+            <hr>
+        {% endfor %}
+    {% endif %}
+{% endblock%}

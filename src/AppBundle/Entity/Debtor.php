@@ -245,6 +245,14 @@ class Debtor
     private $ownershipStatus;
 
     /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->name ?? '';
+    }
+
+    /**
      * @return null|string
      */
     public function getStartDateOwnershipString()

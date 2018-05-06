@@ -61,6 +61,9 @@ class FlatAdmin extends AbstractAdmin
          return parent::getTemplate($name);
     }
 
+    /**
+     * @param RouteCollection $collection
+     */
     protected function configureRoutes(RouteCollection $collection)
     {
         $collection
@@ -68,6 +71,9 @@ class FlatAdmin extends AbstractAdmin
             ->add('debtor_types', 'debtor_types')
             ->add('ownership_statuses', 'ownership_statuses')
             ->add('submit_debtor', 'submit_debtor')
+            ->remove('batch')
+            ->remove('export')
+            ->remove('delete');
         ;
     }
 
@@ -77,19 +83,15 @@ class FlatAdmin extends AbstractAdmin
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
-            ->add('id')
-            ->add('number')
-            ->add('startDebtPeriod')
-            ->add('endDebtPeriod')
-            ->add('dateFillDebt')
-            ->add('sumDebt')
-            ->add('periodAccruedDebt')
-            ->add('periodPayDebt')
-            ->add('dateFillFine')
-            ->add('sumFine')
-            ->add('periodAccruedFine')
-            ->add('periodPayFine')
-            ->add('archive')
+            ->add('number', null, [
+                'label' =>  'Номер помещения'
+            ])
+            ->add('house', null, [
+                'label' =>  'Адрес'
+            ])
+            ->add('archive', null, [
+                'label' =>  'Архивный'
+            ])
         ;
     }
 
@@ -100,23 +102,42 @@ class FlatAdmin extends AbstractAdmin
     {
         $listMapper
             ->add('id')
-            ->add('number')
-            ->add('startDebtPeriod')
-            ->add('endDebtPeriod')
-            ->add('dateFillDebt')
-            ->add('sumDebt')
-            ->add('periodAccruedDebt')
-            ->add('periodPayDebt')
-            ->add('dateFillFine')
-            ->add('sumFine')
-            ->add('periodAccruedFine')
-            ->add('periodPayFine')
-            ->add('archive')
+            ->add('house', null, [
+                'label'     =>  'Адрес'
+            ])
+            ->add('number', null, [
+                'label'     =>  'Номер помещения'
+            ])
+            ->add('sumDebt', null, [
+                'label'     =>  'Сумма долга, руб.'
+            ])
+            ->add('periodAccruedDebt', null, [
+                'label'     =>  'За период начислено, руб.',
+                'sortable'  =>  false
+            ])
+            ->add('periodPayDebt', null, [
+                'label'     =>  'За период оплачено, руб.',
+                'sortable'  =>  false
+            ])
+            ->add('sumFine', null, [
+                'label'     =>  'Сумма пени, руб.'
+            ])
+            ->add('periodAccruedFine', null, [
+                'label'     =>  'За период начислено пени, руб.',
+                'sortable'  =>  false
+            ])
+            ->add('periodPayFine', null, [
+                'label'     =>  'За период оплачено пени, руб.',
+                'sortable'  =>  false
+            ])
+            ->add('archive', null, [
+                'label'     =>  'Архивный'
+            ])
             ->add('_action', null, array(
+                'label' =>  'Действия',
                 'actions' => array(
                     'show' => array(),
                     'edit' => array(),
-                    'delete' => array(),
                 ),
             ))
         ;
@@ -258,18 +279,49 @@ class FlatAdmin extends AbstractAdmin
     {
         $showMapper
             ->add('id')
-            ->add('number')
-            ->add('startDebtPeriod')
-            ->add('endDebtPeriod')
-            ->add('dateFillDebt')
-            ->add('sumDebt')
-            ->add('periodAccruedDebt')
-            ->add('periodPayDebt')
-            ->add('dateFillFine')
-            ->add('sumFine')
-            ->add('periodAccruedFine')
-            ->add('periodPayFine')
-            ->add('archive')
+            ->add('number', null, [
+                'label'     =>  'Номер помещения'
+            ])
+            ->add('startDebtPeriod', null, [
+                'label'     =>  'Начало периода взыскания'
+            ])
+            ->add('endDebtPeriod', null, [
+                'label'     =>  'Конец периода взыскания'
+            ])
+            ->add('dateFillDebt', null, [
+                'label'     =>  'Дата заполнения долга'
+            ])
+            ->add('sumDebt', null, [
+                'label'     =>  'Сумма долга'
+            ])
+            ->add('periodAccruedDebt', null, [
+                'label'     =>  'За период начислено долга'
+            ])
+            ->add('periodPayDebt', null, [
+                'label'     =>  'За период оплачено долга'
+            ])
+            ->add('dateFillFine', null, [
+                'label'     =>  'Дата заполнения пени'
+            ])
+            ->add('sumFine', null, [
+                'label'     =>  'Сумма пени'
+            ])
+            ->add('periodAccruedFine', null, [
+                'label'     =>  'За период начислено пени'
+            ])
+            ->add('periodPayFine', null, [
+                'label'     =>  'За период оплачено пени'
+            ])
+            ->add('archive', null, [
+                'label'     =>  'Архивный'
+            ])
+            ->add('house', null, [
+                'label'     =>  'Адрес'
+            ])
+            ->add('debtors', null, [
+                'label'     =>  'Список должников',
+                'template'  =>  '@App/Admin/Flat/Show/debtors.html.twig'
+            ])
         ;
     }
 
