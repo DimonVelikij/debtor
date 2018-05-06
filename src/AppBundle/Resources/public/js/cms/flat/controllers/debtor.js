@@ -56,6 +56,8 @@
 
             //сбрасываем доп статусы
             $scope.ownershipSubStatuses = null;
+            //сбрасываем объект должника
+            $scope.currentDebtor = {};
         };
 
         /**
@@ -227,7 +229,7 @@
                     baseSubmitData.ownershipStatus.alias === 'legal_representative_underage_owner_shared' ||
                     baseSubmitData.ownershipStatus.alias === 'legal_representative_underage_owner_joint'
                 ) {
-                    baseSubmitData.ownerName = $scope.state.currentDebtor.ownerName;
+                    baseSubmitData.ownerName = $scope.currentDebtor.ownerName;
                 }
             }
 
@@ -245,7 +247,7 @@
                     if (response.data.success) {
                         if (!$scope.currentDebtor.id) {
                             //добавляем в список нового должника
-                            $scope.debtors.unshift(response.data.debtor);
+                            $scope.debtors.push(response.data.debtor);
                         } else {
                             //меняем инофрмацию о должнике
                             _.forEach($scope.debtors, function (debtor, index) {
