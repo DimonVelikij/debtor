@@ -284,7 +284,8 @@ class FlatAdmin extends AbstractAdmin
                 'label'     =>  'Конец периода взыскания'
             ])
             ->add('dateFillDebt', null, [
-                'label'     =>  'Дата заполнения долга'
+                'label'     =>  'Дата заполнения долга',
+                'template'  =>  '@App/Admin/Flat/Show/date_fill_debt.html.twig'
             ])
             ->add('sumDebt', null, [
                 'label'     =>  'Сумма долга'
@@ -296,7 +297,8 @@ class FlatAdmin extends AbstractAdmin
                 'label'     =>  'За период оплачено долга'
             ])
             ->add('dateFillFine', null, [
-                'label'     =>  'Дата заполнения пени'
+                'label'     =>  'Дата заполнения пени',
+                'template'  =>  '@App/Admin/Flat/Show/date_fill_fine.html.twig'
             ])
             ->add('sumFine', null, [
                 'label'     =>  'Сумма пени'
