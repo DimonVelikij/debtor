@@ -97,9 +97,9 @@ class UserAdmin extends AbstractAdmin
             ->add('company', EntityType::class, [
                 'label'     =>  'Управляющая компания'
             ])
-            ->add('lastLoginFromAdmin', null, [
+            ->add('lastLogin', null, [
                 'label'     =>  'Последняя авторизация',
-                'sortable'  =>  false
+                'template'  =>  '@App/Admin/User/List/last_login.html.twig'
             ])
             ->add('_action', null, array(
                 'label'     =>  'Действия',
@@ -275,8 +275,9 @@ class UserAdmin extends AbstractAdmin
         }
 
         $showMapper
-            ->add('lastLoginFromAdmin', null, [
-                'label' =>  'Последняя авторизация'
+            ->add('lastLogin', null, [
+                'label'     =>  'Последняя авторизация',
+                'template'  =>  '@App/Admin/User/Show/last_login.html.twig'
             ])
             ->add('userRole', null, [
                 'label' =>  'Роль'

@@ -39,14 +39,6 @@ class User extends BaseUser
     protected $newPassword;
 
     /**
-     * User constructor.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * @return string
      */
     public function __toString()
@@ -54,6 +46,23 @@ class User extends BaseUser
         return !$this->getFullName() ?
             (string)$this->getUsername() :
             (string)$this->getFullName();
+    }
+
+    /**
+     * название роли в виде строки
+     * @return string
+     */
+    public function getUserRole()
+    {
+        return $this->isSuperAdmin() ? 'ROLE_SUPER_ADMIN' : 'ROLE_ADMIN';
+    }
+
+    /**
+     * User constructor.
+     */
+    public function __construct()
+    {
+        parent::__construct();
     }
 
     /**
@@ -102,28 +111,6 @@ class User extends BaseUser
     public function getCompany()
     {
         return $this->company;
-    }
-
-    /**
-     * последняя авторизация для вывода в панели администратора
-     * @return string
-     */
-    public function getLastLoginFromAdmin()
-    {
-        if (!$this->lastLogin) {
-            return '';
-        }
-
-        return $this->lastLogin->format('d.m.Y H:i');
-    }
-
-    /**
-     * название роли в виде строки
-     * @return string
-     */
-    public function getUserRole()
-    {
-        return $this->isSuperAdmin() ? 'ROLE_SUPER_ADMIN' : 'ROLE_ADMIN';
     }
 
     /**
