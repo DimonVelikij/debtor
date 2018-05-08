@@ -1,7 +1,14 @@
 services:
     app.validator.old_password:
-      class: AppBundle\Validator\Constraints\OldPasswordValidator
-      arguments:
-          - "@security.password_encoder"
-      tags:
-          - { name: validator.constraint_validator, alias: old_password }
+        class: AppBundle\Validator\Constraints\OldPasswordValidator
+        arguments:
+            - "@security.password_encoder"
+        tags:
+            - { name: validator.constraint_validator, alias: old_password }
+
+    app.validator.ownership_status:
+        class: AppBundle\Validator\Constraints\OwnershipStatusValidator
+        arguments:
+            - "@doctrine.orm.doctrine_entity_manager"
+        tags:
+            - { name: validator.constraint_validator, alias: ownership_status }

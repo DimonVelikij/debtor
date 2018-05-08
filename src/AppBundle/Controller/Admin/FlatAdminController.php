@@ -5,6 +5,7 @@ namespace AppBundle\Controller\Admin;
 use AppBundle\Entity\Debtor;
 use AppBundle\Entity\Flat;
 use AppBundle\Entity\User;
+use AppBundle\Validator\Constraints\OwnershipStatus;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
@@ -170,19 +171,6 @@ class FlatAdminController extends CRUDController
             ]);
         }
 
-        //получаем статус собственности
-        $ownershipStatus = $this->getDoctrine()->getRepository('AppBundle:OwnershipStatus')->find($input['ownershipStatus']['id']);
-
-        if (count($ownershipStatus->getChildren())) {
-            //если у выбранного статуса есть дочение статусы - нужно выбрать один из дочерних
-            return new JsonResponse([
-                'success'   =>  false,
-                'errors'    =>  [
-                    'ownershipStatus'  =>  'Укажите статус собственности'
-                ]
-            ]);
-        }
-
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
 
@@ -278,7 +266,8 @@ class FlatAdminController extends CRUDController
                 new Email(['message'    =>  'Неверно введен E-mail'])
             ],
             'ownershipStatus'   =>  [
-                new NotBlank(['message' =>  'Укажите статус собственности'])
+                new NotBlank(['message'         =>  'Укажите статус собственности']),
+                new OwnershipStatus(['message'  =>   'Укажите статус собственности'])
             ],
             'startDateOwnership'=>  [
                 new Regex(['pattern'    =>  '/^([0-2]\d|3[01])(0\d|1[012])(19|20)(\d\d)$/', 'message'   =>  'Неверно указана дата начала собственности'])
