@@ -3,6 +3,7 @@
 namespace AppBundle\Admin;
 
 use AppBundle\Admin\traits\UserTrait;
+use AppBundle\Entity\Flat;
 use AppBundle\Entity\House;
 use AppBundle\Entity\User;
 use AppBundle\Service\AddressBookValidator;
@@ -111,24 +112,8 @@ class FlatAdmin extends AbstractAdmin
             ->add('sumDebt', null, [
                 'label'     =>  'Сумма долга, руб.'
             ])
-            ->add('periodAccruedDebt', null, [
-                'label'     =>  'За период начислено, руб.',
-                'sortable'  =>  false
-            ])
-            ->add('periodPayDebt', null, [
-                'label'     =>  'За период оплачено, руб.',
-                'sortable'  =>  false
-            ])
             ->add('sumFine', null, [
                 'label'     =>  'Сумма пени, руб.'
-            ])
-            ->add('periodAccruedFine', null, [
-                'label'     =>  'За период начислено пени, руб.',
-                'sortable'  =>  false
-            ])
-            ->add('periodPayFine', null, [
-                'label'     =>  'За период оплачено пени, руб.',
-                'sortable'  =>  false
             ])
             ->add('archive', null, [
                 'label'     =>  'Архивный'
@@ -204,26 +189,12 @@ class FlatAdmin extends AbstractAdmin
                     'required'      =>  false
                 ])
             ->end()
-            ->with('Период взыскания')
-                ->add('startDebtPeriod', DateType::class, [
-                    'label'     =>  'Начало периода взыскания',
-                    'required'  =>  false,
-                    'widget'    => 'single_text'
-                ])
-                ->add('endDebtPeriod', DateType::class, [
-                    'label'     =>  'Конец периода взыскания',
-                    'required'  =>  false,
-                    'widget'    => 'single_text'
-                ])
-            ->end()
-            ->with('Основной долг', ['class' => 'col-md-6'])
+            ->with('Основной долг', ['class' => 'col-md-4'])
                 ->add('dateFillDebt', DateType::class, [
                     'label'         =>  'Дата заполнения основного долга',
-                    'required'      =>  true,
-                    'widget'        => 'single_text',
-                    'constraints'   =>  [
-                        new NotBlank(['message' => 'Укажите дату заполнения основного долга'])
-                    ]
+                    'required'      =>  false,
+                    'widget'        =>  'single_text',
+                    'help'          =>  'Оставьте поле пустым, подставится текущая дата'
                 ])
                 ->add('sumDebt', TextType::class, [
                     'label'         =>  'Сумма долга',
@@ -241,11 +212,12 @@ class FlatAdmin extends AbstractAdmin
                     'required'      =>  false
                 ])
             ->end()
-            ->with('Пени', ['class' => 'col-md-6'])
+            ->with('Пени', ['class' => 'col-md-4'])
                 ->add('dateFillFine', DateType::class, [
                     'label'     =>  'Дата заполнения пени',
                     'required'  =>  false,
-                    'widget'    => 'single_text'
+                    'widget'    =>  'single_text',
+                    'help'      =>  'Оставьте поле пустым, подставится текущая дата'
                 ])
                 ->add('sumFine', TextType::class, [
                     'label'     =>  'Сумма долга',
@@ -260,12 +232,35 @@ class FlatAdmin extends AbstractAdmin
                     'required'      =>  false
                 ])
             ->end()
+            ->with('Период взыскания', ['class' => 'col-md-4'])
+                ->add('startDebtPeriod', DateType::class, [
+                    'label'     =>  'Начало периода взыскания',
+                    'required'  =>  false,
+                    'widget'    => 'single_text'
+                ])
+                ->add('endDebtPeriod', DateType::class, [
+                    'label'     =>  'Конец периода взыскания',
+                    'required'  =>  false,
+                    'widget'    => 'single_text'
+                ])
+            ->end()
         ;
 
         /** @var AddressBookValidator $addressBookValidator */
         $addressBookValidator = $this->getContainer()->get('app.service.address_book_validator');
         $formMapper->getFormBuilder()->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) use ($addressBookValidator) {
-            $error = $addressBookValidator->validateFlat($event->getData());
+            /** @var Flat $flat */
+            $flat = $event->getData();
+
+            if (!$flat->getDateFillDebt()) {
+                $flat->setDateFillDebt(new \DateTime());
+            }
+
+            if (!$flat->getDateFillFine()) {
+                $flat->setDateFillFine(new \DateTime());
+            }
+
+            $error = $addressBookValidator->validateFlat($flat);
             if ($error) {
                 $event->getForm()->get('number')->addError(new FormError($error));
             }

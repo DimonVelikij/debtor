@@ -42,7 +42,7 @@ class Flat
     private $endDebtPeriod;
 
     /**
-     * @ORM\Column(name="date_fill_debt", type="date", nullable=false)
+     * @ORM\Column(name="date_fill_debt", type="date", nullable=true)
      *
      * дата заполнения долга
      */
