@@ -1,0 +1,5 @@
+{% extends admin.getTemplate('base_list_field') %}
+
+{% block field %}
+    {{ object.updatedAt.format('d.m.Y H:i') }}
+{% endblock %}

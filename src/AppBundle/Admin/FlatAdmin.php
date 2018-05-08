@@ -93,6 +93,19 @@ class FlatAdmin extends AbstractAdmin
             ->add('archive', null, [
                 'label' =>  'Архивный'
             ])
+            ->add('updatedAt', 'doctrine_orm_date_range', [
+                'label'         =>  'Дата последнего обновления',
+                'field_type'    =>  'sonata_type_date_range_picker'
+            ], 'sonata_type_date_range_picker', [
+                'field_options_start' => [
+                    'format'    => 'dd.MM.yyyy',
+                    'label'     => 'начиная с:'
+                ],
+                'field_options_end' => [
+                    'format'    => 'dd.MM.yyyy',
+                    'label'     => 'по:'
+                ]
+            ])
         ;
     }
 
@@ -118,11 +131,15 @@ class FlatAdmin extends AbstractAdmin
             ->add('archive', null, [
                 'label'     =>  'Архивный'
             ])
+            ->add('updatedAt', null, [
+                'label'     =>  'Дата последнего обновления',
+                'template'  =>  '@App/Admin/Flat/List/updated_at.html.twig'
+            ])
             ->add('_action', null, array(
-                'label' =>  'Действия',
-                'actions' => array(
-                    'show' => array(),
-                    'edit' => array(),
+                'label'     =>  'Действия',
+                'actions'   => array(
+                    'show'  => array(),
+                    'edit'  => array(),
                 ),
             ))
         ;
@@ -311,6 +328,10 @@ class FlatAdmin extends AbstractAdmin
             ])
             ->add('archive', null, [
                 'label'     =>  'Архивный'
+            ])
+            ->add('updatedAt', null, [
+                'label'     =>  'Дата последнего обновления',
+                'template'  =>  '@App/Admin/Flat/Show/updated_at.html.twig'
             ])
             ->add('house', null, [
                 'label'     =>  'Адрес'

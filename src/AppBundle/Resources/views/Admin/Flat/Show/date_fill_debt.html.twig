@@ -2,6 +2,6 @@
 
 {% block field %}
     {% if object.dateFillDebt %}
-        <p>{{ object.dateFillDebt.format('d.m.Y') }}</p>
+        {{ object.dateFillDebt.format('d.m.Y') }}
     {% endif %}
 {% endblock %}
