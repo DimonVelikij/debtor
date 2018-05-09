@@ -145,37 +145,52 @@
                 default:
                     throw new Error("Undefined debtor type '" + newDebtorType.alias + "'");
             }
+        });
 
-            /**
-             * получение списка статусов по убыванию от родительского к дочернему
-             * @param ownershipStatuses
-             * @param selectedOwnershipStatusAlias
-             * @param tree
-             * @returns {*}
-             */
-            function getTreeOwnershipStatuses(ownershipStatuses, selectedOwnershipStatusAlias, tree) {
-                if (!selectedOwnershipStatusAlias) {
-                    return null;
+        /**
+         * получение списка статусов по убыванию от родительского к дочернему
+         * @param ownershipStatuses
+         * @param selectedOwnershipStatusAlias
+         * @param tree
+         * @returns {*}
+         */
+        function getTreeOwnershipStatuses(ownershipStatuses, selectedOwnershipStatusAlias, tree) {
+            if (!selectedOwnershipStatusAlias) {
+                return null;
+            }
+
+            for (var i = 0; i < ownershipStatuses.length; i++) {
+                if (ownershipStatuses[i].children.length) {
+                    tree.push(ownershipStatuses[i]);
+                    if (Array.isArray(getTreeOwnershipStatuses(ownershipStatuses[i].children, selectedOwnershipStatusAlias, tree))) {
+                        return tree;
+                    } else {
+                        tree.pop();
+                    }
                 }
 
-                for (var i = 0; i < ownershipStatuses.length; i++) {
-                    if (ownershipStatuses[i].children.length) {
-                        tree.push(ownershipStatuses[i]);
-                        if (Array.isArray(getTreeOwnershipStatuses(ownershipStatuses[i].children, selectedOwnershipStatusAlias, tree))) {
-                            return tree;
-                        } else {
-                            tree.pop();
-                        }
-                    }
+                if (ownershipStatuses[i].alias === selectedOwnershipStatusAlias) {
+                    tree.push(ownershipStatuses[i]);
 
-                    if (ownershipStatuses[i].alias === selectedOwnershipStatusAlias) {
-                        tree.push(ownershipStatuses[i]);
-
-                        return tree;
-                    }
+                    return tree;
                 }
             }
-        });
+        }
+
+        /**
+         * вывод статуса собственности в списке должников
+         * @param debtor
+         * @returns {string}
+         */
+        $scope.showOwnershipStatus = function (debtor) {
+            if (!debtor || !debtor.isShow) {
+                return '';
+            }
+
+            var tree = getTreeOwnershipStatuses($scope.ownershipStatuses[debtor.type.alias], debtor.ownershipStatus.alias, []);
+
+            return tree.length > 1 ? tree[0].title + ' - ' + tree[1].title : tree[0].title;
+        };
 
         /**
          * отслеживаем изменение стауса собственности

@@ -52,7 +52,7 @@
                         <p>Телефон: <strong>[[ debtor.phone ]]</strong></p>
                         <p>E-mail: <strong>[[ debtor.email ]]</strong></p>
                         <div style="background-color: #00a157">
-                            <p>Статус:<strong><span ng-if="debtor.ownershipStatus.parent">[[ debtor.ownershipStatus.parent.title ]] -</span> [[ debtor.ownershipStatus.title ]]</strong></p>
+                            <p>Статус: <strong>[[ showOwnershipStatus(debtor) ]]</strong></p>
                             <p>Дата начала: <strong>[[ debtor.startDateOwnership | date ]]</strong></p>
                             <p>Дата окончания: <strong>[[ debtor.endDateOwnership | date ]]</strong></p>
                             <p ng-if="debtor.ownershipStatus.alias == 'owner_shared' || debtor.ownershipStatus.alias == 'legal_representative_underage_owner_shared'">
