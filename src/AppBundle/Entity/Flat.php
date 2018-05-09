@@ -115,6 +115,8 @@ class Flat
 
     /**
      * @ORM\Column(name="personal_accounts", type="object", nullable=false)
+     *
+     * лицевые счета
      */
     private $personalAccounts;
 
