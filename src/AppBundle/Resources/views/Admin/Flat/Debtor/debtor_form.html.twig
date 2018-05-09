@@ -1,18 +1,20 @@
 <div style="margin-top: 10px" ng-show="state.openedDebtorForm">
-    {% include '@App/Admin/Flat/Debtor/form_control/type.html.twig' %}
+    <form name="debtor" novalidate ng-cloak>
+        {% include '@App/Admin/Flat/Debtor/form_control/type.html.twig' %}
 
-    <div ng-show="state.type">
-        <div ng-if="state.type.alias == 'individual'">
-            {% include '@App/Admin/Flat/Debtor/individual_form.html.twig' %}
-        </div>
+        <div ng-show="state.type">
+            <div ng-if="state.type.alias == 'individual'">
+                {% include '@App/Admin/Flat/Debtor/individual_form.html.twig' %}
+            </div>
 
-        <div ng-if="state.type.alias == 'businessman'">
-            {% include '@App/Admin/Flat/Debtor/businessman_form.html.twig' %}
-        </div>
+            <div ng-if="state.type.alias == 'businessman'">
+                {% include '@App/Admin/Flat/Debtor/businessman_form.html.twig' %}
+            </div>
 
-        <div ng-if="state.type.alias == 'legal'">
-            {% include '@App/Admin/Flat/Debtor/legal_form.html.twig' %}
+            <div ng-if="state.type.alias == 'legal'">
+                {% include '@App/Admin/Flat/Debtor/legal_form.html.twig' %}
+            </div>
         </div>
-    </div>
+    </form>
 </div>
 
