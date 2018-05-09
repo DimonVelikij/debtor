@@ -108,8 +108,15 @@ class Flat
     /**
      * @Gedmo\Timestampable(on="update")
      * @ORM\Column(name="updated_at", type="datetime", nullable=false)
+     *
+     * дата последнего обновления
      */
     private $updatedAt;
+
+    /**
+     * @ORM\Column(name="personal_accounts", type="object", nullable=false)
+     */
+    private $personalAccounts;
 
     /**
      * @ORM\ManyToOne(targetEntity="House", inversedBy="flats")
@@ -462,6 +469,30 @@ class Flat
     public function getUpdatedAt()
     {
         return $this->updatedAt;
+    }
+
+    /**
+     * Set personalAccounts
+     *
+     * @param \stdClass $personalAccounts
+     *
+     * @return Flat
+     */
+    public function setPersonalAccounts($personalAccounts)
+    {
+        $this->personalAccounts = $personalAccounts;
+
+        return $this;
+    }
+
+    /**
+     * Get personalAccounts
+     *
+     * @return \stdClass
+     */
+    public function getPersonalAccounts()
+    {
+        return $this->personalAccounts;
     }
 
     /**

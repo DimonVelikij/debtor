@@ -6,6 +6,7 @@ use AppBundle\Admin\traits\UserTrait;
 use AppBundle\Entity\Flat;
 use AppBundle\Entity\House;
 use AppBundle\Entity\User;
+use AppBundle\Form\Admin\PersonalAccountType;
 use AppBundle\Service\AddressBookValidator;
 use Doctrine\ORM\QueryBuilder;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
@@ -106,6 +107,9 @@ class FlatAdmin extends AbstractAdmin
                     'label'     => 'по:'
                 ]
             ])
+            ->add('personalAccounts', null, [
+                'label' =>  'Лицевые счета'
+            ])
         ;
     }
 
@@ -121,6 +125,11 @@ class FlatAdmin extends AbstractAdmin
             ])
             ->add('number', null, [
                 'label'     =>  'Номер помещения'
+            ])
+            ->add('personalAccounts', null, [
+                'label'     =>  'Лицевые счета',
+                'template'  =>  '@App/Admin/Flat/List/personal_accounts.html.twig',
+                'sortable'  =>  false
             ])
             ->add('sumDebt', null, [
                 'label'     =>  'Сумма долга, руб.'
@@ -184,7 +193,7 @@ class FlatAdmin extends AbstractAdmin
         }
 
         $formMapper
-            ->with('Помещение')
+            ->with('Помещение', ['class' => 'col-md-8'])
                 ->add('house', ChoiceType::class, [
                     'label'         =>  'Дом',
                     'choices'       =>  $houseChoice,
@@ -205,8 +214,31 @@ class FlatAdmin extends AbstractAdmin
                     'label'         =>  'Больше не является должником (Отправить в архив)',
                     'required'      =>  false
                 ])
+                ->add('personalAccounts', 'sonata_type_native_collection', [
+                    'label'         =>  'Лицевые счета',
+                    'entry_type'    =>  PersonalAccountType::class,
+                    'allow_add'     =>  true,
+                    'allow_delete'  =>  true,
+                    'required'      =>  true,
+                    'constraints'   =>  [
+                        new NotBlank(['message' => 'Укажите лицевой счет'])
+                    ],
+                    'error_bubbling'=> false
+                ])
             ->end()
-            ->with('Основной долг', ['class' => 'col-md-4'])
+            ->with('Период взыскания', ['class' => 'col-md-4'])
+                ->add('startDebtPeriod', DateType::class, [
+                    'label'     =>  'Начало периода взыскания',
+                    'required'  =>  false,
+                    'widget'    => 'single_text'
+                ])
+                ->add('endDebtPeriod', DateType::class, [
+                    'label'     =>  'Конец периода взыскания',
+                    'required'  =>  false,
+                    'widget'    => 'single_text'
+                ])
+            ->end()
+            ->with('Основной долг', ['class' => 'col-md-6'])
                 ->add('dateFillDebt', DateType::class, [
                     'label'         =>  'Дата заполнения основного долга',
                     'required'      =>  false,
@@ -214,7 +246,7 @@ class FlatAdmin extends AbstractAdmin
                     'help'          =>  'Оставьте поле пустым, подставится текущая дата'
                 ])
                 ->add('sumDebt', TextType::class, [
-                    'label'         =>  'Сумма долга',
+                    'label'         =>  'Сумма долга, руб.',
                     'required'      =>  true,
                     'constraints'   =>  [
                         new NotBlank(['message' => 'Укажите сумма долга'])
@@ -229,7 +261,7 @@ class FlatAdmin extends AbstractAdmin
                     'required'      =>  false
                 ])
             ->end()
-            ->with('Пени', ['class' => 'col-md-4'])
+            ->with('Пени', ['class' => 'col-md-6'])
                 ->add('dateFillFine', DateType::class, [
                     'label'     =>  'Дата заполнения пени',
                     'required'  =>  false,
@@ -237,7 +269,7 @@ class FlatAdmin extends AbstractAdmin
                     'help'      =>  'Оставьте поле пустым, подставится текущая дата'
                 ])
                 ->add('sumFine', TextType::class, [
-                    'label'     =>  'Сумма долга',
+                    'label'     =>  'Сумма долга, руб.',
                     'required'  =>  false
                 ])
                 ->add('periodAccruedFine', TextType::class, [
@@ -247,18 +279,6 @@ class FlatAdmin extends AbstractAdmin
                 ->add('periodPayFine', TextType::class, [
                     'label'         =>  'За период оплачено',
                     'required'      =>  false
-                ])
-            ->end()
-            ->with('Период взыскания', ['class' => 'col-md-4'])
-                ->add('startDebtPeriod', DateType::class, [
-                    'label'     =>  'Начало периода взыскания',
-                    'required'  =>  false,
-                    'widget'    => 'single_text'
-                ])
-                ->add('endDebtPeriod', DateType::class, [
-                    'label'     =>  'Конец периода взыскания',
-                    'required'  =>  false,
-                    'widget'    => 'single_text'
                 ])
             ->end()
         ;
@@ -293,6 +313,10 @@ class FlatAdmin extends AbstractAdmin
             ->add('id')
             ->add('number', null, [
                 'label'     =>  'Номер помещения'
+            ])
+            ->add('personalAccounts', null, [
+                'label'     =>  'Лицевые счета',
+                'template'  =>  '@App/Admin/Flat/Show/personal_accounts.html.twig'
             ])
             ->add('startDebtPeriod', null, [
                 'label'     =>  'Начало периода взыскания'
