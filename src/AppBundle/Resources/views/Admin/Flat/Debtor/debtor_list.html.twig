@@ -51,21 +51,19 @@
                         </div>
                         <p>Телефон: <strong>[[ debtor.phone ]]</strong></p>
                         <p>E-mail: <strong>[[ debtor.email ]]</strong></p>
-                        <div style="background-color: #00a157">
-                            <p>Статус: <strong>[[ showOwnershipStatus(debtor) ]]</strong></p>
-                            <p>Дата начала: <strong>[[ debtor.startDateOwnership | date ]]</strong></p>
-                            <p>Дата окончания: <strong>[[ debtor.endDateOwnership | date ]]</strong></p>
-                            <p ng-if="debtor.ownershipStatus.alias == 'owner_shared' || debtor.ownershipStatus.alias == 'legal_representative_underage_owner_shared'">
-                                Размер доли: <strong>[[ debtor.shareSize ]]</strong>
-                            </p>
-                            <p ng-if="
-                                debtor.ownershipStatus.alias == 'legal_representative_underage_owner_individual' ||
-                                debtor.ownershipStatus.alias == 'legal_representative_underage_owner_shared' ||
-                                debtor.ownershipStatus.alias == 'legal_representative_underage_owner_joint'
-                            ">
-                                ФИО собственника: <strong>[[ debtor.ownerName ]]</strong>
-                            </p>
-                        </div>
+                        <p>Статус: <strong>[[ showOwnershipStatus(debtor) ]]</strong></p>
+                        <p style="margin-left: 20px">Дата начала: <strong>[[ debtor.startDateOwnership | date ]]</strong></p>
+                        <p style="margin-left: 20px">Дата окончания: <strong>[[ debtor.endDateOwnership | date ]]</strong></p>
+                        <p style="margin-left: 20px" ng-if="debtor.ownershipStatus.alias == 'owner_shared' || debtor.ownershipStatus.alias == 'legal_representative_underage_owner_shared'">
+                            Размер доли: <strong>[[ debtor.shareSize ]]</strong>
+                        </p>
+                        <p style="margin-left: 20px" ng-if="
+                            debtor.ownershipStatus.alias == 'legal_representative_underage_owner_individual' ||
+                            debtor.ownershipStatus.alias == 'legal_representative_underage_owner_shared' ||
+                            debtor.ownershipStatus.alias == 'legal_representative_underage_owner_joint'
+                        ">
+                            ФИО собственника: <strong>[[ debtor.ownerName ]]</strong>
+                        </p>
                     </td>
                 </tr>
             </tbody>
