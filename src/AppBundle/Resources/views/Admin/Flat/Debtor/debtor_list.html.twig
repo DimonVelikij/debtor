@@ -31,7 +31,7 @@
                     <td colspan="6">
                         <div ng-if="debtor.type.alias == 'individual'">
                             <p>ФИО: <strong>[[ debtor.name ]]</strong></p>
-                            <p>Дата рождения: <strong>[[ debtor.dateOfBirth ]]</strong></p>
+                            <p>Дата рождения: <strong>[[ debtor.dateOfBirth | date ]]</strong></p>
                             <p>Место рождения: <strong>[[ debtor.placeOfBirth ]]</strong></p>
                             <p>Место жительства: <strong>[[ debtor.location ]]</strong></p>
                         </div>
@@ -53,8 +53,8 @@
                         <p>E-mail: <strong>[[ debtor.email ]]</strong></p>
                         <div style="background-color: #00a157">
                             <p>Статус:<strong><span ng-if="debtor.ownershipStatus.parent">[[ debtor.ownershipStatus.parent.title ]] -</span> [[ debtor.ownershipStatus.title ]]</strong></p>
-                            <p>Дата начала: <strong>[[ debtor.startDateOwnership ]]</strong></p>
-                            <p>Дата окончания: <strong>[[ debtor.endDateOwnership ]]</strong></p>
+                            <p>Дата начала: <strong>[[ debtor.startDateOwnership | date ]]</strong></p>
+                            <p>Дата окончания: <strong>[[ debtor.endDateOwnership | date ]]</strong></p>
                             <p ng-if="debtor.ownershipStatus.alias == 'owner_shared' || debtor.ownershipStatus.alias == 'legal_representative_underage_owner_shared'">
                                 Размер доли: <strong>[[ debtor.shareSize ]]</strong>
                             </p>
