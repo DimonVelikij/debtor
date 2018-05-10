@@ -4,7 +4,6 @@ namespace AppBundle\Admin;
 
 use AppBundle\Admin\traits\UserTrait;
 use AppBundle\Entity\Flat;
-use AppBundle\Entity\House;
 use AppBundle\Entity\User;
 use AppBundle\Form\Admin\PersonalAccountType;
 use AppBundle\Service\AddressBookValidator;
@@ -16,7 +15,6 @@ use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormError;
@@ -159,46 +157,14 @@ class FlatAdmin extends AbstractAdmin
      */
     protected function configureFormFields(FormMapper $formMapper)
     {
-        /** @var User $user */
-        $user = $this->getUser();
-
-        $houseQueryBuilder = $this->getEntityManager()->getRepository('AppBundle:House')
-            ->createQueryBuilder('house');
-
-        if (!$user->isSuperAdmin()) {
-            $houseQueryBuilder
-                ->andWhere(
-                    $houseQueryBuilder->expr()->eq('house.company', $user->getCompany()->getId())
-                );
-        }
-
-        $houses = $houseQueryBuilder
-            ->innerJoin('house.street', 'street')
-            ->orderBy('street.city')
-            ->getQuery()
-            ->getResult();
-
-        $houseHelp = count($houses) ?
-            "<span style='color: blue;'>Если в списке нет нужного дома, необходимо <a target='_blank' href='{$this->getRouter()->generate('admin_app_house_create')}'>добавить дом</a> и обновить страницу</span>" :
-            "<span style='color: red'>Список домов пуст. Необходимо <a target='_blank' href='{$this->getRouter()->generate('admin_app_house_create')}'>добавить дом</a> и обновить страницу</span>";
-
-        $houseChoice = [];
-
-        /** @var House $house */
-        foreach ($houses as $house) {
-            if (!isset($houseChoice[$house->getStreet()->getCity()->getTitle() . ', ' . $house->getStreet()->getTitle()])) {
-                $houseChoice[$house->getStreet()->getCity()->getTitle() . ', ' . $house->getStreet()->getTitle()] = [];
-            }
-            $houseChoice[$house->getStreet()->getCity()->getTitle() . ', ' . $house->getStreet()->getTitle()][$house->getStreet()->getCity()->getTitle() . ', ' . $house->getStreet()->getTitle() . ', ' . $house->getNumber()] = $house;
-        }
-
         $formMapper
             ->with('Помещение', ['class' => 'col-md-8'])
-                ->add('house', ChoiceType::class, [
+                ->add('house', 'entity', [
                     'label'         =>  'Дом',
-                    'choices'       =>  $houseChoice,
+                    'class'         =>  'AppBundle\Entity\House',
                     'required'      =>  true,
-                    'help'          =>  $houseHelp,
+                    'group_by'      =>  'street.city',
+                    'help'          =>  "<span style='color: blue;'>Если в списке нет нужного дома, необходимо <a target='_blank' href='{$this->getRouter()->generate('admin_app_house_create')}'>добавить дом</a> и обновить страницу</span>",
                     'constraints'   =>  [
                         new NotBlank(['message' => 'Укажите дом'])
                     ]
@@ -373,14 +339,6 @@ class FlatAdmin extends AbstractAdmin
     public function getContainer()
     {
         return $this->getConfigurationPool()->getContainer();
-    }
-
-    /**
-     * @return \Doctrine\ORM\EntityManager
-     */
-    private function getEntityManager()
-    {
-        return $this->getContainer()->get('doctrine.orm.entity_manager');
     }
 
     /**
