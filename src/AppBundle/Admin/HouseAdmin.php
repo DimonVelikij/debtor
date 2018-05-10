@@ -3,10 +3,9 @@
 namespace AppBundle\Admin;
 
 use AppBundle\Admin\traits\UserTrait;
-use AppBundle\Entity\Company;
-use AppBundle\Entity\Street;
 use AppBundle\Entity\User;
 use AppBundle\Service\AddressBookValidator;
+use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -14,7 +13,6 @@ use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
@@ -39,10 +37,7 @@ class HouseAdmin extends AbstractAdmin
         $query = parent::createQuery($context);
 
         if (!$user->isSuperAdmin()) {
-            $query
-                ->andWhere(
-                    $query->expr()->eq('o.company', $user->getCompany()->getId())
-                );
+            $query->andWhere($query->expr()->eq('o.company', $user->getCompany()->getId()));
         }
 
         return $query;
@@ -128,73 +123,33 @@ class HouseAdmin extends AbstractAdmin
         /** @var User $user */
         $user = $this->getUser();
 
-        //получаем список улиц
-        $streets = $this->getEntityManager()
-            ->getRepository('AppBundle:Street')
-            ->createQueryBuilder('s')
-            ->orderBy('s.city')
-            ->getQuery()
-            ->getResult();
-
-        $streetHelp = count($streets) ?
-            "<span style='color: blue;'>Если в списке нет нужной улицы, необходимо <a target='_blank' href='{$this->getRouter()->generate('admin_app_street_create')}'>добавить улицу</a> и обновить страницу</span>" :
-            "<span style='color: red'>Список улиц пуст. Необходимо <a target='_blank' href='{$this->getRouter()->generate('admin_app_street_create')}'>добавить улицу</a> и обновить страницу</span>";
-
-        $streetChoice = [];
-
-        /** @var Street $street */
-        foreach ($streets as $street) {
-            $streetChoice[$street->getCity()->getTitle() . ', ' . $street->getTitle()] = $street;
-        }
-
-        //получаем список управляющих компаний
-        $companies = $this->getEntityManager()->getRepository('AppBundle:Company')->findAll();
-
-        $companyHelp = '';
-        $companyChoice = [];
-
-        if (!count($companies)) {
-            $companyHelp = '<span style="color: red;">Не удалось найти управляющие компании. Обратитесь к администратору</span>';
-        } else {
-            if ($user->isSuperAdmin()) {
-                /** @var Company $company */
-                foreach ($companies as $company) {
-                    $companyChoice[$company->getTitle()] = $company;
-                }
-            } else {
-                $companyChoice[$user->getCompany()->getTitle()] = $user->getCompany();
-            }
-        }
-
-        $companyOptions = [
-            'label'         =>  'Управляющая компания',
-            'required'      =>  true,
-            'choices'       =>  $companyChoice,
-            'constraints'   =>  [
-                new NotBlank(['message' => 'Укажите управлющую компанию'])
-            ],
-            'help'          =>  $companyHelp
-        ];
-
-        //если пользователь не суперадмин - устанавливаем компанию пользователя
-        if (!$user->isSuperAdmin()) {
-            $companyOptions['data'] = current($companyChoice);
-        }
-
         $formMapper
-            ->add('street', ChoiceType::class, [
+            ->add('street', 'entity', [
                 'label'         =>  'Город, улица',
                 'required'      =>  true,
-                'choices'       =>  $streetChoice,
-                'group_by'      =>  function ($value, $key, $index) {
-                    return $value->getCity()->getTitle();
-                },
-                'help'          =>  $streetHelp,
+                'class'         =>  'AppBundle\Entity\Street',
+                'group_by'      =>  'city',
+                'help'          =>  "<span style='color: blue;'>Если в списке нет нужной улицы, необходимо <a target='_blank' href='{$this->getRouter()->generate('admin_app_street_create')}'>добавить улицу</a> и обновить страницу</span>",
                 'constraints'   =>  [
                     new NotBlank(['message' => 'Укажите название улицы'])
                 ]
             ])
-            ->add('company', ChoiceType::class, $companyOptions)
+            ->add('company', 'entity', [
+                'label'         =>  'Управляющая компания',
+                'required'      =>  true,
+                'class'         =>  'AppBundle\Entity\Company',
+                'query_builder' =>  function (EntityRepository $entityRepository) use ($user) {
+                    $queryBuilder = $entityRepository->createQueryBuilder('company');
+
+                    if (!$user->isSuperAdmin()) {
+                        $queryBuilder
+                            ->where('company.id = :company_id')
+                            ->setParameter('company_id', $user->getCompany()->getId());
+                    }
+
+                    return $queryBuilder;
+                }
+            ])
             ->add('number', TextType::class, [
                 'label'         =>  'Номер дома'
             ])
@@ -241,14 +196,6 @@ class HouseAdmin extends AbstractAdmin
     public function getContainer()
     {
         return $this->getConfigurationPool()->getContainer();
-    }
-
-    /**
-     * @return \Doctrine\ORM\EntityManager
-     */
-    private function getEntityManager()
-    {
-        return $this->getContainer()->get('doctrine.orm.entity_manager');
     }
 
     /**
