@@ -78,17 +78,12 @@ class StreetAdmin extends AbstractAdmin
      */
     protected function configureFormFields(FormMapper $formMapper)
     {
-        $cities = $this->getEntityManager()->getRepository('AppBundle:City')->findAll();
-        $cityHelp = count($cities) ?
-            "<span style='color: blue;'>Если в списке нет нужного города, необнодимо <a target='_blank' href='{$this->getRouter()->generate('admin_app_city_create')}'>добавить город</a> и обновить страницу</span>" :
-            "<span style='color: red'>Список городов пуст. Необходимо <a target='_blank' href='{$this->getRouter()->generate('admin_app_city_create')}'>добавить город</a> и обновить страницу</span>";
-
         $formMapper
             ->add('city', 'entity', [
                 'label'         =>  'Город',
                 'class'         =>  'AppBundle\Entity\City',
                 'required'      =>  true,
-                'help'          =>  $cityHelp,
+                'help'          =>  "<span style='color: blue;'>Если в списке нет нужного города, необнодимо <a target='_blank' href='{$this->getRouter()->generate('admin_app_city_create')}'>добавить город</a> и обновить страницу</span>",
                 'constraints'   =>  [
                     new NotBlank(['message' => 'Укажите город'])
                 ]
@@ -143,14 +138,6 @@ class StreetAdmin extends AbstractAdmin
     public function getContainer()
     {
         return $this->getConfigurationPool()->getContainer();
-    }
-
-    /**
-     * @return \Doctrine\ORM\EntityManager
-     */
-    private function getEntityManager()
-    {
-        return $this->getContainer()->get('doctrine.orm.entity_manager');
     }
 
     /**
