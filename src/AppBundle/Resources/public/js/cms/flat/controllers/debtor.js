@@ -47,8 +47,9 @@
 
         /**
          * закрытие формы создания|редактирования должника
+         * @param form
          */
-        $scope.closeDebtorForm = function () {
+        $scope.closeDebtorForm = function (form) {
             $scope.state = {
                 openedDebtorForm: false,
                 type: null,
@@ -60,6 +61,8 @@
             $scope.ownershipSubStatuses = null;
             //сбрасываем объект должника
             $scope.currentDebtor = {};
+
+            FormHelper.forcePristine(form);
         };
 
         /**
@@ -304,7 +307,7 @@
                                 }
                             });
                         }
-                        $scope.closeDebtorForm();
+                        $scope.closeDebtorForm(form);
                     } else {
                         FormHelper.showBackendErrors(response.data.errors, form);
                     }

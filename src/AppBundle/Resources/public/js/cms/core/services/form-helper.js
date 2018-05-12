@@ -14,6 +14,7 @@
     ) {
         return {
             forceDirty: forceDirty,
+            forcePristine: forcePristine,
             showBackendErrors: showBackendErrors
         };
 
@@ -33,6 +34,26 @@
             _.forEach(form, function (field, name) {
                 if (name[0] !== '$' && field.$pristine && field.$setDirty) {
                     field.$setDirty();
+                }
+            });
+        }
+
+        /**
+         * проставляем всем полям pristine
+         * @param form
+         */
+        function forcePristine (form) {
+            if (!form) {
+                return;
+            }
+
+            if (form.$dirty) {
+                form.$setPristine();
+            }
+
+            _.forEach(form, function (field, name) {
+                if (name[0] !== '$' && field.$dirty && field.$setPristine) {
+                    field.$setPristine();
                 }
             });
         }
