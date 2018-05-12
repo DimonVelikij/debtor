@@ -126,6 +126,12 @@
                 bossPosition: null//должность руководителя
             };
 
+            //чекбоксы в сонате не работают через ng-model - приходится делать через iCheck и эвент ifChanged
+            //устанавливаем или снимаем чекбокс "Является абонентом"
+            angular.element('#subscriber').iCheck($scope.currentDebtor.subscriber ? 'check' : 'uncheck');
+            //устанавливаем или снимаем чекбокс "Архивный"
+            angular.element('#archive').iCheck($scope.currentDebtor.archive ? 'check' : 'uncheck');
+
             //проставляем данные в зависимости от типа должника
             switch (newDebtorType.alias) {
                 case 'individual':
@@ -184,7 +190,7 @@
          */
         $scope.showOwnershipStatus = function (debtor) {
             if (!debtor || !debtor.isShow) {
-                return '';
+                return;
             }
 
             var tree = getTreeOwnershipStatuses($scope.ownershipStatuses[debtor.type.alias], debtor.ownershipStatus.alias, []);
@@ -282,6 +288,20 @@
 
                 });
         };
+
+        /**
+         * отслеживаем изменение чекбокса "Является абонентом"
+         */
+        angular.element('#subscriber').on('ifChanged', function (event) {
+            $scope.currentDebtor.subscriber = event.target.checked;
+        });
+
+        /**
+         * отслеживаем изменение чекбокса "Архивный"
+         */
+        angular.element('#archive').on('ifChanged', function (event) {
+            $scope.currentDebtor.archive = event.target.checked;
+        });
     }
 
 })(angular);

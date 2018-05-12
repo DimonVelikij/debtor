@@ -51,6 +51,8 @@
                         </div>
                         <p>Телефон: <strong>[[ debtor.phone ]]</strong></p>
                         <p>E-mail: <strong>[[ debtor.email ]]</strong></p>
+                        <p>Является должником: <span class="label label-success" ng-if="debtor.subscriber">да</span><span class="label label-danger" ng-if="!debtor.subscriber">нет</span></p>
+                        <p>Архивный: <span class="label label-success" ng-if="debtor.archive">да</span><span class="label label-danger" ng-if="!debtor.archive">нет</span></p>
                         <p>Статус: <strong>[[ showOwnershipStatus(debtor) ]]</strong></p>
                         <p style="margin-left: 20px">Дата начала: <strong>[[ debtor.startDateOwnership | date ]]</strong></p>
                         <p style="margin-left: 20px">Дата окончания: <strong>[[ debtor.endDateOwnership | date ]]</strong></p>
