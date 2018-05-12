@@ -72,8 +72,6 @@
         </table>
         <div style="margin-bottom: 20px">
             <p ng-hide="debtors.length">Список должников пуст</p>
-            <a class="btn btn-success" ng-click="openDebtorForm()" ng-hide="state.openedDebtorForm"><i class="fa fa-plus"></i> Добавить должника</a>
-            <a class="btn btn-success" ng-click="closeDebtorForm()" ng-show="state.openedDebtorForm"><i class="fa fa-close"></i> Закрыть форму</a>
             {% include '@App/Admin/Flat/Debtor/debtor_form.html.twig' %}
         </div>
     </div>
