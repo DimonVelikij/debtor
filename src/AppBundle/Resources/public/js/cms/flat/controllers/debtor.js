@@ -120,7 +120,7 @@
             var treeStatuses = $scope.state.currentDebtor.ownershipStatus ?
                 getTreeOwnershipStatuses($scope.ownershipStatuses[newDebtorType.alias], $scope.state.currentDebtor.ownershipStatus.alias, []) :
                 [];
-console.log(newDebtorType.alias, $scope.ownershipStatuses, treeStatuses);
+
             //проставляем общие данные
             $scope.currentDebtor = {
                 id: $scope.state.currentDebtor.id ? $scope.state.currentDebtor.id : null,//id дожника
@@ -130,8 +130,8 @@ console.log(newDebtorType.alias, $scope.ownershipStatuses, treeStatuses);
                 location: $scope.state.currentDebtor.location,//место нахождения или жительства
                 archive: $scope.state.currentDebtor.archive ? $scope.state.currentDebtor.archive : false,//является ли арфивным должник
                 subscriber: $scope.state.currentDebtor.subscriber ? $scope.state.currentDebtor.subscriber : false,//является абонентом
-                ownershipStatus: treeStatuses.length ? treeStatuses[0] : null,//статус собстенности
-                ownershipSubStatus: treeStatuses.length && treeStatuses.length > 1 ? treeStatuses[1] : null,//доп статус собственности
+                ownershipStatus: treeStatuses.length ? treeStatuses[0] : undefined,//статус собстенности
+                ownershipSubStatus: treeStatuses.length && treeStatuses.length > 1 ? treeStatuses[1] : undefined,//доп статус собственности
                 startDateOwnership: $scope.state.currentDebtor.startDateOwnership ? $filter('date')($scope.state.currentDebtor.startDateOwnership) : null,//дата начала собственности
                 endDateOwnership: $scope.state.currentDebtor.endDateOwnership ? $filter('date')($scope.state.currentDebtor.endDateOwnership) : null,//дата окончания собственности
                 //доп параметры, зависящие от статусов собственности
@@ -149,6 +149,9 @@ console.log(newDebtorType.alias, $scope.ownershipStatuses, treeStatuses);
                 bossName: null,//ФИО руководителя
                 bossPosition: null//должность руководителя
             };
+
+            //при смене должника очищаем список дочерних статусов
+            $scope.ownershipSubStatuses = null;
 
             //чекбоксы в сонате не работают через ng-model - приходится делать через iCheck и эвент ifChanged
             //устанавливаем или снимаем чекбокс "Является абонентом"
