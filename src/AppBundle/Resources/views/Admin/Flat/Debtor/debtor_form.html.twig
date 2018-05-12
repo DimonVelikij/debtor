@@ -2,7 +2,11 @@
     <form name="debtor" novalidate ng-cloak>
         {% include '@App/Admin/Flat/Debtor/form_control/type.html.twig' %}
 
-        <div ng-show="state.type">
+        {#у текущего блока идет подмена контроллера в зависимости от выбранного типа должника#}
+        <div ng-show="state.type" ng-controller="DebtorSubCtrl">
+
+            {% include '@App/Admin/Flat/Debtor/ownership_block.html.twig' %}
+
             <div ng-show="state.type.alias == 'individual'">
                 {% include '@App/Admin/Flat/Debtor/individual_form.html.twig' %}
             </div>
@@ -14,6 +18,19 @@
             <div ng-show="state.type.alias == 'legal'">
                 {% include '@App/Admin/Flat/Debtor/legal_form.html.twig' %}
             </div>
+
+            {% include '@App/Admin/Flat/Debtor/form_control/phone.html.twig' %}
+
+            {% include '@App/Admin/Flat/Debtor/form_control/email.html.twig' %}
+
+            {% include '@App/Admin/Flat/Debtor/form_control/subscriber.html.twig' %}
+
+            {% include '@App/Admin/Flat/Debtor/form_control/archive.html.twig' %}
+
+            <button class="btn btn-success" ng-click="submit($event, debtor)">
+                <i class="fa fa-save"></i>
+                Сохранить
+            </button>
         </div>
     </form>
 </div>

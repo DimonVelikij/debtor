@@ -12,7 +12,8 @@
         '$filter',
         '_',
         'Initializer',
-        'FormHelper'
+        'FormHelper',
+        '$controller'
     ];
 
     function DebtorCtrl(
@@ -22,7 +23,8 @@
         $filter,
         _,
         Initializer,
-        FormHelper
+        FormHelper,
+        $controller
     ) {
         /**
          * форма
@@ -85,6 +87,25 @@
         });
 
         /**
+         * подстановка контроллера в зависимости от типа должника
+         * @returns {*}
+         * @constructor
+         */
+        $scope.DebtorSubCtrl = function () {
+            if (!$scope.state || !$scope.state.type) {
+                return null;
+            }
+
+            var ctrlList = {
+                individual: 'DebtorIndividualCtrl',
+                businessman: 'DebtorBusinessmanCtrl',
+                legal: 'DebtorLegalCtrl'
+            };
+
+            return $controller(ctrlList[$scope.state.type.alias], {$scope: $scope}).constructor;
+        };
+
+        /**
          * отслеживаем изменение типа должника
          */
         $scope.$watch('state.type', function (newDebtorType) {
@@ -92,11 +113,14 @@
                 return;
             }
 
+            //при смене типа подменяем контроллер
+            $scope.DebtorSubCtrl();
+
             //получаем статусы собственности от родительского к дочернему
             var treeStatuses = $scope.state.currentDebtor.ownershipStatus ?
                 getTreeOwnershipStatuses($scope.ownershipStatuses[newDebtorType.alias], $scope.state.currentDebtor.ownershipStatus.alias, []) :
                 [];
-
+console.log(newDebtorType.alias, $scope.ownershipStatuses, treeStatuses);
             //проставляем общие данные
             $scope.currentDebtor = {
                 id: $scope.state.currentDebtor.id ? $scope.state.currentDebtor.id : null,//id дожника
