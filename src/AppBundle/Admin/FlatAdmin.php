@@ -7,6 +7,7 @@ use AppBundle\Entity\Flat;
 use AppBundle\Entity\User;
 use AppBundle\Form\Admin\PersonalAccountType;
 use AppBundle\Service\AddressBookValidator;
+use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -173,6 +174,9 @@ class FlatAdmin extends AbstractAdmin
      */
     protected function configureFormFields(FormMapper $formMapper)
     {
+        /** @var User $user */
+        $user = $this->getUser();
+
         $formMapper
             ->with('Помещение', ['class' => 'col-md-8'])
                 ->add('house', 'entity', [
@@ -183,7 +187,18 @@ class FlatAdmin extends AbstractAdmin
                     'help'          =>  "<span style='color: blue;'>Если в списке нет нужного дома, необходимо <a target='_blank' href='{$this->getRouter()->generate('admin_app_house_create')}'>добавить дом</a> и обновить страницу</span>",
                     'constraints'   =>  [
                         new NotBlank(['message' => 'Укажите дом'])
-                    ]
+                    ],
+                    'query_builder' =>  function (EntityRepository $er) use ($user) {
+                        if (!$user->isSuperAdmin()) {
+                            //выводим дома, принадлежащие только УК пользователя
+                            $er = $er->createQueryBuilder('house');
+                            
+                            return $er
+                                ->andWhere(
+                                    $er->expr()->eq('house.company', $user->getCompany()->getId())
+                                );
+                        }
+                    }
                 ])
                 ->add('number', TextType::class, [
                     'label'         =>  'Номер помещения',
