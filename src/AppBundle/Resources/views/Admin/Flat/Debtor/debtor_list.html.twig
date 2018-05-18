@@ -1,9 +1,15 @@
 <div class="col-md-12">
-    <div class="sonata-ba-collapsed-fields">
-        <table class="table table-bordered table-striped sonata-ba-list" ng-show="debtors.length">
+    <div class="sonata-ba-collapsed-fields" ng-show="debtors.length">
+        <div style="padding-bottom: 40px;">
+            <span style="background-color: #ededed; display: block; float: left; width: 25px; height: 25px; margin-right: 5px;"></span>
+            <span style="float: left; margin-right: 10px;">Архивный</span>
+            <span style="background-color: #befab4; display: block; float: left; width: 25px; height: 25px; margin-right: 5px;"></span>
+            <span style="float: left;">Активный</span>
+        </div>
+        <table class="table table-bordered table-striped sonata-ba-list">
             <thead>
                 <tr class="sonata-ba-list-field-header">
-                    <th>ФИО</th>
+                    <th>ФИО/Наименование</th>
                     <th>Тип</th>
                     <th>Телефон</th>
                     <th>Место жительства/расположения</th>
@@ -12,7 +18,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat-start="debtor in debtors">
+                <tr ng-repeat-start="debtor in debtors | orderBy : archive : true" ng-style="{'background-color': debtor.archive ? '#ededed' : '#befab4'}">
                     <td>[[ debtor.name ]]</td>
                     <td>[[ debtor.type.title ]]</td>
                     <td>[[ debtor.phone ]]</td>
