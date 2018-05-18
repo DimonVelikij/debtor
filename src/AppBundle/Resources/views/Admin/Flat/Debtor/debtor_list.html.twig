@@ -18,7 +18,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat-start="debtor in debtors | orderBy : archive : true" ng-style="{'background-color': debtor.archive ? '#ededed' : '#befab4'}">
+                <tr ng-repeat-start="debtor in debtors | orderBy : 'archive'" ng-style="{'background-color': debtor.archive ? '#ededed' : '#befab4'}">
                     <td>[[ debtor.name ]]</td>
                     <td>[[ debtor.type.title ]]</td>
                     <td>[[ debtor.phone ]]</td>
@@ -33,7 +33,7 @@
                         <a class="btn btn-success" ng-click="openDebtorForm(debtor)"><i class="fa fa-pencil"></i> Редактировать</a>
                     </td>
                 </tr>
-                <tr ng-repeat-end ng-show="debtor.isShow" style="background-color: #c9e2b3">
+                <tr ng-repeat-end ng-show="debtor.isShow" ng-style="{'background-color': debtor.archive ? '#ededed' : '#befab4'}">
                     <td colspan="6">
                         <div ng-if="debtor.type.alias == 'individual'">
                             <p>ФИО: <strong>[[ debtor.name ]]</strong></p>
