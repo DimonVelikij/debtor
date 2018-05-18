@@ -131,8 +131,7 @@
                 phone: $scope.state.currentDebtor.phone ? parseInt($scope.state.currentDebtor.phone) : null,//телефон
                 email: $scope.state.currentDebtor.email,//email
                 location: $scope.state.currentDebtor.location,//место нахождения или жительства
-                archive: $scope.state.currentDebtor.archive ? $scope.state.currentDebtor.archive : false,//является ли арфивным должник
-                subscriber: $scope.state.currentDebtor.subscriber ? $scope.state.currentDebtor.subscriber : false,//является абонентом
+                archive: $scope.state.currentDebtor.archive ? $scope.state.currentDebtor.archive : false,//является ли архивным должник
                 ownershipStatus: treeStatuses.length ? treeStatuses[0] : undefined,//статус собстенности
                 ownershipSubStatus: treeStatuses.length && treeStatuses.length > 1 ? treeStatuses[1] : undefined,//доп статус собственности
                 startDateOwnership: $scope.state.currentDebtor.startDateOwnership ? $filter('date')($scope.state.currentDebtor.startDateOwnership) : null,//дата начала собственности
@@ -157,8 +156,6 @@
             $scope.ownershipSubStatuses = null;
 
             //чекбоксы в сонате не работают через ng-model - приходится делать через iCheck и эвент ifChanged
-            //устанавливаем или снимаем чекбокс "Является абонентом"
-            angular.element('#subscriber').iCheck($scope.currentDebtor.subscriber ? 'check' : 'uncheck');
             //устанавливаем или снимаем чекбокс "Архивный"
             angular.element('#archive').iCheck($scope.currentDebtor.archive ? 'check' : 'uncheck');
 
@@ -249,7 +246,7 @@
 
         /**
          * данные для отправки на backend для всех типов должников
-         * @returns {{name: *, phone: *, email: *, location: *, archive: (boolean|*), subscriber: (boolean|*), ownershipStatus: (null|*), startDateOwnership: (null|*), endDateOwnership: (null|*)}}
+         * @returns {{name: *, phone: *, email: *, location: *, archive: (boolean|*), ownershipStatus: (null|*), startDateOwnership: (null|*), endDateOwnership: (null|*)}}
          */
         $scope.getBaseSubmitData = function () {
             var baseSubmitData = {
@@ -261,7 +258,6 @@
                 email: $scope.currentDebtor.email,
                 location: $scope.currentDebtor.location,
                 archive: $scope.currentDebtor.archive,
-                subscriber: $scope.currentDebtor.subscriber,
                 ownershipStatus: $scope.currentDebtor.ownershipSubStatus ? $scope.currentDebtor.ownershipSubStatus : $scope.currentDebtor.ownershipStatus,
                 startDateOwnership: $scope.currentDebtor.startDateOwnership ? $scope.currentDebtor.startDateOwnership.replace(/\./g, '') : null,
                 endDateOwnership: $scope.currentDebtor.endDateOwnership ? $scope.currentDebtor.endDateOwnership.replace(/\./g, '') : null
@@ -318,13 +314,6 @@
 
                 });
         };
-
-        /**
-         * отслеживаем изменение чекбокса "Является абонентом"
-         */
-        angular.element('#subscriber').on('ifChanged', function (event) {
-            $scope.currentDebtor.subscriber = event.target.checked;
-        });
 
         /**
          * отслеживаем изменение чекбокса "Архивный"

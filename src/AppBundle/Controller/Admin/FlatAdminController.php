@@ -141,7 +141,6 @@ class FlatAdminController extends CRUDController
             'email'             =>  $data['email'] ?? null,
             'location'          =>  $data['location'] ?? null,
             'archive'           =>  $data['archive'] ?? false,
-            'subscriber'        =>  $data['subscriber'] ?? false,
             'ownershipStatus'   =>  $data['ownershipStatus'] ?? null,
             'startDateOwnership'=>  $data['startDateOwnership'] ?? null,
             'endDateOwnership'  =>  $data['endDateOwnership'] ?? null,
@@ -184,7 +183,6 @@ class FlatAdminController extends CRUDController
             ->setStartDateOwnership($input['startDateOwnership'] ? \DateTime::createFromFormat('dmY', $input['startDateOwnership']) : null)
             ->setEndDateOwnership($input['endDateOwnership'] ? \DateTime::createFromFormat('dmY', $input['endDateOwnership']) : null)
             ->setArchive($input['archive'])
-            ->setSubscriber($input['subscriber'])
             ->setShareSize($input['shareSize'])
             ->setDateOfBirth($input['dateOfBirth'] ? \DateTime::createFromFormat('dmY', $input['dateOfBirth']) : null)
             ->setPlaceOfBirth($input['placeOfBirth'])

@@ -108,17 +108,6 @@ class Debtor
     private $archive;
 
     /**
-     * является ли абонентом
-     * @ORM\Column(name="subscriber", type="boolean", nullable=true)
-     *
-     * @JMS\Expose
-     * @JMS\Type("boolean")
-     * @JMS\SerializedName("subscriber")
-     * @JMS\Groups({"cms-debtor"})
-     */
-    private $subscriber;
-
-    /**
      * размер доли, если статус собственности долевой
      * @ORM\Column(name="share_size", type="string", length=255, nullable=true)
      *
@@ -464,30 +453,6 @@ class Debtor
     public function getArchive()
     {
         return $this->archive;
-    }
-
-    /**
-     * Set subscriber
-     *
-     * @param boolean $subscriber
-     *
-     * @return Debtor
-     */
-    public function setSubscriber($subscriber)
-    {
-        $this->subscriber = $subscriber;
-
-        return $this;
-    }
-
-    /**
-     * Get subscriber
-     *
-     * @return boolean
-     */
-    public function getSubscriber()
-    {
-        return $this->subscriber;
     }
 
     /**
