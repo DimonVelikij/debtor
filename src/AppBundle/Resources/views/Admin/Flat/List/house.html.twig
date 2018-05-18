@@ -1,0 +1,5 @@
+{% extends admin.getTemplate('base_list_field') %}
+
+{% block field %}
+    <a href="{{ path('admin_app_house_edit', {id: object.house.id}) }}">{{ object.house.number }}</a>
+{% endblock %}

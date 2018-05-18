@@ -83,11 +83,17 @@ class FlatAdmin extends AbstractAdmin
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
-            ->add('number', null, [
-                'label' =>  'Номер помещения'
+            ->add('house.street.city', null, [
+                'label' =>  'Город'
+            ])
+            ->add('house.street', null, [
+                'label' =>  'Улица'
             ])
             ->add('house', null, [
-                'label' =>  'Адрес'
+                'label' =>  'Дом'
+            ])
+            ->add('number', null, [
+                'label' =>  'Номер помещения'
             ])
             ->add('archive', null, [
                 'label' =>  'Архивный'
@@ -118,11 +124,21 @@ class FlatAdmin extends AbstractAdmin
     {
         $listMapper
             ->add('id')
+            ->add('house.street.city', null, [
+                'label'     =>  'Город',
+                'template'  =>  '@App/Admin/Flat/List/city.html.twig'
+            ])
+            ->add('house.street', null, [
+                'label'     =>  'Улица',
+                'template'  =>  '@App/Admin/Flat/List/street.html.twig'
+            ])
             ->add('house', null, [
-                'label'     =>  'Адрес'
+                'label'     =>  'Дом',
+                'template'  =>  '@App/Admin/Flat/List/house.html.twig'
             ])
             ->add('number', null, [
-                'label'     =>  'Номер помещения'
+                'label'     =>  'Номер помещения',
+                'sortable'  =>  false
             ])
             ->add('personalAccounts', null, [
                 'label'     =>  'Лицевые счета',
