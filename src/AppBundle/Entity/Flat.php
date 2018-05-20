@@ -120,6 +120,11 @@ class Flat
     private $house;
 
     /**
+     * @ORM\OneToMany(targetEntity="Subscriber", mappedBy="flat")
+     */
+    private $subscribers;
+
+    /**
      * @ORM\OneToMany(targetEntity="Debtor", mappedBy="flat")
      */
     private $debtors;
@@ -141,6 +146,7 @@ class Flat
      */
     public function __construct()
     {
+        $this->subscribers = new \Doctrine\Common\Collections\ArrayCollection();
         $this->debtors = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
@@ -488,6 +494,40 @@ class Flat
     public function getHouse()
     {
         return $this->house;
+    }
+
+    /**
+     * Add subscriber
+     *
+     * @param \AppBundle\Entity\Subscriber $subscriber
+     *
+     * @return Flat
+     */
+    public function addSubscriber(\AppBundle\Entity\Subscriber $subscriber)
+    {
+        $this->subscribers[] = $subscriber;
+
+        return $this;
+    }
+
+    /**
+     * Remove subscriber
+     *
+     * @param \AppBundle\Entity\Subscriber $subscriber
+     */
+    public function removeSubscriber(\AppBundle\Entity\Subscriber $subscriber)
+    {
+        $this->subscribers->removeElement($subscriber);
+    }
+
+    /**
+     * Get subscribers
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getSubscribers()
+    {
+        return $this->subscribers;
     }
 
     /**
