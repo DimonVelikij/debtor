@@ -5,6 +5,7 @@ namespace AppBundle\Admin;
 use AppBundle\Admin\traits\UserTrait;
 use AppBundle\Entity\Flat;
 use AppBundle\Entity\User;
+use AppBundle\Form\Admin\Type\DebtorsType;
 use AppBundle\Service\AddressBookValidator;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
@@ -42,23 +43,10 @@ class FlatAdmin extends AbstractAdmin
         if (!$user->isSuperAdmin()) {
             $query
                 ->innerJoin('o.house', 'house')
-                ->andWhere(
-                    $query->expr()->eq('house.company', $user->getCompany()->getId())
-                );
+                ->andWhere($query->expr()->eq('house.company', $user->getCompany()->getId()));
         }
 
         return $query;
-    }
-
-    /**
-     * @param $name
-     * @return mixed|null|string
-     */
-    public function getTemplate($name)
-    {
-         $this->templates['edit'] = 'AppBundle:Admin\Flat:edit.html.twig';
-
-         return parent::getTemplate($name);
     }
 
     /**
@@ -165,6 +153,9 @@ class FlatAdmin extends AbstractAdmin
      */
     protected function configureFormFields(FormMapper $formMapper)
     {
+        /** @var Flat $flat */
+        $flat = $this->getSubject();
+
         /** @var User $user */
         $user = $this->getUser();
 
@@ -263,8 +254,18 @@ class FlatAdmin extends AbstractAdmin
                         'required'      =>  false
                     ])
                 ->end()
-            ->end()
-        ;
+            ->end();
+
+        if ($flat->getId()) {
+            $formMapper
+                ->tab('Должники')
+                    ->with(false)
+                        ->add('debtors', DebtorsType::class, [
+                            'label' =>  false
+                        ])
+                    ->end()
+                ->end();
+        }
 
         /** @var AddressBookValidator $addressBookValidator */
         $addressBookValidator = $this->getContainer()->get('app.service.address_book_validator');
