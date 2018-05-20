@@ -28,3 +28,32 @@
         {% endstylesheets %}
     {% endspaceless %}
 {% endblock %}
+
+{#шаблон для поля SubscribersType#}
+{% block subscribers_widget %}
+    {% spaceless %}
+        <div ng-controller="SubscriberCtrl" ng-cloak>
+            <script type="text/ng-init" name="Path">{{ {
+                    AdminSubscriberList: path('admin_app_flat_subscriber_list', {flat_id: object.id}),
+                    AdminSubmitSubscriber: path('admin_app_flat_submit_subscriber')
+                } | json_encode | raw }}</script>
+            <script type="text/ng-init" name="Settings">{{ {
+                    FlatId: object.id
+                } | json_encode | raw }}</script>
+            <div class="box-body table-responsive no-padding">
+                {% include '@App/Admin/Flat/Subscriber/subscriber_list.html.twig' %}
+            </div>
+        </div>
+        {% javascripts
+            '@cms_flat'
+        %}
+            <script type="text/javascript" src="{{ asset(asset_url, 'js') }}"></script>
+        {% endjavascripts %}
+        {% stylesheets
+            'bundles/app/css/select.min.min.css'
+            filter='cssrewrite'
+        %}
+            <link rel="stylesheet" href="{{ asset(asset_url, 'css') }}">
+        {% endstylesheets %}
+    {% endspaceless %}
+{% endblock %}

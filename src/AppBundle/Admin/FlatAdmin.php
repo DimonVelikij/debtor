@@ -6,6 +6,7 @@ use AppBundle\Admin\traits\UserTrait;
 use AppBundle\Entity\Flat;
 use AppBundle\Entity\User;
 use AppBundle\Form\Admin\Type\DebtorsType;
+use AppBundle\Form\Admin\Type\SubscribersType;
 use AppBundle\Service\AddressBookValidator;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
@@ -59,6 +60,8 @@ class FlatAdmin extends AbstractAdmin
             ->add('debtor_types', 'debtor_types')
             ->add('ownership_statuses', 'ownership_statuses')
             ->add('submit_debtor', 'submit_debtor')
+            ->add('subscriber_list', 'subscriber_list/{flat_id}')
+            ->add('submit_subscriber', 'submit_subscriber')
             ->remove('batch')
             ->remove('export')
             ->remove('delete');
@@ -258,10 +261,19 @@ class FlatAdmin extends AbstractAdmin
 
         if ($flat->getId()) {
             $formMapper
+                ->tab('Абоненты')
+                    ->with(false)
+                        ->add('subscribers', SubscribersType::class, [
+                            'label'     =>  false,
+                            'required'  =>  false
+                        ])
+                    ->end()
+                ->end()
                 ->tab('Должники')
                     ->with(false)
                         ->add('debtors', DebtorsType::class, [
-                            'label' =>  false
+                            'label'     =>  false,
+                            'required'  =>  false
                         ])
                     ->end()
                 ->end();

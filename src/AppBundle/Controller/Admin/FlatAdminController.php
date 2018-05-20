@@ -4,6 +4,7 @@ namespace AppBundle\Controller\Admin;
 
 use AppBundle\Entity\Debtor;
 use AppBundle\Entity\Flat;
+use AppBundle\Entity\Subscriber;
 use AppBundle\Entity\User;
 use AppBundle\Validator\Constraints\OwnershipStatus;
 use Doctrine\ORM\EntityManager;
@@ -22,6 +23,142 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class FlatAdminController extends CRUDController
 {
+    /**
+     * получение списка абонентов по id помещения
+     * @param Request $request
+     * @param $flat_id
+     * @return Response
+     * @throws \Exception
+     */
+    public function subscriberListAction(Request $request, $flat_id)
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        if (!$user) {
+            throw new AccessDeniedException('Bad credentials');
+        }
+
+        /** @var Flat $flat */
+        $flat = $this->getDoctrine()->getRepository('AppBundle:Flat')->findOneBy(['id' => $flat_id]);
+
+        if (!$flat) {
+            throw new \Exception("Undefined flat by id: '{$flat_id}'");
+        }
+
+        if (//если пользователь не суперадмин и помещение не обслуживается УК пользователя
+            !$user->isSuperAdmin() &&
+            $flat->getHouse()->getCompany()->getId() != $user->getCompany()->getId()
+        ) {
+            throw new AccessDeniedException('Bad credentials');
+        }
+
+        return new Response(
+            $this->get('jms_serializer')->serialize($flat->getSubscribers(), 'json', SerializationContext::create()->setGroups(['cms-subscriber']))
+        );
+    }
+
+    /**
+     * отправка формы абонента
+     * @param Request $request
+     * @return JsonResponse
+     * @throws \Exception
+     */
+    public function submitSubscriberAction(Request $request)
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        if (!$user) {
+            throw new AccessDeniedException('Bad credentials');
+        }
+
+        /** @var array $data */
+        $data = json_decode($request->getContent(), true);
+
+        //собираем данные, пришедшие с фронта
+        $input = [
+            'flatId'    =>  $data['flatId'] ?? null,
+            'id'        =>  $data['id'] ?? null,
+            'name'      =>  $data['name'] ?? null,
+            'phone'     =>  $data['phone'] ?? null,
+            'email'     =>  $data['email'] ?? null,
+            'dateDebt'  =>  $data['dateDebt'] ?? null,
+            'sumDebt'   =>  $data['sumDebt'] ?? null,
+            'sumFine'   =>  $data['sumFine'] ?? null
+        ];
+
+        //если не указан id помещения, то не к чему привязать должника
+        if (!$input['flatId']) {
+            throw new \Exception("Undefined parameter 'flatId'");
+        }
+
+        $constraints = [
+            'name'              =>  [
+                new NotBlank(['message' =>  'Укажите ФИО'])
+            ],
+            'phone'             =>  [
+                new Regex(['pattern'    =>  '/^\d+$/', 'message'    =>  'Невено указан телефон'])
+            ],
+            'email'             =>  [
+                new Email(['message'    =>  'Неверно введен E-mail'])
+            ],
+            'dateDebt'          =>  [
+                new Regex(['pattern'    =>  '/^([0-2]\d|3[01])(0\d|1[012])(19|20)(\d\d)$/', 'message' => 'Неверно указана дата заполнения'])
+            ],
+            'sumDebt'           =>  [
+                new Regex(['pattern'    =>  '/^\d{1,}(\.\d{1,2})?$/', 'message' =>  'Неверно указана сумма долга'])
+            ],
+            'sumFine'           =>  [
+                new Regex(['pattern'    =>  '/^\d{1,}(\.\d{1,2})?$/', 'message' =>  'Неверно указана сумма пени'])
+            ]
+        ];
+
+        $errors = [];
+
+        /** @var ValidatorInterface $validator */
+        $validator = $this->get('validator');
+
+        foreach ($constraints as $name => $constraint) {
+            $validationResult = $validator->validate($input[$name], $constraint);
+
+            if (count($validationResult)) {
+                $errors[$name] = $this->get('translator')->trans($validationResult[0]->getMessage());
+            }
+        }
+
+        if (count($errors)) {
+            return new JsonResponse([
+                'success'   =>  false,
+                'errors'    =>  $errors
+            ]);
+        }
+
+        /** @var EntityManager $em */
+        $em = $this->getDoctrine()->getManager();
+
+        //создаем или получаем объект абонента
+        $subscriber = $this->findOrCreateSubscriber($input);
+
+        $subscriber
+            ->setName($input['name'])
+            ->setPhone($input['phone'])
+            ->setEmail($input['email'])
+            ->setDateDebt($input['dateDebt'] ? \DateTime::createFromFormat('dmY', $input['dateDebt']) : new \DateTime())
+            ->setSumDebt($input['sumDebt'])
+            ->setSumFine($input['sumFine'])->setFlat($em->getReference('AppBundle:Flat', $input['flatId']));
+
+        $em->persist($subscriber);
+        $em->flush();
+
+        return new JsonResponse([
+            'success'       =>  true,
+            'subscriber'    =>  json_decode($this->get('jms_serializer')
+                ->serialize($subscriber, 'json', SerializationContext::create()->setGroups(['cms-subscriber']))
+            )
+        ]);
+    }
+
     /**
      * получение списка должников по id помещения
      * @param Request $request
@@ -355,6 +492,27 @@ class FlatAdminController extends CRUDController
         ];
 
         return array_merge($baseConstraints, $legalConstraints);
+    }
+
+    /**
+     * поиск или создание объекта абонента
+     * @param array $input
+     * @return Subscriber|object
+     * @throws \Exception
+     */
+    private function findOrCreateSubscriber(array $input)
+    {
+        if (!$input['id']) {
+            return new Subscriber();
+        }
+
+        $subscriber = $this->getDoctrine()->getRepository('AppBundle:Subscriber')->find($input['id']);
+
+        if (!$subscriber) {
+            throw new \Exception("Undefined debtor by id {$input['id']}");
+        }
+
+        return $subscriber;
     }
 
     /**

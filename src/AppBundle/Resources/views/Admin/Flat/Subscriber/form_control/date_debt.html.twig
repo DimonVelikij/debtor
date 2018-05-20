@@ -1,0 +1,10 @@
+<div class="form-group" ng-class="{'has-error': subscriber.dateDebt.$invalid && subscriber.dateDebt.$dirty}">
+    <label for="dateDebt" class="control-label">Дата заполнения</label>
+    <input name="dateDebt" id="dateDebt" type="text" class="form-control" ng-model="state.currentSubscriber.dateDebt" ui-mask="99.99.9999" ng-pattern="/^([0-2]\d|3[01])\.(0\d|1[012])\.(19|20)(\d\d)$/" backend>
+    <div class="help-block sonata-ba-field-error-messages" ng-if="subscriber.dateDebt.$invalid && subscriber.dateDebt.$dirty" ng-messages="subscriber.dateDebt.$error">
+        <ul class="list-unstyled">
+            <li ng-message="pattern"><i class="fa fa-exclamation-circle"></i>Неверно указана дата заполнения</li>
+            <li ng-message="backend"><i class="fa fa-exclamation-circle"></i>[[ subscriber.dateDebt.errorMessages.backend ]]</li>
+        </ul>
+    </div>
+</div>

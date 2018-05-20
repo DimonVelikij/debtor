@@ -1,0 +1,10 @@
+<div class="form-group" ng-class="{'has-error': subscriber.sumFine.$invalid && subscriber.sumFine.$dirty}">
+    <label for="sumFine" class="control-label">Сумма пени</label>
+    <input name="sumFine" id="sumFine" type="text" class="form-control" ng-model="state.currentSubscriber.sumFine" ng-pattern="/^\d{1,}(\.\d{1,2})?$/" backend>
+    <div class="help-block sonata-ba-field-error-messages" ng-if="subscriber.sumFine.$invalid && subscriber.sumFine.$dirty" ng-messages="subscriber.sumFine.$error">
+        <ul class="list-unstyled">
+            <li ng-message="pattern"><i class="fa fa-exclamation-circle"></i>Неверно указана сумма пени</li>
+            <li ng-message="backend"><i class="fa fa-exclamation-circle"></i>[[ subscriber.sumFine.errorMessages.backend ]]</li>
+        </ul>
+    </div>
+</div>

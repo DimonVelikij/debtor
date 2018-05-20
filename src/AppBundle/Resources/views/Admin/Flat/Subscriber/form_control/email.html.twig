@@ -1,0 +1,10 @@
+<div class="form-group" ng-class="{'has-error': subscriber.email.$invalid && subscriber.email.$dirty}">
+    <label for="email" class="control-label">E-mail</label>
+    <input name="email" id="email" type="email" class="form-control" ng-model="state.currentSubscriber.email" backend>
+    <div class="help-block sonata-ba-field-error-messages" ng-if="subscriber.email.$invalid && subscriber.email.$dirty" ng-messages="subscriber.email.$error">
+        <ul class="list-unstyled">
+            <li ng-message="email"><i class="fa fa-exclamation-circle"></i>Неверно введен E-mail</li>
+            <li ng-message="backend"><i class="fa fa-exclamation-circle"></i>[[ subscriber.email.errorMessages.backend ]]</li>
+        </ul>
+    </div>
+</div>
