@@ -1,7 +1,0 @@
-{% extends '@SonataAdmin/CRUD/base_show_field.html.twig' %}
-
-{% block field %}
-    {% for personalAccount in object.personalAccounts %}
-        <p>{{ personalAccount.number }}</p>
-    {% endfor %}
-{% endblock %}

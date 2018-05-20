@@ -1,7 +1,0 @@
-{% extends admin.getTemplate('base_list_field') %}
-
-{% block field %}
-    {% for personalAccount in object.personalAccounts %}
-        <p>{{ personalAccount.number }}</p>
-    {% endfor %}
-{% endblock %}

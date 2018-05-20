@@ -5,7 +5,6 @@ namespace AppBundle\Admin;
 use AppBundle\Admin\traits\UserTrait;
 use AppBundle\Entity\Flat;
 use AppBundle\Entity\User;
-use AppBundle\Form\Admin\PersonalAccountType;
 use AppBundle\Service\AddressBookValidator;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
@@ -112,9 +111,6 @@ class FlatAdmin extends AbstractAdmin
                     'label'     => 'по:'
                 ]
             ])
-            ->add('personalAccounts', null, [
-                'label' =>  'Лицевые счета'
-            ])
         ;
     }
 
@@ -139,11 +135,6 @@ class FlatAdmin extends AbstractAdmin
             ])
             ->add('number', null, [
                 'label'     =>  'Номер помещения',
-                'sortable'  =>  false
-            ])
-            ->add('personalAccounts', null, [
-                'label'     =>  'Лицевые счета',
-                'template'  =>  '@App/Admin/Flat/List/personal_accounts.html.twig',
                 'sortable'  =>  false
             ])
             ->add('sumDebt', null, [
@@ -178,105 +169,100 @@ class FlatAdmin extends AbstractAdmin
         $user = $this->getUser();
 
         $formMapper
-            ->with('Помещение', ['class' => 'col-md-8'])
-                ->add('house', 'entity', [
-                    'label'         =>  'Дом',
-                    'class'         =>  'AppBundle\Entity\House',
-                    'required'      =>  true,
-                    'group_by'      =>  'street.city',
-                    'help'          =>  "<span style='color: blue;'>Если в списке нет нужного дома, необходимо <a target='_blank' href='{$this->getRouter()->generate('admin_app_house_create')}'>добавить дом</a> и обновить страницу</span>",
-                    'constraints'   =>  [
-                        new NotBlank(['message' => 'Укажите дом'])
-                    ],
-                    'query_builder' =>  function (EntityRepository $er) use ($user) {
-                        if (!$user->isSuperAdmin()) {
-                            //выводим дома, принадлежащие только УК пользователя
-                            $er = $er->createQueryBuilder('house');
-                            
-                            return $er
-                                ->andWhere(
-                                    $er->expr()->eq('house.company', $user->getCompany()->getId())
-                                );
+            ->tab('Помещение')
+                ->with(false)
+                    ->add('house', 'entity', [
+                        'label'         =>  'Дом',
+                        'class'         =>  'AppBundle\Entity\House',
+                        'required'      =>  true,
+                        'group_by'      =>  'street.city',
+                        'help'          =>  "<span style='color: blue;'>Если в списке нет нужного дома, необходимо <a target='_blank' href='{$this->getRouter()->generate('admin_app_house_create')}'>добавить дом</a> и обновить страницу</span>",
+                        'constraints'   =>  [
+                            new NotBlank(['message' => 'Укажите дом'])
+                        ],
+                        'query_builder' =>  function (EntityRepository $er) use ($user) {
+                            if (!$user->isSuperAdmin()) {
+                                //выводим дома, принадлежащие только УК пользователя
+                                $er = $er->createQueryBuilder('house');
+
+                                return $er
+                                    ->andWhere(
+                                        $er->expr()->eq('house.company', $user->getCompany()->getId())
+                                    );
+                            }
                         }
-                    }
-                ])
-                ->add('number', TextType::class, [
-                    'label'         =>  'Номер помещения',
-                    'required'      =>  true,
-                    'constraints'   =>  [
-                        new NotBlank(['message' => 'Укажите номер помещения'])
-                    ]
-                ])
-                ->add('archive', CheckboxType::class, [
-                    'label'         =>  'Больше не является должником (Отправить в архив)',
-                    'required'      =>  false
-                ])
-                ->add('personalAccounts', 'sonata_type_native_collection', [
-                    'label'         =>  'Лицевые счета',
-                    'entry_type'    =>  PersonalAccountType::class,
-                    'allow_add'     =>  true,
-                    'allow_delete'  =>  true,
-                    'required'      =>  true,
-                    'constraints'   =>  [
-                        new NotBlank(['message' => 'Укажите лицевой счет'])
-                    ],
-                    'error_bubbling'=> false
-                ])
+                    ])
+                    ->add('number', TextType::class, [
+                        'label'         =>  'Номер помещения',
+                        'required'      =>  true,
+                        'constraints'   =>  [
+                            new NotBlank(['message' => 'Укажите номер помещения'])
+                        ]
+                    ])
+                    ->add('archive', CheckboxType::class, [
+                        'label'         =>  'Больше не является должником (Отправить в архив)',
+                        'required'      =>  false
+                    ])
+                ->end()
             ->end()
-            ->with('Период взыскания', ['class' => 'col-md-4'])
-                ->add('startDebtPeriod', DateType::class, [
-                    'label'     =>  'Начало периода взыскания',
-                    'required'  =>  false,
-                    'widget'    => 'single_text'
-                ])
-                ->add('endDebtPeriod', DateType::class, [
-                    'label'     =>  'Конец периода взыскания',
-                    'required'  =>  false,
-                    'widget'    => 'single_text'
-                ])
+            ->tab('Период взыскания')
+                ->with(false)
+                    ->add('startDebtPeriod', DateType::class, [
+                        'label'     =>  'Начало периода взыскания',
+                        'required'  =>  false,
+                        'widget'    => 'single_text'
+                    ])
+                    ->add('endDebtPeriod', DateType::class, [
+                        'label'     =>  'Конец периода взыскания',
+                        'required'  =>  false,
+                        'widget'    => 'single_text'
+                    ])
+                ->end()
             ->end()
-            ->with('Основной долг', ['class' => 'col-md-6'])
-                ->add('dateFillDebt', DateType::class, [
-                    'label'         =>  'Дата заполнения основного долга',
-                    'required'      =>  false,
-                    'widget'        =>  'single_text',
-                    'help'          =>  'Оставьте поле пустым, подставится текущая дата'
-                ])
-                ->add('sumDebt', TextType::class, [
-                    'label'         =>  'Сумма долга, руб.',
-                    'required'      =>  true,
-                    'constraints'   =>  [
-                        new NotBlank(['message' => 'Укажите сумма долга'])
-                    ]
-                ])
-                ->add('periodAccruedDebt', TextType::class, [
-                    'label'         =>  'За период начислено',
-                    'required'      =>  false
-                ])
-                ->add('periodPayDebt', TextType::class, [
-                    'label'         =>  'За период оплачено',
-                    'required'      =>  false
-                ])
-            ->end()
-            ->with('Пени', ['class' => 'col-md-6'])
-                ->add('dateFillFine', DateType::class, [
-                    'label'     =>  'Дата заполнения пени',
-                    'required'  =>  false,
-                    'widget'    =>  'single_text',
-                    'help'      =>  'Оставьте поле пустым, подставится текущая дата'
-                ])
-                ->add('sumFine', TextType::class, [
-                    'label'     =>  'Сумма долга, руб.',
-                    'required'  =>  false
-                ])
-                ->add('periodAccruedFine', TextType::class, [
-                    'label'         =>  'За период начислено',
-                    'required'      =>  false
-                ])
-                ->add('periodPayFine', TextType::class, [
-                    'label'         =>  'За период оплачено',
-                    'required'      =>  false
-                ])
+            ->tab('Долг/Пени')
+                ->with('Основной долг', ['class' => 'col-md-6'])
+                    ->add('dateFillDebt', DateType::class, [
+                        'label'         =>  'Дата заполнения основного долга',
+                        'required'      =>  false,
+                        'widget'        =>  'single_text',
+                        'help'          =>  'Оставьте поле пустым, подставится текущая дата'
+                    ])
+                    ->add('sumDebt', TextType::class, [
+                        'label'         =>  'Сумма долга, руб.',
+                        'required'      =>  true,
+                        'constraints'   =>  [
+                            new NotBlank(['message' => 'Укажите сумма долга'])
+                        ]
+                    ])
+                    ->add('periodAccruedDebt', TextType::class, [
+                        'label'         =>  'За период начислено',
+                        'required'      =>  false
+                    ])
+                    ->add('periodPayDebt', TextType::class, [
+                        'label'         =>  'За период оплачено',
+                        'required'      =>  false
+                    ])
+                ->end()
+                ->with('Пени', ['class' => 'col-md-6'])
+                    ->add('dateFillFine', DateType::class, [
+                        'label'     =>  'Дата заполнения пени',
+                        'required'  =>  false,
+                        'widget'    =>  'single_text',
+                        'help'      =>  'Оставьте поле пустым, подставится текущая дата'
+                    ])
+                    ->add('sumFine', TextType::class, [
+                        'label'     =>  'Сумма долга, руб.',
+                        'required'  =>  false
+                    ])
+                    ->add('periodAccruedFine', TextType::class, [
+                        'label'         =>  'За период начислено',
+                        'required'      =>  false
+                    ])
+                    ->add('periodPayFine', TextType::class, [
+                        'label'         =>  'За период оплачено',
+                        'required'      =>  false
+                    ])
+                ->end()
             ->end()
         ;
 
@@ -310,10 +296,6 @@ class FlatAdmin extends AbstractAdmin
             ->add('id')
             ->add('number', null, [
                 'label'     =>  'Номер помещения'
-            ])
-            ->add('personalAccounts', null, [
-                'label'     =>  'Лицевые счета',
-                'template'  =>  '@App/Admin/Flat/Show/personal_accounts.html.twig'
             ])
             ->add('startDebtPeriod', null, [
                 'label'     =>  'Начало периода взыскания'

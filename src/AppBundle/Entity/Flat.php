@@ -114,13 +114,6 @@ class Flat
     private $updatedAt;
 
     /**
-     * @ORM\Column(name="personal_accounts", type="object", nullable=false)
-     *
-     * лицевые счета
-     */
-    private $personalAccounts;
-
-    /**
      * @ORM\ManyToOne(targetEntity="House", inversedBy="flats")
      * @ORM\JoinColumn(name="house_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      */
@@ -471,30 +464,6 @@ class Flat
     public function getUpdatedAt()
     {
         return $this->updatedAt;
-    }
-
-    /**
-     * Set personalAccounts
-     *
-     * @param \stdClass $personalAccounts
-     *
-     * @return Flat
-     */
-    public function setPersonalAccounts($personalAccounts)
-    {
-        $this->personalAccounts = $personalAccounts;
-
-        return $this;
-    }
-
-    /**
-     * Get personalAccounts
-     *
-     * @return \stdClass
-     */
-    public function getPersonalAccounts()
-    {
-        return $this->personalAccounts;
     }
 
     /**
