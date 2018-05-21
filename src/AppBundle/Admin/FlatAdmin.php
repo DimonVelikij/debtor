@@ -5,8 +5,6 @@ namespace AppBundle\Admin;
 use AppBundle\Admin\traits\UserTrait;
 use AppBundle\Entity\Flat;
 use AppBundle\Entity\User;
-use AppBundle\Form\Admin\Type\DebtorsType;
-use AppBundle\Form\Admin\Type\SubscribersType;
 use AppBundle\Service\AddressBookValidator;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
@@ -156,9 +154,6 @@ class FlatAdmin extends AbstractAdmin
      */
     protected function configureFormFields(FormMapper $formMapper)
     {
-        /** @var Flat $flat */
-        $flat = $this->getSubject();
-
         /** @var User $user */
         $user = $this->getUser();
 
@@ -258,26 +253,6 @@ class FlatAdmin extends AbstractAdmin
                     ])
                 ->end()
             ->end();
-
-        if ($flat->getId()) {
-            $formMapper
-                ->tab('Абоненты')
-                    ->with(false)
-                        ->add('subscribers', SubscribersType::class, [
-                            'label'     =>  false,
-                            'required'  =>  false
-                        ])
-                    ->end()
-                ->end()
-                ->tab('Должники')
-                    ->with(false)
-                        ->add('debtors', DebtorsType::class, [
-                            'label'     =>  false,
-                            'required'  =>  false
-                        ])
-                    ->end()
-                ->end();
-        }
 
         /** @var AddressBookValidator $addressBookValidator */
         $addressBookValidator = $this->getContainer()->get('app.service.address_book_validator');

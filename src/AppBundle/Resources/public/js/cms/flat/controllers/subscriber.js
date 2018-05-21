@@ -60,6 +60,8 @@
                 openedSubscriberForm: false,
                 currentSubscriber: {}
             };
+
+            FormHelper.forcePristine(form);
         };
 
         /**
@@ -117,7 +119,7 @@
                 .finally(function () {
 
                 });
-        }
+        };
     }
 
 })(angular);

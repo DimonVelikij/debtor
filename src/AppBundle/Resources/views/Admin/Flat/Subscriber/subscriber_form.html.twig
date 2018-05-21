@@ -1,4 +1,4 @@
-<form name="subscriber" novalidate ng-cloak>
+<ng-form name="subscriber" novalidate ng-cloak>
     <a class="btn btn-success" ng-click="openSubscriberForm()" ng-hide="state.openedSubscriberForm"><i class="fa fa-plus"></i> Добавить абонента</a>
     <a class="btn btn-success" ng-click="closeSubscriberForm(subscriber)" ng-show="state.openedSubscriberForm"><i class="fa fa-close"></i> Закрыть форму</a>
     <div ng-show="state.openedSubscriberForm" style="margin-top: 10px">
@@ -20,4 +20,4 @@
             Сохранить
         </button>
     </div>
-</form>
+</ng-form>

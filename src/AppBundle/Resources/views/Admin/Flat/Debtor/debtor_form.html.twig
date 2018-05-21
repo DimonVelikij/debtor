@@ -1,4 +1,4 @@
-<form name="debtor" novalidate ng-cloak>
+<ng-form name="debtor" novalidate ng-cloak>
     <a class="btn btn-success" ng-click="openDebtorForm()" ng-hide="state.openedDebtorForm"><i class="fa fa-plus"></i> Добавить должника</a>
     <a class="btn btn-success" ng-click="closeDebtorForm(debtor)" ng-show="state.openedDebtorForm"><i class="fa fa-close"></i> Закрыть форму</a>
     <div ng-show="state.openedDebtorForm" style="margin-top: 10px">
@@ -33,4 +33,4 @@
             </button>
         </div>
     </div>
-</form>
+</ng-form>

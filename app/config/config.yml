@@ -40,8 +40,6 @@ framework:
 twig:
     debug: '%kernel.debug%'
     strict_variables: '%kernel.debug%'
-    form_themes:
-        - 'AppBundle:Admin\Form:custom_fields.html.twig'
 
 # Doctrine Configuration
 doctrine:
@@ -91,6 +89,8 @@ sonata_block:
 sonata_admin:
     title: 'Должники'
     show_mosaic_button: false
+    options:
+        html5_validate: false
     templates:
         layout: 'AppBundle:Admin:layout.html.twig'
     dashboard:
