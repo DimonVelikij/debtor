@@ -1,0 +1,17 @@
+<div class="form-group" ng-class="{'has-error': debtor.personalAccount.$invalid && debtor.personalAccount.$dirty}">
+    <label for="personalAccount" class="control-label required">Лицевой счет</label>
+    <ui-select id="personalAccount" name="personalAccount" ng-model="currentDebtor.personalAccount" ng-required="1" backend>
+        <ui-select-match>
+            <span ng-bind="$select.selected.account"></span>
+        </ui-select-match>
+        <ui-select-choices repeat="personalAccount in personalAccounts">
+            <span ng-bind="personalAccount.account"></span>
+        </ui-select-choices>
+    </ui-select>
+    <div class="help-block sonata-ba-field-error-messages" ng-if="debtor.personalAccount.$invalid && debtor.personalAccount.$dirty" ng-messages="debtor.personalAccount.$error">
+        <ul class="list-unstyled">
+            <li ng-message="required"><i class="fa fa-exclamation-circle"></i>Укажите лицевой счет</li>
+            <li ng-message="backend"><i class="fa fa-exclamation-circle"></i>[[ debtor.personalAccount.errorMessages.backend ]]</li>
+        </ul>
+    </div>
+</div>

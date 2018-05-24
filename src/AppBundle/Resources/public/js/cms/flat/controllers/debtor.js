@@ -66,12 +66,13 @@
         };
 
         /**
-         * загрузка списка должников и типов должников
+         * загрузка списка должников, типов должников, статусов собственности и лицевых счетов
          */
         $q.all([
             $http.get(Initializer.Path.AdminDebtorList),
             $http.get(Initializer.Path.AdminDebtorTypes),
-            $http.get(Initializer.Path.AdminDebtorOwnershipStatuses)
+            $http.get(Initializer.Path.AdminDebtorOwnershipStatuses),
+            $http.get(Initializer.Path.AdminPersonalAccounts)
         ]).then(function (response) {
             //список должников
             $scope.debtors = response[0].data;
@@ -87,6 +88,7 @@
                     return status.alias === 'owner';
                 }).children
             };
+            $scope.personalAccounts = response[3].data;
         });
 
         /**
@@ -128,6 +130,7 @@
             $scope.currentDebtor = {
                 id: $scope.state.currentDebtor.id ? $scope.state.currentDebtor.id : null,//id дожника
                 name: $scope.state.currentDebtor.name,//имя
+                personalAccount: $scope.state.currentDebtor.personalAccount,//лицевой счет
                 phone: $scope.state.currentDebtor.phone ? parseInt($scope.state.currentDebtor.phone) : null,//телефон
                 email: $scope.state.currentDebtor.email,//email
                 location: $scope.state.currentDebtor.location,//место нахождения или жительства
@@ -253,6 +256,7 @@
                 flatId: Initializer.Settings.FlatId,
                 id: $scope.currentDebtor.id,
                 type: $scope.state.type,
+                personalAccount: $scope.currentDebtor.personalAccount,
                 name: $scope.currentDebtor.name,
                 phone: $scope.currentDebtor.phone,
                 email: $scope.currentDebtor.email,

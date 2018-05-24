@@ -4,6 +4,7 @@ namespace AppBundle\Controller\Admin;
 
 use AppBundle\Entity\Debtor;
 use AppBundle\Entity\Flat;
+use AppBundle\Entity\PersonalAccount;
 use AppBundle\Entity\Subscriber;
 use AppBundle\Entity\User;
 use AppBundle\Validator\Constraints\OwnershipStatus;
@@ -78,14 +79,15 @@ class FlatAdminController extends CRUDController
 
         //собираем данные, пришедшие с фронта
         $input = [
-            'flatId'    =>  $data['flatId'] ?? null,
-            'id'        =>  $data['id'] ?? null,
-            'name'      =>  $data['name'] ?? null,
-            'phone'     =>  $data['phone'] ?? null,
-            'email'     =>  $data['email'] ?? null,
-            'dateDebt'  =>  $data['dateDebt'] ?? null,
-            'sumDebt'   =>  $data['sumDebt'] ?? null,
-            'sumFine'   =>  $data['sumFine'] ?? null
+            'flatId'            =>  $data['flatId'] ?? null,
+            'id'                =>  $data['id'] ?? null,
+            'name'              =>  $data['name'] ?? null,
+            'personalAccount'   =>  $data['personalAccount'] ?? null,
+            'phone'             =>  $data['phone'] ?? null,
+            'email'             =>  $data['email'] ?? null,
+            'dateDebt'          =>  $data['dateDebt'] ?? null,
+            'sumDebt'           =>  $data['sumDebt'] ?? null,
+            'sumFine'           =>  $data['sumFine'] ?? null
         ];
 
         //если не указан id помещения, то не к чему привязать должника
@@ -96,6 +98,9 @@ class FlatAdminController extends CRUDController
         $constraints = [
             'name'              =>  [
                 new NotBlank(['message' =>  'Укажите ФИО'])
+            ],
+            'personalAccount'   =>  [
+                new NotBlank(['message' =>  'Укажите лицевой счет'])
             ],
             'phone'             =>  [
                 new Regex(['pattern'    =>  '/^\d+$/', 'message'    =>  'Невено указан телефон'])
@@ -140,13 +145,18 @@ class FlatAdminController extends CRUDController
         //создаем или получаем объект абонента
         $subscriber = $this->findOrCreateSubscriber($input);
 
+        $personalAccount = $subscriber->getPersonalAccount() ?? new PersonalAccount();
+        $personalAccount->setAccount($input['personalAccount']);
+
         $subscriber
             ->setName($input['name'])
             ->setPhone($input['phone'])
             ->setEmail($input['email'])
             ->setDateDebt($input['dateDebt'] ? \DateTime::createFromFormat('dmY', $input['dateDebt']) : new \DateTime())
             ->setSumDebt($input['sumDebt'])
-            ->setSumFine($input['sumFine'])->setFlat($em->getReference('AppBundle:Flat', $input['flatId']));
+            ->setSumFine($input['sumFine'])
+            ->setFlat($em->getReference('AppBundle:Flat', $input['flatId']))
+            ->setPersonalAccount($personalAccount);
 
         $em->persist($subscriber);
         $em->flush();
@@ -251,6 +261,53 @@ class FlatAdminController extends CRUDController
     }
 
     /**
+     * получение списка лицевых счетов
+     * @param Request $request
+     * @param $flat_id
+     * @return Response
+     * @throws \Exception
+     */
+    public function personalAccountsAction(Request $request, $flat_id)
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        if (!$user) {
+            throw new AccessDeniedException('Bad credentials');
+        }
+
+        /** @var Flat $flat */
+        $flat = $this->getDoctrine()->getRepository('AppBundle:Flat')->find($flat_id);
+
+        if (!$flat) {
+            throw new \Exception("Undefined flat by id: '{$flat_id}'");
+        }
+
+        if (
+            //если пользователь не суперадмин и помещение не обслуживается УК пользователя
+            !$user->isSuperAdmin() &&
+            $flat->getHouse()->getCompany()->getId() !== $user->getCompany()->getId()
+        ) {
+            throw new AccessDeniedException('Bad credentials');
+        }
+
+        $personalAccounts = [];
+
+        /** @var Subscriber $subscriber */
+        foreach ($flat->getSubscribers() as $subscriber) {
+            $personalAccounts[] = $subscriber->getPersonalAccount();
+        }
+
+        return new Response(
+            $this->get('jms_serializer')->serialize(
+                $personalAccounts,
+                'json',
+                SerializationContext::create()->setGroups(['cms-debtor'])
+            )
+        );
+    }
+
+    /**
      * отправка формы должника
      * @param Request $request
      * @return JsonResponse
@@ -273,6 +330,7 @@ class FlatAdminController extends CRUDController
             'flatId'            =>  $data['flatId'] ?? null,
             'id'                =>  $data['id'] ?? null,
             'type'              =>  $data['type'] ?? null,
+            'personalAccount'   =>  $data['personalAccount'] ?? null,
             'name'              =>  $data['name'] ?? null,
             'phone'             =>  $data['phone'] ?? null,
             'email'             =>  $data['email'] ?? null,
@@ -331,7 +389,8 @@ class FlatAdminController extends CRUDController
             ->setBossPosition($input['bossPosition'])
             ->setType($em->getReference('AppBundle:DebtorType', $input['type']['id']))
             ->setOwnershipStatus($em->getReference('AppBundle:OwnershipStatus', $input['ownershipStatus']['id']))
-            ->setFlat($em->getReference('AppBundle:Flat', $input['flatId']));
+            ->setFlat($em->getReference('AppBundle:Flat', $input['flatId']))
+            ->setPersonalAccount($em->getReference('AppBundle:PersonalAccount', $input['personalAccount']['id']));
 
         $em->persist($debtor);
         $em->flush();
@@ -393,6 +452,9 @@ class FlatAdminController extends CRUDController
         $constraints = [
             'type'              =>  [
                 new NotBlank(['message' =>  'Укажите тип должника'])
+            ],
+            'personalAccount'   =>  [
+                new NotBlank(['message' =>  'Укажите лицевой счет'])
             ],
             'phone'             =>  [
                 new Regex(['pattern'    =>  '/^\d+$/', 'message'    =>  'Невено указан телефон'])

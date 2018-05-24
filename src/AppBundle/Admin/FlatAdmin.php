@@ -60,6 +60,7 @@ class FlatAdmin extends AbstractAdmin
             ->add('submit_debtor', 'submit_debtor')
             ->add('subscriber_list', 'subscriber_list/{flat_id}')
             ->add('submit_subscriber', 'submit_subscriber')
+            ->add('personal_accounts', 'personal_accounts/{flat_id}')
             ->remove('batch')
             ->remove('export')
             ->remove('delete');
@@ -72,6 +73,9 @@ class FlatAdmin extends AbstractAdmin
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
+            ->add('subscribers.personalAccount.account', null, [
+                'label' =>  'Лицевой счет'
+            ])
             ->add('house.street.city', null, [
                 'label' =>  'Город'
             ])

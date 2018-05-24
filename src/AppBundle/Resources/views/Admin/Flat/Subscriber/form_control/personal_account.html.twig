@@ -1,0 +1,10 @@
+<div class="form-group" ng-class="{'has-error': subscriber.personalAccount.$invalid && subscriber.personalAccount.$dirty}">
+    <label for="personalAccount" class="control-label required">Лицевой счет</label>
+    <input name="personalAccount" id="personalAccount" type="text" class="form-control" ng-model="state.currentSubscriber.personalAccount" required backend>
+    <div class="help-block sonata-ba-field-error-messages" ng-if="subscriber.personalAccount.$invalid && subscriber.personalAccount.$dirty" ng-messages="subscriber.personalAccount.$error">
+        <ul class="list-unstyled">
+            <li ng-message="required"><i class="fa fa-exclamation-circle"></i>Укажите лицевой счет</li>
+            <li ng-message="backend"><i class="fa fa-exclamation-circle"></i>[[ subscriber.personalAccount.errorMessages.backend ]]</li>
+        </ul>
+    </div>
+</div>

@@ -102,6 +102,16 @@ class Subscriber
     private $flat;
 
     /**
+     * @ORM\OneToOne(targetEntity="PersonalAccount", cascade={"persist"})
+     * @ORM\JoinColumn(name="personal_account_id", referencedColumnName="id", nullable=false)
+     *
+     * @JMS\Expose
+     * @JMS\SerializedName("personalAccount")
+     * @JMS\Groups({"cms-subscriber"})
+     */
+    private $personalAccount;
+
+    /**
      * @return null|string
      */
     public function getDateDebtString()
@@ -289,5 +299,29 @@ class Subscriber
     public function getFlat()
     {
         return $this->flat;
+    }
+
+    /**
+     * Set personalAccount
+     *
+     * @param \AppBundle\Entity\PersonalAccount $personalAccount
+     *
+     * @return Subscriber
+     */
+    public function setPersonalAccount(\AppBundle\Entity\PersonalAccount $personalAccount)
+    {
+        $this->personalAccount = $personalAccount;
+
+        return $this;
+    }
+
+    /**
+     * Get personalAccount
+     *
+     * @return \AppBundle\Entity\PersonalAccount
+     */
+    public function getPersonalAccount()
+    {
+        return $this->personalAccount;
     }
 }

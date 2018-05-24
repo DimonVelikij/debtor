@@ -5,6 +5,7 @@
                 <thead>
                     <tr class="sonata-ba-list-field-header">
                         <th>ФИО</th>
+                        <th>Лицевой счет</th>
                         <th>Телефон</th>
                         <th>E-mail</th>
                         <th>Дата заполнения</th>
@@ -16,6 +17,7 @@
                 <tbody>
                     <tr ng-repeat-start="subscriber in subscribers" style="background-color: #befab4">
                         <td>[[ subscriber.name ]]</td>
+                        <td>[[ subscriber.personalAccount.account ]]</td>
                         <td>[[ subscriber.phone ]]</td>
                         <td>[[ subscriber.email ]]</td>
                         <td>[[ subscriber.dateDebt | date ]]</td>
@@ -28,8 +30,9 @@
                         </td>
                     </tr>
                     <tr ng-repeat-end ng-show="subscriber.isShow" style="background-color: #befab4">
-                        <td colspan="7">
+                        <td colspan="8">
                             <p>ФИО: <strong>[[ subscriber.name ]]</strong></p>
+                            <p>Лицевой счет: <strong>[[ subscriber.personalAccount.account ]]</strong></p>
                             <p>Телефон: <strong>[[ subscriber.phone ]]</strong></p>
                             <p>E-mail: <strong>[[ subscriber.email ]]</strong></p>
                             <p>Дата заполнения: <strong>[[ subscriber.dateDebt | date ]]</strong></p>

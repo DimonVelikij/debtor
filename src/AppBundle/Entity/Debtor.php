@@ -234,6 +234,16 @@ class Debtor
     private $ownershipStatus;
 
     /**
+     * @ORM\OneToOne(targetEntity="PersonalAccount", cascade={"persist"})
+     * @ORM\JoinColumn(name="personal_account_id", referencedColumnName="id", nullable=false)
+     *
+     * @JMS\Expose
+     * @JMS\SerializedName("personalAccount")
+     * @JMS\Groups({"cms-debtor"})
+     */
+    private $personalAccount;
+
+    /**
      * @return string
      */
     public function __toString()
@@ -741,5 +751,29 @@ class Debtor
     public function getOwnershipStatus()
     {
         return $this->ownershipStatus;
+    }
+
+    /**
+     * Set personalAccount
+     *
+     * @param \AppBundle\Entity\PersonalAccount $personalAccount
+     *
+     * @return Debtor
+     */
+    public function setPersonalAccount(\AppBundle\Entity\PersonalAccount $personalAccount)
+    {
+        $this->personalAccount = $personalAccount;
+
+        return $this;
+    }
+
+    /**
+     * Get personalAccount
+     *
+     * @return \AppBundle\Entity\PersonalAccount
+     */
+    public function getPersonalAccount()
+    {
+        return $this->personalAccount;
     }
 }

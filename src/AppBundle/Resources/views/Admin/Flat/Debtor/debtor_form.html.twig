@@ -9,6 +9,8 @@
 
             {% include '@App/Admin/Flat/Debtor/ownership_block.html.twig' %}
 
+            {% include '@App/Admin/Flat/Debtor/form_control/personal_account.html.twig' %}
+
             <div ng-show="state.type.alias == 'individual'">
                 {% include '@App/Admin/Flat/Debtor/individual_form.html.twig' %}
             </div>

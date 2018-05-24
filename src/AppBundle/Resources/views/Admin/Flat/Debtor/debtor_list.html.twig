@@ -11,6 +11,7 @@
                 <thead>
                     <tr class="sonata-ba-list-field-header">
                         <th>ФИО/Наименование</th>
+                        <th>Лицевой счет</th>
                         <th>Тип</th>
                         <th>Телефон</th>
                         <th>Место жительства/расположения</th>
@@ -20,6 +21,7 @@
                 <tbody>
                     <tr ng-repeat-start="debtor in debtors | orderBy : 'archive'" ng-style="{'background-color': debtor.archive ? '#ededed' : '#befab4'}">
                         <td>[[ debtor.name ]]</td>
+                        <td>[[ debtor.personalAccount.account ]]</td>
                         <td>[[ debtor.type.title ]]</td>
                         <td>[[ debtor.phone ]]</td>
                         <td>[[ debtor.location ]]</td>
@@ -30,7 +32,7 @@
                         </td>
                     </tr>
                     <tr ng-repeat-end ng-show="debtor.isShow" ng-style="{'background-color': debtor.archive ? '#ededed' : '#befab4'}">
-                        <td colspan="6">
+                        <td colspan="7">
                             <div ng-if="debtor.type.alias == 'individual'">
                                 <p>ФИО: <strong>[[ debtor.name ]]</strong></p>
                                 <p>Дата рождения: <strong>[[ debtor.dateOfBirth | date ]]</strong></p>
@@ -51,6 +53,7 @@
                                 <p>ФИО руководителя: <strong>[[ debtor.bossName ]]</strong></p>
                                 <p>Должность руководителя: <strong>[[ debtor.bossPosition ]]</strong></p>
                             </div>
+                            <p>Лицевой счет: <strong>[[ debtor.personalAccount.account ]]</strong></p>
                             <p>Телефон: <strong>[[ debtor.phone ]]</strong></p>
                             <p>E-mail: <strong>[[ debtor.email ]]</strong></p>
                             <p>Архивный: <span class="label label-success" ng-if="debtor.archive">да</span><span class="label label-danger" ng-if="!debtor.archive">нет</span></p>

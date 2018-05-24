@@ -42,6 +42,7 @@
                 $scope.state.currentSubscriber = {
                     id: subscriber.id,
                     name: subscriber.name,
+                    personalAccount: subscriber.personalAccount ? subscriber.personalAccount.account : null,
                     phone: parseInt(subscriber.phone),
                     email: subscriber.email,
                     dateDebt: $filter('date')(subscriber.dateDebt),
@@ -89,6 +90,7 @@
                 flatId: Initializer.Settings.FlatId,
                 id: $scope.state.currentSubscriber.id,
                 name: $scope.state.currentSubscriber.name,
+                personalAccount: $scope.state.currentSubscriber.personalAccount,
                 phone: $scope.state.currentSubscriber.phone,
                 email: $scope.state.currentSubscriber.email,
                 dateDebt: $scope.state.currentSubscriber.dateDebt ? $scope.state.currentSubscriber.dateDebt.replace(/\./g, '') : null,
