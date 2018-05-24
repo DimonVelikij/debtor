@@ -41,7 +41,7 @@ class FlatAdminController extends CRUDController
         }
 
         /** @var Flat $flat */
-        $flat = $this->getDoctrine()->getRepository('AppBundle:Flat')->findOneBy(['id' => $flat_id]);
+        $flat = $this->getDoctrine()->getRepository('AppBundle:Flat')->find($flat_id);
 
         if (!$flat) {
             throw new \Exception("Undefined flat by id: '{$flat_id}'");
@@ -186,7 +186,7 @@ class FlatAdminController extends CRUDController
         }
 
         /** @var Flat $flat */
-        $flat = $this->getDoctrine()->getRepository('AppBundle:Flat')->findOneBy(['id' => $flat_id]);
+        $flat = $this->getDoctrine()->getRepository('AppBundle:Flat')->find($flat_id);
 
         if (!$flat) {
             throw new \Exception("Undefined flat by id: '{$flat_id}'");
