@@ -114,11 +114,18 @@ class Flat
     private $updatedAt;
 
     /**
-     * @ORM\Column(name="generate_errors", type="boolean", nullable=true)
+     * @ORM\Column(name="is_generate_errors", type="boolean", nullable=false, options={"default": 0})
      *
      * была ли ошибка при генерации документа
      */
-    private $generateErrors;
+    private $isGenerateErrors;
+
+    /**
+     * @ORM\Column(name="is_finish_generate", type="boolean", nullable=false, options={"default": 0})
+     *
+     * все ли шаблоны были сгенерированы
+     */
+    private $isFinishGenerate;
 
     /**
      * @ORM\ManyToOne(targetEntity="House", inversedBy="flats")
@@ -480,27 +487,51 @@ class Flat
     }
 
     /**
-     * Set generateErrors
+     * Set isGenerateErrors
      *
-     * @param boolean $generateErrors
+     * @param boolean $isGenerateErrors
      *
      * @return Flat
      */
-    public function setGenerateErrors($generateErrors)
+    public function setIsGenerateErrors($isGenerateErrors)
     {
-        $this->generateErrors = $generateErrors;
+        $this->isGenerateErrors = $isGenerateErrors;
 
         return $this;
     }
 
     /**
-     * Get generateErrors
+     * Get isGenerateErrors
      *
      * @return boolean
      */
-    public function getGenerateErrors()
+    public function getIsGenerateErrors()
     {
-        return $this->generateErrors;
+        return $this->isGenerateErrors;
+    }
+
+    /**
+     * Set isFinishGenerate
+     *
+     * @param boolean $isFinishGenerate
+     *
+     * @return Flat
+     */
+    public function setIsFinishGenerate($isFinishGenerate)
+    {
+        $this->isFinishGenerate = $isFinishGenerate;
+
+        return $this;
+    }
+
+    /**
+     * Get isFinishGenerate
+     *
+     * @return boolean
+     */
+    public function getIsFinishGenerate()
+    {
+        return $this->isFinishGenerate;
     }
 
     /**
