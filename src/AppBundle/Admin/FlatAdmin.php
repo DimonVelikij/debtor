@@ -220,7 +220,7 @@ class FlatAdmin extends AbstractAdmin
                     'box_class' =>  'box box-solid box-success'
                 ])
                     ->add('dateFillDebt', DateType::class, [
-                        'label'         =>  'Дата заполнения основного долга',
+                        'label'         =>  'Дата заполнения долга',
                         'required'      =>  false,
                         'widget'        =>  'single_text',
                         'help'          =>  'Оставьте поле пустым, подставится текущая дата'
@@ -252,7 +252,7 @@ class FlatAdmin extends AbstractAdmin
                         'help'      =>  'Оставьте поле пустым, подставится текущая дата'
                     ])
                     ->add('sumFine', TextType::class, [
-                        'label'     =>  'Сумма долга, руб.',
+                        'label'     =>  'Сумма пени, руб.',
                         'required'  =>  false
                     ])
                     ->add('periodAccruedFine', TextType::class, [
