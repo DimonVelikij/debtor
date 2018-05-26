@@ -42,3 +42,10 @@ services:
         public: true
         calls:
             - [ setTemplate, [edit, AppBundle:Admin\Flat:edit.html.twig] ]
+
+    app.admin.template:
+        class: AppBundle\Admin\TemplateAdmin
+        arguments: [~, AppBundle\Entity\Template, SonataAdminBundle:CRUD]
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: cms.template, label: Шаблоны }
+        public: true

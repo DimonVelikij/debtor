@@ -116,6 +116,11 @@ sonata_admin:
                 icon: '<i class="fa fa-home"></i>'
                 on_top: true
                 roles: [ROLE_ADMIN]
+            cms.template:
+                label:  Шаблоны
+                icon: '<i class="fa fa-file"></i>'
+                on_top: true
+                roles:  [ROLE_SUPER_ADMIN]
 
 #fos user
 fos_user:
