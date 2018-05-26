@@ -144,6 +144,12 @@ class Flat
     private $debtors;
 
     /**
+     * @ORM\ManyToOne(targetEntity="Template")
+     * @ORM\JoinColumn(name="template_id", referencedColumnName="id", nullable=false)
+     */
+    private $template;
+
+    /**
      * @return string
      */
     public function __toString()
@@ -624,5 +630,29 @@ class Flat
     public function getDebtors()
     {
         return $this->debtors;
+    }
+
+    /**
+     * Set template
+     *
+     * @param \AppBundle\Entity\Template $template
+     *
+     * @return Flat
+     */
+    public function setTemplate(\AppBundle\Entity\Template $template)
+    {
+        $this->template = $template;
+
+        return $this;
+    }
+
+    /**
+     * Get template
+     *
+     * @return \AppBundle\Entity\Template
+     */
+    public function getTemplate()
+    {
+        return $this->template;
     }
 }
