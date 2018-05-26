@@ -163,7 +163,10 @@ class FlatAdmin extends AbstractAdmin
 
         $formMapper
             ->tab('Помещение')
-                ->with(false)
+                ->with('Адрес', [
+                    'class'     =>  'col-md-3',
+                    'box_class' =>  'box box-solid box-success'
+                ])
                     ->add('house', 'entity', [
                         'label'         =>  'Дом',
                         'class'         =>  'AppBundle\Entity\House',
@@ -197,9 +200,10 @@ class FlatAdmin extends AbstractAdmin
                         'required'      =>  false
                     ])
                 ->end()
-            ->end()
-            ->tab('Период взыскания')
-                ->with(false)
+                ->with('Период взыскания', [
+                    'class'     =>  'col-md-3',
+                    'box_class' =>  'box box-solid box-success'
+                ])
                     ->add('startDebtPeriod', DateType::class, [
                         'label'     =>  'Начало периода взыскания',
                         'required'  =>  false,
@@ -211,9 +215,10 @@ class FlatAdmin extends AbstractAdmin
                         'widget'    => 'single_text'
                     ])
                 ->end()
-            ->end()
-            ->tab('Долг/Пени')
-                ->with('Основной долг', ['class' => 'col-md-6'])
+                ->with('Основной долг', [
+                    'class'     =>  'col-md-3',
+                    'box_class' =>  'box box-solid box-success'
+                ])
                     ->add('dateFillDebt', DateType::class, [
                         'label'         =>  'Дата заполнения основного долга',
                         'required'      =>  false,
@@ -236,7 +241,10 @@ class FlatAdmin extends AbstractAdmin
                         'required'      =>  false
                     ])
                 ->end()
-                ->with('Пени', ['class' => 'col-md-6'])
+                ->with('Пени', [
+                    'class'     =>  'col-md-3',
+                    'box_class' =>  'box box-solid box-success'
+                ])
                     ->add('dateFillFine', DateType::class, [
                         'label'     =>  'Дата заполнения пени',
                         'required'  =>  false,
