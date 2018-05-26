@@ -114,6 +114,13 @@ class Flat
     private $updatedAt;
 
     /**
+     * @ORM\Column(name="generate_errors", type="boolean", nullable=true)
+     *
+     * была ли ошибка при генерации документа
+     */
+    private $generateErrors;
+
+    /**
      * @ORM\ManyToOne(targetEntity="House", inversedBy="flats")
      * @ORM\JoinColumn(name="house_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      */
@@ -470,6 +477,30 @@ class Flat
     public function getUpdatedAt()
     {
         return $this->updatedAt;
+    }
+
+    /**
+     * Set generateErrors
+     *
+     * @param boolean $generateErrors
+     *
+     * @return Flat
+     */
+    public function setGenerateErrors($generateErrors)
+    {
+        $this->generateErrors = $generateErrors;
+
+        return $this;
+    }
+
+    /**
+     * Get generateErrors
+     *
+     * @return boolean
+     */
+    public function getGenerateErrors()
+    {
+        return $this->generateErrors;
     }
 
     /**
