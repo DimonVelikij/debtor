@@ -3,6 +3,7 @@
 namespace AppBundle\Admin;
 
 use AppBundle\Entity\Template;
+use Ivory\CKEditorBundle\Form\Type\CKEditorType;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
@@ -109,7 +110,7 @@ class TemplateAdmin extends AbstractAdmin
                 'sonata_help'   =>  'Сгенерируется автоматически по полю "Название"',
                 'disabled'      =>  true
             ])
-            ->add('template', null, [
+            ->add('template', CKEditorType::class, [
                 'label'         =>  'Шаблон',
                 'required'      =>  false
             ])

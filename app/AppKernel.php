@@ -39,6 +39,9 @@ class AppKernel extends Kernel
 
             //doctrine extension bundle
             new Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle(),
+
+            //ckedotor bundle
+            new \Ivory\CKEditorBundle\IvoryCKEditorBundle()
             //next bundle
         ];
 
