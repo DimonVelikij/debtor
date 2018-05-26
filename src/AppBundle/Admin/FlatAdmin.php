@@ -4,6 +4,7 @@ namespace AppBundle\Admin;
 
 use AppBundle\Admin\traits\UserTrait;
 use AppBundle\Entity\Flat;
+use AppBundle\Entity\Template;
 use AppBundle\Entity\User;
 use AppBundle\Service\AddressBookValidator;
 use Doctrine\ORM\EntityRepository;
@@ -104,6 +105,12 @@ class FlatAdmin extends AbstractAdmin
                     'label'     => 'по:'
                 ]
             ])
+            ->add('template', null, [
+                'label' =>  'Текущее действие'
+            ])
+            ->add('template.parent', null, [
+                'label' =>  'Следующее действие'
+            ])
         ;
     }
 
@@ -142,6 +149,13 @@ class FlatAdmin extends AbstractAdmin
             ->add('updatedAt', null, [
                 'label'     =>  'Дата последнего обновления',
                 'template'  =>  '@App/Admin/Flat/List/updated_at.html.twig'
+            ])
+            ->add('template', null, [
+                'label'     =>  'Текущее действие',
+                'template'  =>  '@App/Admin/Flat/List/current_action.html.twig'
+            ])
+            ->add('template.parent', null, [
+                'label'     =>  'Следующее действие'
             ])
             ->add('_action', null, array(
                 'label'     =>  'Действия',
@@ -268,7 +282,17 @@ class FlatAdmin extends AbstractAdmin
 
         /** @var AddressBookValidator $addressBookValidator */
         $addressBookValidator = $this->getContainer()->get('app.service.address_book_validator');
-        $formMapper->getFormBuilder()->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) use ($addressBookValidator) {
+
+        /** @var Template $startTemplate */
+        $startTemplate = $this->getDoctrine()->getRepository('AppBundle:Template')
+            ->createQueryBuilder('template')
+            ->where('template.isStart = :isStart')
+            ->setParameter('isStart', true)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        $formMapper->getFormBuilder()->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) use ($addressBookValidator, $startTemplate) {
             /** @var Flat $flat */
             $flat = $event->getData();
 
@@ -283,6 +307,24 @@ class FlatAdmin extends AbstractAdmin
             $error = $addressBookValidator->validateFlat($flat);
             if ($error) {
                 $event->getForm()->get('number')->addError(new FormError($error));
+            }
+
+            if (!$startTemplate) {
+                $event->getForm()->get('number')->addError(new FormError('Прежде чем добавить комнату - нужно добавить шиблон'));
+            }
+        });
+
+        $formMapper->getFormBuilder()->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) use ($startTemplate) {
+            /** @var Flat $flat */
+            $flat = $event->getData();
+
+            //если новый объект и форма валидна
+            if (!$flat->getId() && $event->getForm()->isValid()) {
+                $flat
+                    ->setTemplate($startTemplate)//стартовый шаблон
+                    ->setIsGenerateErrors(false)//нет ошибок генерации
+                    ->setIsFinishGenerate(false)//не все шаблоны сгенерированы
+                ;
             }
         });
     }
@@ -339,6 +381,12 @@ class FlatAdmin extends AbstractAdmin
             ->add('house', null, [
                 'label'     =>  'Адрес'
             ])
+            ->add('template', null, [
+                'label' =>  'Текущее действие'
+            ])
+            ->add('template.parent', null, [
+                'label' =>  'Следующее действие'
+            ])
             ->add('debtors', null, [
                 'label'     =>  'Список должников',
                 'template'  =>  '@App/Admin/Flat/Show/debtors.html.twig'
@@ -360,5 +408,13 @@ class FlatAdmin extends AbstractAdmin
     private function getRouter()
     {
         return $this->getContainer()->get('router');
+    }
+
+    /**
+     * @return \Doctrine\ORM\EntityManager
+     */
+    private function getDoctrine()
+    {
+        return $this->getContainer()->get('doctrine.orm.entity_manager');
     }
 }
