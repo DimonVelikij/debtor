@@ -180,3 +180,12 @@ stof_doctrine_extensions:
         doctrine:
             sluggable: true
             timestampable: true
+
+#knp snappy bundle
+knp_snappy:
+    temporary_folder: "%kernel.cache_dir%/snappy"
+    pdf:
+        enabled:    true
+        binary:     '/usr/bin/xvfb-run /usr/bin/wkhtmltopdf'
+        options:    []
+

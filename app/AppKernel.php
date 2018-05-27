@@ -41,7 +41,10 @@ class AppKernel extends Kernel
             new Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle(),
 
             //ckedotor bundle
-            new \Ivory\CKEditorBundle\IvoryCKEditorBundle()
+            new \Ivory\CKEditorBundle\IvoryCKEditorBundle(),
+
+            //knp snappy bundle
+            new Knp\Bundle\SnappyBundle\KnpSnappyBundle(),
             //next bundle
         ];
 

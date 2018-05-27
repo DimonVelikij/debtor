@@ -9,6 +9,8 @@ services:
         class: AppBundle\Service\TemplateGenerator
         arguments:
             - "@doctrine.orm.doctrine_entity_manager"
+            - "@knp_snappy.pdf"
+            - "%kernel.root_dir%"
 
     app.service.flat_logger:
         class: AppBundle\Service\FlatLogger

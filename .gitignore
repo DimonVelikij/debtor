@@ -18,6 +18,7 @@
 /web/assetic/
 /web/js/
 /web/css/
+/web/pdf/
 .idea/
 /node_modules
 /src/AppBundle/Resources/public/vendor

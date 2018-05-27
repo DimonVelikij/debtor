@@ -83,7 +83,7 @@ class TemplateGeneratorCommand extends ContainerAwareCommand
             $flatLogger->log($flat, $log);
 
             try {
-                $fileLink = $templateGenerator->generateTemplate($flat);
+                $fileLinks = $templateGenerator->generateTemplate($flat);
             } catch (\Exception $e) {
                 //пишем логи
                 $log = 'Во время генерации шаблона "' . $flat->getTemplate()->getName() . '" возникли ошибки. "' . $e->getMessage() . '". Требуется вмешательство разработчика.';
@@ -97,7 +97,12 @@ class TemplateGeneratorCommand extends ContainerAwareCommand
                 continue;
             }
 
-            $log = 'Генерация шаблона "' . $flat->getTemplate()->getName() . '" успешно завершена. <a href="' . $fileLink . '">ссылка на файл</a>';
+            $log = 'Генерация шаблона "' . $flat->getTemplate()->getName() . '" успешно завершена. <br>';
+
+            for ($i = 0; $i < count($fileLinks); $i++) {
+                $log .= '<a href="' . $fileLinks[$i] . '" target="_blank">Посмотреть</a><br><a href="' . $fileLinks[$i] . '" target="_blank" download>Скачать</a>';
+            }
+
             $output->writeln($log);
             $output->writeln($delimiter);
             $flatLogger->log($flat, $log);

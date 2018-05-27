@@ -158,7 +158,7 @@ class FlatAdminController extends CRUDController
 
         //если были ошибки генерации шаблона, при сохранени абонента считаем что они исправлены
         $flat->setIsGenerateErrors(false);
-        
+
         //создаем или получаем объект абонента
         $subscriber = $this->findOrCreateSubscriber($input);
 

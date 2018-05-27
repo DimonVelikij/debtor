@@ -114,9 +114,21 @@ class TemplateAdmin extends AbstractAdmin
                 'sonata_help'   =>  'Сгенерируется автоматически по полю "Название"',
                 'disabled'      =>  true
             ])
+            ->add('templateFields', ChoiceType::class, [
+                'label'         =>  'Список полей для шаблона',
+                'required'      =>  true,
+                'choices'       =>  $templateFields,
+                'multiple'      =>  true,
+                'constraints'   =>  [
+                    new NotBlank(['message' =>  'Укажите список полей подстановки'])
+                ]
+            ])
             ->add('template', CKEditorType::class, [
                 'label'         =>  'Шаблон',
-                'required'      =>  false
+                'required'      =>  true,
+                'constraints'   =>  [
+                    new NotBlank(['message' =>  'Укажите шаблон'])
+                ]
             ])
             ->add('timePerformAction', NumberType::class, [
                 'label'         =>  'Через какое количество дней выполнить',
@@ -124,11 +136,6 @@ class TemplateAdmin extends AbstractAdmin
                 'constraints'   =>  [
                     new NotBlank(['message' =>  'Укажите количество дней'])
                 ]
-            ])
-            ->add('templateFields', ChoiceType::class, [
-                'label'         =>  'Список полей для шаблона',
-                'required'      =>  false,
-                'choices'       =>  $templateFields
             ])
             ->add('isJudicial', CheckboxType::class, [
                 'label'         =>  'Является судебным',
