@@ -92,6 +92,9 @@ class FlatAdmin extends AbstractAdmin
             ->add('archive', null, [
                 'label' =>  'Архивный'
             ])
+            ->add('isGenerateErrors', null, [
+                'label' =>  'Ошибки генерации шаблона'
+            ])
             ->add('updatedAt', 'doctrine_orm_date_range', [
                 'label'         =>  'Дата последнего обновления',
                 'field_type'    =>  'sonata_type_date_range_picker'
@@ -145,6 +148,9 @@ class FlatAdmin extends AbstractAdmin
             ])
             ->add('archive', null, [
                 'label'     =>  'Архивный'
+            ])
+            ->add('isGenerateErrors', null, [
+                'label'     =>  'Ошибки генерации шаблона'
             ])
             ->add('updatedAt', null, [
                 'label'     =>  'Дата последнего обновления',
@@ -310,7 +316,7 @@ class FlatAdmin extends AbstractAdmin
             }
 
             if (!$startTemplate) {
-                $event->getForm()->get('number')->addError(new FormError('Прежде чем добавить комнату - нужно добавить шиблон'));
+                $event->getForm()->get('number')->addError(new FormError('Прежде чем добавить помещение - нужно добавить шиблон'));
             }
         });
 
@@ -322,10 +328,12 @@ class FlatAdmin extends AbstractAdmin
             if (!$flat->getId() && $event->getForm()->isValid()) {
                 $flat
                     ->setTemplate($startTemplate)//стартовый шаблон
-                    ->setIsGenerateErrors(false)//нет ошибок генерации
-                    ->setIsFinishGenerate(false)//не все шаблоны сгенерированы
+                    ->setLastDateGenerate(new \DateTime())//последняя даты генерации - текущая
                 ;
             }
+
+            //если были ошибки генерации шаблона, при сохранени записи считаем что они исправлены
+            $flat->setIsGenerateErrors(false);
         });
     }
 
@@ -373,6 +381,9 @@ class FlatAdmin extends AbstractAdmin
             ])
             ->add('archive', null, [
                 'label'     =>  'Архивный'
+            ])
+            ->add('isGenerateErrors', null, [
+                'label' =>  'Ошибки генерации шаблона'
             ])
             ->add('updatedAt', null, [
                 'label'     =>  'Дата последнего обновления',

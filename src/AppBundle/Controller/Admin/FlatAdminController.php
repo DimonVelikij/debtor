@@ -95,6 +95,20 @@ class FlatAdminController extends CRUDController
             throw new \Exception("Undefined parameter 'flatId'");
         }
 
+        /** @var Flat $flat */
+        $flat = $this->getDoctrine()->getRepository('AppBundle:Flat')->find($input['flatId']);
+
+        if (!$flat) {
+            throw new \Exception("Undefined flat by id: '{$input['flatId']}'");
+        }
+
+        if (//если пользователь не суперадмин и помещение не обслуживается УК пользователя
+            !$user->isSuperAdmin() &&
+            $flat->getHouse()->getCompany()->getId() != $user->getCompany()->getId()
+        ) {
+            throw new AccessDeniedException('Bad credentials');
+        }
+
         $constraints = [
             'name'              =>  [
                 new NotBlank(['message' =>  'Укажите ФИО'])
@@ -142,6 +156,9 @@ class FlatAdminController extends CRUDController
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
 
+        //если были ошибки генерации шаблона, при сохранени абонента считаем что они исправлены
+        $flat->setIsGenerateErrors(false);
+        
         //создаем или получаем объект абонента
         $subscriber = $this->findOrCreateSubscriber($input);
 
@@ -155,7 +172,7 @@ class FlatAdminController extends CRUDController
             ->setDateDebt($input['dateDebt'] ? \DateTime::createFromFormat('dmY', $input['dateDebt']) : new \DateTime())
             ->setSumDebt($input['sumDebt'])
             ->setSumFine($input['sumFine'])
-            ->setFlat($em->getReference('AppBundle:Flat', $input['flatId']))
+            ->setFlat($flat)
             ->setPersonalAccount($personalAccount);
 
         $em->persist($subscriber);
@@ -355,6 +372,20 @@ class FlatAdminController extends CRUDController
             throw new \Exception("Undefined parameter 'flatId'");
         }
 
+        /** @var Flat $flat */
+        $flat = $this->getDoctrine()->getRepository('AppBundle:Flat')->find($input['flatId']);
+
+        if (!$flat) {
+            throw new \Exception("Undefined flat by id: '{$input['flatId']}'");
+        }
+
+        if (//если пользователь не суперадмин и помещение не обслуживается УК пользователя
+            !$user->isSuperAdmin() &&
+            $flat->getHouse()->getCompany()->getId() != $user->getCompany()->getId()
+        ) {
+            throw new AccessDeniedException('Bad credentials');
+        }
+
         //валидация формы
         $errors = $this->validateDebtor($input);
 
@@ -367,6 +398,9 @@ class FlatAdminController extends CRUDController
 
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
+
+        //если были ошибки генерации шаблона, при сохранени должника считаем что они исправлены
+        $flat->setIsGenerateErrors(false);
 
         //создаем или получаем объект должника
         $debtor = $this->findOrCreateDebtor($input);
@@ -389,7 +423,7 @@ class FlatAdminController extends CRUDController
             ->setBossPosition($input['bossPosition'])
             ->setType($em->getReference('AppBundle:DebtorType', $input['type']['id']))
             ->setOwnershipStatus($em->getReference('AppBundle:OwnershipStatus', $input['ownershipStatus']['id']))
-            ->setFlat($em->getReference('AppBundle:Flat', $input['flatId']))
+            ->setFlat($flat)
             ->setPersonalAccount($em->getReference('AppBundle:PersonalAccount', $input['personalAccount']['id']));
 
         $em->persist($debtor);

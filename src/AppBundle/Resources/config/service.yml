@@ -4,3 +4,13 @@ services:
         class: AppBundle\Service\AddressBookValidator
         arguments:
             - "@doctrine.orm.entity_manager"
+
+    app.service.template_generator:
+        class: AppBundle\Service\TemplateGenerator
+        arguments:
+            - "@doctrine.orm.doctrine_entity_manager"
+
+    app.service.flat_logger:
+        class: AppBundle\Service\FlatLogger
+        arguments:
+            - "@doctrine.orm.doctrine_entity_manager"

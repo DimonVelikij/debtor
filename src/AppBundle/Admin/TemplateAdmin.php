@@ -10,6 +10,7 @@ use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -87,6 +88,9 @@ class TemplateAdmin extends AbstractAdmin
      */
     protected function configureFormFields(FormMapper $formMapper)
     {
+        /** @var array $templateFields */
+        $templateFields = $this->getTemplateGenerator()->getTemplateFields();
+
         /** @var Template $startTemplate */
         $startTemplate = $this->getDoctrine()->getRepository('AppBundle:Template')
             ->createQueryBuilder('template')
@@ -121,9 +125,10 @@ class TemplateAdmin extends AbstractAdmin
                     new NotBlank(['message' =>  'Укажите количество дней'])
                 ]
             ])
-            ->add('templateFields', null, [
+            ->add('templateFields', ChoiceType::class, [
                 'label'         =>  'Список полей для шаблона',
-                'required'      =>  false
+                'required'      =>  false,
+                'choices'       =>  $templateFields
             ])
             ->add('isJudicial', CheckboxType::class, [
                 'label'         =>  'Является судебным',
@@ -156,5 +161,13 @@ class TemplateAdmin extends AbstractAdmin
     private function getDoctrine()
     {
         return $this->getContainer()->get('doctrine.orm.entity_manager');
+    }
+
+    /**
+     * @return \AppBundle\Service\TemplateGenerator|object
+     */
+    private function getTemplateGenerator()
+    {
+        return $this->getContainer()->get('app.service.template_generator');
     }
 }

@@ -121,11 +121,11 @@ class Flat
     private $isGenerateErrors;
 
     /**
-     * @ORM\Column(name="is_finish_generate", type="boolean", nullable=false, options={"default": 0})
+     * @ORM\Column(name="last_date_generate", type="date", nullable=false)
      *
      * все ли шаблоны были сгенерированы
      */
-    private $isFinishGenerate;
+    private $lastDateGenerate;
 
     /**
      * @ORM\ManyToOne(targetEntity="House", inversedBy="flats")
@@ -150,6 +150,11 @@ class Flat
     private $template;
 
     /**
+     * @ORM\OneToMany(targetEntity="Log", mappedBy="flat")
+     */
+    private $logs;
+
+    /**
      * @return string
      */
     public function __toString()
@@ -168,7 +173,9 @@ class Flat
     {
         $this->subscribers = new \Doctrine\Common\Collections\ArrayCollection();
         $this->debtors = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->logs = new \Doctrine\Common\Collections\ArrayCollection();
     }
+
 
     /**
      * Get id
@@ -517,27 +524,27 @@ class Flat
     }
 
     /**
-     * Set isFinishGenerate
+     * Set lastDateGenerate
      *
-     * @param boolean $isFinishGenerate
+     * @param \DateTime $lastDateGenerate
      *
      * @return Flat
      */
-    public function setIsFinishGenerate($isFinishGenerate)
+    public function setLastDateGenerate($lastDateGenerate)
     {
-        $this->isFinishGenerate = $isFinishGenerate;
+        $this->lastDateGenerate = $lastDateGenerate;
 
         return $this;
     }
 
     /**
-     * Get isFinishGenerate
+     * Get lastDateGenerate
      *
-     * @return boolean
+     * @return \DateTime
      */
-    public function getIsFinishGenerate()
+    public function getLastDateGenerate()
     {
-        return $this->isFinishGenerate;
+        return $this->lastDateGenerate;
     }
 
     /**
@@ -654,5 +661,39 @@ class Flat
     public function getTemplate()
     {
         return $this->template;
+    }
+
+    /**
+     * Add log
+     *
+     * @param \AppBundle\Entity\Log $log
+     *
+     * @return Flat
+     */
+    public function addLog(\AppBundle\Entity\Log $log)
+    {
+        $this->logs[] = $log;
+
+        return $this;
+    }
+
+    /**
+     * Remove log
+     *
+     * @param \AppBundle\Entity\Log $log
+     */
+    public function removeLog(\AppBundle\Entity\Log $log)
+    {
+        $this->logs->removeElement($log);
+    }
+
+    /**
+     * Get logs
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getLogs()
+    {
+        return $this->logs;
     }
 }
