@@ -4,6 +4,7 @@ namespace AppBundle\Controller\Admin;
 
 use AppBundle\Entity\Debtor;
 use AppBundle\Entity\Flat;
+use AppBundle\Entity\Log;
 use AppBundle\Entity\PersonalAccount;
 use AppBundle\Entity\Subscriber;
 use AppBundle\Entity\User;
@@ -434,6 +435,93 @@ class FlatAdminController extends CRUDController
             'debtor'    =>  json_decode($this->get('jms_serializer')
                 ->serialize($debtor, 'json', SerializationContext::create()->setGroups(['cms-debtor']))
             )
+        ]);
+    }
+
+    /**
+     * получение списка логов
+     * @param Request $request
+     * @param $flat_id
+     * @return Response
+     * @throws \Exception
+     */
+    public function logsAction(Request $request, $flat_id)
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        if (!$user) {
+            throw new AccessDeniedException('Bad credentials');
+        }
+
+        /** @var Flat $flat */
+        $flat = $this->getDoctrine()->getRepository('AppBundle:Flat')->find($flat_id);
+
+        if (!$flat) {
+            throw new \Exception("Undefined flat by id: '{$flat_id}'");
+        }
+
+        if (
+            //если пользователь не суперадмин и помещение не обслуживается УК пользователя
+            !$user->isSuperAdmin() &&
+            $flat->getHouse()->getCompany()->getId() !== $user->getCompany()->getId()
+        ) {
+            throw new AccessDeniedException('Bad credentials');
+        }
+
+        return new Response(
+            $this->get('jms_serializer')->serialize(
+                $flat->getLogs(),
+                'json',
+                SerializationContext::create()->setGroups(['cms-log'])
+            )
+        );
+    }
+
+    /**
+     * прочитали новые логи
+     * @param Request $request
+     * @param $flat_id
+     * @return Response
+     * @throws \Exception
+     */
+    public function readLogsAction(Request $request, $flat_id)
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        if (!$user) {
+            throw new AccessDeniedException('Bad credentials');
+        }
+
+        /** @var Flat $flat */
+        $flat = $this->getDoctrine()->getRepository('AppBundle:Flat')->find($flat_id);
+
+        if (!$flat) {
+            throw new \Exception("Undefined flat by id: '{$flat_id}'");
+        }
+
+        if (
+            //если пользователь не суперадмин и помещение не обслуживается УК пользователя
+            !$user->isSuperAdmin() &&
+            $flat->getHouse()->getCompany()->getId() !== $user->getCompany()->getId()
+        ) {
+            throw new AccessDeniedException('Bad credentials');
+        }
+
+        /** @var EntityManager $em */
+        $em = $this->getDoctrine()->getManager();
+
+        /** @var Log $log */
+        foreach ($flat->getLogs() as $log) {
+            $log->setIsRead(true);
+            $em->persist($log);
+        }
+
+        $em->flush();
+
+        return new JsonResponse([
+            'success'   =>  true
         ]);
     }
 

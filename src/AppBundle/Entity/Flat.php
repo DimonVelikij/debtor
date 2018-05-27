@@ -167,6 +167,21 @@ class Flat
     }
 
     /**
+     * @return bool
+     */
+    public function getIsNewLogs()
+    {
+        /** @var Log $log */
+        foreach ($this->getLogs() as $log) {
+            if (!$log->getIsRead()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -175,7 +190,6 @@ class Flat
         $this->debtors = new \Doctrine\Common\Collections\ArrayCollection();
         $this->logs = new \Doctrine\Common\Collections\ArrayCollection();
     }
-
 
     /**
      * Get id

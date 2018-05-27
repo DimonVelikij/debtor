@@ -62,6 +62,8 @@ class FlatAdmin extends AbstractAdmin
             ->add('subscriber_list', 'subscriber_list/{flat_id}')
             ->add('submit_subscriber', 'submit_subscriber')
             ->add('personal_accounts', 'personal_accounts/{flat_id}')
+            ->add('logs', 'logs/{flat_id}')
+            ->add('read_logs', 'read_logs/{flat_id}')
             ->remove('batch')
             ->remove('export')
             ->remove('delete');
@@ -151,6 +153,10 @@ class FlatAdmin extends AbstractAdmin
             ])
             ->add('isGenerateErrors', null, [
                 'label'     =>  'Ошибки генерации шаблона'
+            ])
+            ->add('isNewLogs', 'boolean', [
+                'label'     =>  'Новые события',
+                'sortable'  =>  true
             ])
             ->add('updatedAt', null, [
                 'label'     =>  'Дата последнего обновления',
@@ -385,6 +391,9 @@ class FlatAdmin extends AbstractAdmin
             ->add('isGenerateErrors', null, [
                 'label' =>  'Ошибки генерации шаблона'
             ])
+            ->add('isNewLogs', 'boolean', [
+                'label'     =>  'Новые события'
+            ])
             ->add('updatedAt', null, [
                 'label'     =>  'Дата последнего обновления',
                 'template'  =>  '@App/Admin/Flat/Show/updated_at.html.twig'
@@ -393,10 +402,10 @@ class FlatAdmin extends AbstractAdmin
                 'label'     =>  'Адрес'
             ])
             ->add('template', null, [
-                'label' =>  'Текущее действие'
+                'label'     =>  'Текущее действие'
             ])
             ->add('template.parent', null, [
-                'label' =>  'Следующее действие'
+                'label'     =>  'Следующее действие'
             ])
             ->add('debtors', null, [
                 'label'     =>  'Список должников',

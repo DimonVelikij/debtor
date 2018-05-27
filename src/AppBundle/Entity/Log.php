@@ -3,10 +3,13 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="logs")
+ *
+ * @JMS\ExclusionPolicy("all")
  *
  * Class Log
  * @package AppBundle\Entity
@@ -17,21 +20,42 @@ class Log
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
+     *
+     * @JMS\Expose
+     * @JMS\Type("integer")
+     * @JMS\SerializedName("id")
+     * @JMS\Groups({"cms-log"})
      */
     private $id;
 
     /**
      * @ORM\Column(name="date", type="datetime", nullable=false)
+     *
+     * @JMS\Expose
+     * @JMS\Type("string")
+     * @JMS\SerializedName("date")
+     * @JMS\Accessor(getter="getDateString")
+     * @JMS\Groups({"cms-log"})
      */
     private $date;
 
     /**
      * @ORM\Column(name="data", type="text", nullable=false)
+     *
+     * @JMS\Expose
+     * @JMS\Type("string")
+     * @JMS\SerializedName("data")
+     * @JMS\Groups({"cms-log"})
      */
     private $data;
 
     /**
      * @ORM\Column(name="is_read", type="boolean", nullable=false)
+     *
+     * @JMS\Expose
+     * @JMS\Type("boolean")
+     * @JMS\SerializedName("isRead")
+     * @JMS\Groups({"cms-log"})
      */
     private $isRead;
 
@@ -40,6 +64,18 @@ class Log
      * @ORM\JoinColumn(name="flat_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      */
     private $flat;
+
+    /**
+     * @return null|string
+     */
+    public function getDateString()
+    {
+        if ($this->date instanceof \DateTime) {
+            return $this->date->format('dmY');
+        }
+
+        return null;
+    }
 
     /**
      * Get id

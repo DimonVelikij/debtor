@@ -13,6 +13,7 @@
                     {% if object.id %}
                         <li><a href="#tab_{{ admin.uniqid }}_4" data-toggle="tab"><i class="fa fa-exclamation-circle has-errors hide" aria-hidden="true"></i> Абоненты</a></li>
                         <li><a href="#tab_{{ admin.uniqid }}_5" data-toggle="tab"><i class="fa fa-exclamation-circle has-errors hide" aria-hidden="true"></i> Должники</a></li>
+                        <li><a href="#tab_{{ admin.uniqid }}_6" data-toggle="tab" id="tab-event"><i class="fa fa-exclamation-circle has-errors hide" aria-hidden="true"></i> События <span id="count-events" style="display: none; background-color: #00a65a; padding: 3px; border-radius: 3px; color: white;"></span></a></li>
                     {% endif %}
                 </ul>
                 <div class="tab-content">
@@ -88,6 +89,39 @@
                                                                     } | json_encode | raw }}</script>
                                                                 <div class="box-body table-responsive no-padding">
                                                                     {% include '@App/Admin/Flat/Debtor/debtor_list.html.twig' %}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="tab_{{ admin.uniqid }}_6">
+                            <div class="box-body  container-fluid">
+                                <div class="sonata-ba-collapsed-fields">
+                                    <div class="sonata-ba-collapsed-fields">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="box box-primary">
+                                                    <div class="box-header">
+                                                        <h4 class="box-title"></h4>
+                                                    </div>
+                                                    <div class="box-body">
+                                                        <div class="sonata-ba-collapsed-fields">
+                                                            <div ng-controller="LogCtrl" ng-cloak>
+                                                                <script type="text/ng-init" name="Path">{{ {
+                                                                        AdminLogs: path('admin_app_flat_logs', {flat_id: object.id}),
+                                                                        AdminReadLogs: path('admin_app_flat_read_logs', {flat_id: object.id})
+                                                                    } | json_encode | raw }}</script>
+                                                                <script type="text/ng-init" name="Settings">{{ {
+                                                                        FlatId: object.id
+                                                                    } | json_encode | raw }}</script>
+                                                                <div class="box-body table-responsive no-padding">
+                                                                    {% include '@App/Admin/Flat/Log/log_list.html.twig' %}
                                                                 </div>
                                                             </div>
                                                         </div>

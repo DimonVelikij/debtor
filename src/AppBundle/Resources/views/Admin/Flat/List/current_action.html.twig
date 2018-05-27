@@ -5,5 +5,7 @@
         {{ object.template }}
         <a href="{#добавить action на пропуск события#}">Пропустить</a>
         <a href="{#добавить action на выполнение события#}">Выполнить</a>
+    {% else %}
+        <span style="color: #00a65a">Выполнены все события</span>
     {% endif %}
 {% endblock %}

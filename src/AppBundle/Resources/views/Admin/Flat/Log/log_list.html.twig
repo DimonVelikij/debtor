@@ -1,0 +1,25 @@
+<div class="col-md-12">
+    <div class="sonata-ba-collapsed-fields">
+        <div ng-show="logs.length">
+            <table class="table table-bordered table-striped sonata-ba-list">
+                <thead>
+                <tr class="sonata-ba-list-field-header">
+                    <th>Id</th>
+                    <th>Дата</th>
+                    <th>Сообщение</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="log in logs | orderBy: '-id'" style="background-color: #befab4">
+                    <td>[[ log.id ]]</td>
+                    <td>[[ log.date | date ]]</td>
+                    <td><span ng-bind-html="trustHtml(log.data)"></span></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div style="margin-bottom: 20px">
+            <p ng-hide="logs.length">Список событий пуст</p>
+        </div>
+    </div>
+</div>
