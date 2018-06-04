@@ -58,14 +58,14 @@ class Template
     private $templateFields;
 
     /**
-     * @ORM\Column(name="is_start", type="boolean", nullable=false, options={"default":0})
+     * @ORM\Column(name="is_start", type="boolean", nullable=true, options={"default":0})
      *
      * является ли стартовым
      */
     private $isStart;
 
     /**
-     * @ORM\Column(name="is_judicial", type="boolean", nullable=false, options={"default":0})
+     * @ORM\Column(name="is_judicial", type="boolean", nullable=true, options={"default":0})
      *
      * является ли судебным
      */
