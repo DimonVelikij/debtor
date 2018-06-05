@@ -7,12 +7,12 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="templates")
+ * @ORM\Table(name="events")
  *
- * Class Template
+ * Class Event
  * @package AppBundle\Entity
  */
-class Template
+class Event
 {
     /**
      * @ORM\Id
@@ -72,7 +72,7 @@ class Template
     private $isJudicial;
 
     /**
-     * @ORM\OneToOne(targetEntity="Template")
+     * @ORM\OneToOne(targetEntity="Event")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", nullable=true)
      *
      * следующий шаблон
@@ -102,7 +102,7 @@ class Template
      *
      * @param string $name
      *
-     * @return Template
+     * @return Event
      */
     public function setName($name)
     {
@@ -126,7 +126,7 @@ class Template
      *
      * @param string $slug
      *
-     * @return Template
+     * @return Event
      */
     public function setSlug($slug)
     {
@@ -150,7 +150,7 @@ class Template
      *
      * @param string $template
      *
-     * @return Template
+     * @return Event
      */
     public function setTemplate($template)
     {
@@ -174,7 +174,7 @@ class Template
      *
      * @param integer $timePerformAction
      *
-     * @return Template
+     * @return Event
      */
     public function setTimePerformAction($timePerformAction)
     {
@@ -198,7 +198,7 @@ class Template
      *
      * @param \stdClass $templateFields
      *
-     * @return Template
+     * @return Event
      */
     public function setTemplateFields($templateFields)
     {
@@ -222,7 +222,7 @@ class Template
      *
      * @param boolean $isStart
      *
-     * @return Template
+     * @return Event
      */
     public function setIsStart($isStart)
     {
@@ -246,7 +246,7 @@ class Template
      *
      * @param boolean $isJudicial
      *
-     * @return Template
+     * @return Event
      */
     public function setIsJudicial($isJudicial)
     {
@@ -268,11 +268,11 @@ class Template
     /**
      * Set parent
      *
-     * @param \AppBundle\Entity\Template $parent
+     * @param \AppBundle\Entity\Event $parent
      *
-     * @return Template
+     * @return Event
      */
-    public function setParent(\AppBundle\Entity\Template $parent = null)
+    public function setParent(\AppBundle\Entity\Event $parent = null)
     {
         $this->parent = $parent;
 
@@ -282,7 +282,7 @@ class Template
     /**
      * Get parent
      *
-     * @return \AppBundle\Entity\Template
+     * @return \AppBundle\Entity\Event
      */
     public function getParent()
     {

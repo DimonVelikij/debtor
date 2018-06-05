@@ -121,11 +121,11 @@ class Flat
     private $isGenerateErrors;
 
     /**
-     * @ORM\Column(name="last_date_generate", type="date", nullable=false)
+     * @ORM\Column(name="event_data", type="object", nullable=true)
      *
-     * все ли шаблоны были сгенерированы
+     * информация о событиях
      */
-    private $lastDateGenerate;
+    private $eventData;
 
     /**
      * @ORM\ManyToOne(targetEntity="House", inversedBy="flats")
@@ -144,10 +144,13 @@ class Flat
     private $debtors;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Template")
-     * @ORM\JoinColumn(name="template_id", referencedColumnName="id", nullable=false)
+     * @ORM\ManyToMany(targetEntity="Event")
+     * @ORM\JoinTable(name="flats_events",
+     *     joinColumns={@ORM\JoinColumn(name="flat_id", referencedColumnName="id")},
+     *     inverseJoinColumns={@ORM\JoinColumn(name="event_id", referencedColumnName="id")})
+     *
      */
-    private $template;
+    private $events;
 
     /**
      * @ORM\OneToMany(targetEntity="Log", mappedBy="flat")
@@ -188,6 +191,7 @@ class Flat
     {
         $this->subscribers = new \Doctrine\Common\Collections\ArrayCollection();
         $this->debtors = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->events = new \Doctrine\Common\Collections\ArrayCollection();
         $this->logs = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
@@ -538,27 +542,27 @@ class Flat
     }
 
     /**
-     * Set lastDateGenerate
+     * Set eventData
      *
-     * @param \DateTime $lastDateGenerate
+     * @param \stdClass $eventData
      *
      * @return Flat
      */
-    public function setLastDateGenerate($lastDateGenerate)
+    public function setEventData($eventData)
     {
-        $this->lastDateGenerate = $lastDateGenerate;
+        $this->eventData = $eventData;
 
         return $this;
     }
 
     /**
-     * Get lastDateGenerate
+     * Get eventData
      *
-     * @return \DateTime
+     * @return \stdClass
      */
-    public function getLastDateGenerate()
+    public function getEventData()
     {
-        return $this->lastDateGenerate;
+        return $this->eventData;
     }
 
     /**
@@ -654,27 +658,37 @@ class Flat
     }
 
     /**
-     * Set template
+     * Add event
      *
-     * @param \AppBundle\Entity\Template $template
+     * @param \AppBundle\Entity\Event $event
      *
      * @return Flat
      */
-    public function setTemplate(\AppBundle\Entity\Template $template)
+    public function addEvent(\AppBundle\Entity\Event $event)
     {
-        $this->template = $template;
+        $this->events[] = $event;
 
         return $this;
     }
 
     /**
-     * Get template
+     * Remove event
      *
-     * @return \AppBundle\Entity\Template
+     * @param \AppBundle\Entity\Event $event
      */
-    public function getTemplate()
+    public function removeEvent(\AppBundle\Entity\Event $event)
     {
-        return $this->template;
+        $this->events->removeElement($event);
+    }
+
+    /**
+     * Get events
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getEvents()
+    {
+        return $this->events;
     }
 
     /**

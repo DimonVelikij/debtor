@@ -3,8 +3,8 @@
 namespace AppBundle\Admin;
 
 use AppBundle\Admin\traits\UserTrait;
+use AppBundle\Entity\Event;
 use AppBundle\Entity\Flat;
-use AppBundle\Entity\Template;
 use AppBundle\Entity\User;
 use AppBundle\Service\AddressBookValidator;
 use Doctrine\ORM\EntityRepository;
@@ -110,12 +110,12 @@ class FlatAdmin extends AbstractAdmin
                     'label'     => 'по:'
                 ]
             ])
-            ->add('template', null, [
+            /*->add('event', null, [
                 'label' =>  'Текущее действие'
             ])
-            ->add('template.parent', null, [
+            ->add('event.parent', null, [
                 'label' =>  'Следующее действие'
-            ])
+            ])*/
         ;
     }
 
@@ -162,11 +162,11 @@ class FlatAdmin extends AbstractAdmin
                 'label'     =>  'Дата последнего обновления',
                 'template'  =>  '@App/Admin/Flat/List/updated_at.html.twig'
             ])
-            ->add('template', null, [
+            ->add('event', null, [
                 'label'     =>  'Текущее действие',
                 'template'  =>  '@App/Admin/Flat/List/current_action.html.twig'
             ])
-            ->add('template.parent', null, [
+            ->add('event.parent', null, [
                 'label'     =>  'Следующее действие'
             ])
             ->add('_action', null, array(
@@ -295,16 +295,16 @@ class FlatAdmin extends AbstractAdmin
         /** @var AddressBookValidator $addressBookValidator */
         $addressBookValidator = $this->getContainer()->get('app.service.address_book_validator');
 
-        /** @var Template $startTemplate */
-        $startTemplate = $this->getDoctrine()->getRepository('AppBundle:Template')
-            ->createQueryBuilder('template')
-            ->where('template.isStart = :isStart')
+        /** @var Event $startEvent */
+        $startEvent = $this->getDoctrine()->getRepository('AppBundle:Event')
+            ->createQueryBuilder('event')
+            ->where('event.isStart = :isStart')
             ->setParameter('isStart', true)
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
 
-        $formMapper->getFormBuilder()->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) use ($addressBookValidator, $startTemplate) {
+        $formMapper->getFormBuilder()->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) use ($addressBookValidator, $startEvent) {
             /** @var Flat $flat */
             $flat = $event->getData();
 
@@ -321,20 +321,20 @@ class FlatAdmin extends AbstractAdmin
                 $event->getForm()->get('number')->addError(new FormError($error));
             }
 
-            if (!$startTemplate) {
-                $event->getForm()->get('number')->addError(new FormError('Прежде чем добавить помещение - нужно добавить шиблон'));
+            if (!$startEvent) {
+                $event->getForm()->get('number')->addError(new FormError('Прежде чем добавить помещение - нужно добавить событие'));
             }
         });
 
-        $formMapper->getFormBuilder()->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) use ($startTemplate) {
+        $formMapper->getFormBuilder()->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) use ($startEvent) {
             /** @var Flat $flat */
             $flat = $event->getData();
 
             //если новый объект и форма валидна
             if (!$flat->getId() && $event->getForm()->isValid()) {
                 $flat
-                    ->setTemplate($startTemplate)//стартовый шаблон
-                    ->setLastDateGenerate(new \DateTime())//последняя даты генерации - текущая
+                    ->addEvent($startEvent)//стартовый шаблон
+                    //нужно установить последнюю дату генерации - текущую
                 ;
             }
 
@@ -401,12 +401,12 @@ class FlatAdmin extends AbstractAdmin
             ->add('house', null, [
                 'label'     =>  'Адрес'
             ])
-            ->add('template', null, [
+            /*->add('event', null, [
                 'label'     =>  'Текущее действие'
             ])
-            ->add('template.parent', null, [
+            ->add('event.parent', null, [
                 'label'     =>  'Следующее действие'
-            ])
+            ])*/
             ->add('debtors', null, [
                 'label'     =>  'Список должников',
                 'template'  =>  '@App/Admin/Flat/Show/debtors.html.twig'
