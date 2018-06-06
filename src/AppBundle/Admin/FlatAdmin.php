@@ -14,7 +14,6 @@ use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
-use Sonata\AdminBundle\Show\ShowMapper;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -110,12 +109,6 @@ class FlatAdmin extends AbstractAdmin
                     'label'     => 'по:'
                 ]
             ])
-            /*->add('event', null, [
-                'label' =>  'Текущее действие'
-            ])
-            ->add('event.parent', null, [
-                'label' =>  'Следующее действие'
-            ])*/
         ;
     }
 
@@ -162,17 +155,20 @@ class FlatAdmin extends AbstractAdmin
                 'label'     =>  'Дата последнего обновления',
                 'template'  =>  '@App/Admin/Flat/List/updated_at.html.twig'
             ])
+            ->add('subscribers.personalAccount.account', null, [
+                'label'     =>  'Лицевые счета',
+                'template'  =>  '@App/Admin/Flat/List/personal_account.html.twig'
+            ])
             ->add('event', null, [
-                'label'     =>  'Текущее действие',
+                'label'     =>  'Текущее событие',
                 'template'  =>  '@App/Admin/Flat/List/current_action.html.twig'
             ])
             ->add('event.parent', null, [
-                'label'     =>  'Следующее действие'
+                'label'     =>  'Следующее событие'
             ])
             ->add('_action', null, array(
                 'label'     =>  'Действия',
                 'actions'   => array(
-                    'show'  => array(),
                     'edit'  => array(),
                 ),
             ))
@@ -341,77 +337,6 @@ class FlatAdmin extends AbstractAdmin
             //если были ошибки генерации шаблона, при сохранени записи считаем что они исправлены
             $flat->setIsGenerateErrors(false);
         });
-    }
-
-    /**
-     * @param ShowMapper $showMapper
-     */
-    protected function configureShowFields(ShowMapper $showMapper)
-    {
-        $showMapper
-            ->add('id')
-            ->add('number', null, [
-                'label'     =>  'Номер помещения'
-            ])
-            ->add('startDebtPeriod', null, [
-                'label'     =>  'Начало периода взыскания'
-            ])
-            ->add('endDebtPeriod', null, [
-                'label'     =>  'Конец периода взыскания'
-            ])
-            ->add('dateFillDebt', null, [
-                'label'     =>  'Дата заполнения долга',
-                'template'  =>  '@App/Admin/Flat/Show/date_fill_debt.html.twig'
-            ])
-            ->add('sumDebt', null, [
-                'label'     =>  'Сумма долга'
-            ])
-            ->add('periodAccruedDebt', null, [
-                'label'     =>  'За период начислено долга'
-            ])
-            ->add('periodPayDebt', null, [
-                'label'     =>  'За период оплачено долга'
-            ])
-            ->add('dateFillFine', null, [
-                'label'     =>  'Дата заполнения пени',
-                'template'  =>  '@App/Admin/Flat/Show/date_fill_fine.html.twig'
-            ])
-            ->add('sumFine', null, [
-                'label'     =>  'Сумма пени'
-            ])
-            ->add('periodAccruedFine', null, [
-                'label'     =>  'За период начислено пени'
-            ])
-            ->add('periodPayFine', null, [
-                'label'     =>  'За период оплачено пени'
-            ])
-            ->add('archive', null, [
-                'label'     =>  'Архивный'
-            ])
-            ->add('isGenerateErrors', null, [
-                'label' =>  'Ошибки генерации шаблона'
-            ])
-            ->add('isNewLogs', 'boolean', [
-                'label'     =>  'Новые события'
-            ])
-            ->add('updatedAt', null, [
-                'label'     =>  'Дата последнего обновления',
-                'template'  =>  '@App/Admin/Flat/Show/updated_at.html.twig'
-            ])
-            ->add('house', null, [
-                'label'     =>  'Адрес'
-            ])
-            /*->add('event', null, [
-                'label'     =>  'Текущее действие'
-            ])
-            ->add('event.parent', null, [
-                'label'     =>  'Следующее действие'
-            ])*/
-            ->add('debtors', null, [
-                'label'     =>  'Список должников',
-                'template'  =>  '@App/Admin/Flat/Show/debtors.html.twig'
-            ])
-        ;
     }
 
     /**

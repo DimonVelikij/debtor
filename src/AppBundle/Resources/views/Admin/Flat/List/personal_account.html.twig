@@ -1,0 +1,9 @@
+{% extends admin.getTemplate('base_list_field') %}
+
+{% block field %}
+    {% if object.subscribers | length %}
+        {% for subscriber in object.subscribers %}
+            <p>{{ subscriber.personalAccount.account }}</p>
+        {% endfor %}
+    {% endif %}
+{% endblock %}
