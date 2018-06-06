@@ -146,7 +146,7 @@ class Flat
     /**
      * @ORM\ManyToMany(targetEntity="Event")
      * @ORM\JoinTable(name="flats_events",
-     *     joinColumns={@ORM\JoinColumn(name="flat_id", referencedColumnName="id")},
+     *     joinColumns={@ORM\JoinColumn(name="flat_id", referencedColumnName="id", onDelete="CASCADE")},
      *     inverseJoinColumns={@ORM\JoinColumn(name="event_id", referencedColumnName="id")})
      *
      */

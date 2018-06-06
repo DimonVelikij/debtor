@@ -330,7 +330,9 @@ class FlatAdmin extends AbstractAdmin
             if (!$flat->getId() && $event->getForm()->isValid()) {
                 $flat
                     ->addEvent($startEvent)//стартовый шаблон
-                    //нужно установить последнюю дату генерации - текущую
+                    ->setEventData([
+                        'lastDataGenerate' => new \DateTime()//дата последней генерации шаблона - текущая
+                    ])
                 ;
             }
 
