@@ -43,9 +43,9 @@ services:
         calls:
             - [ setTemplate, [edit, AppBundle:Admin\Flat:edit.html.twig] ]
 
-    app.admin.template:
-        class: AppBundle\Admin\TemplateAdmin
-        arguments: [~, AppBundle\Entity\Template, SonataAdminBundle:CRUD]
+    app.admin.event:
+        class: AppBundle\Admin\EventAdmin
+        arguments: [~, AppBundle\Entity\Event, SonataAdminBundle:CRUD]
         tags:
-            - { name: sonata.admin, manager_type: orm, group: cms.template, label: Шаблоны }
+            - { name: sonata.admin, manager_type: orm, group: cms.event, label: События }
         public: true

@@ -116,9 +116,9 @@ sonata_admin:
                 icon: '<i class="fa fa-home"></i>'
                 on_top: true
                 roles: [ROLE_ADMIN]
-            cms.template:
-                label:  Шаблоны
-                icon: '<i class="fa fa-file"></i>'
+            cms.event:
+                label:  События
+                icon: '<i class="fa fa-calendar"></i>'
                 on_top: true
                 roles:  [ROLE_SUPER_ADMIN]
 

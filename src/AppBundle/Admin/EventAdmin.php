@@ -2,9 +2,8 @@
 
 namespace AppBundle\Admin;
 
-use AppBundle\Entity\Template;
+use AppBundle\Entity\Event;
 use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 use Ivory\CKEditorBundle\Form\Type\CKEditorType;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
@@ -19,7 +18,7 @@ use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-class TemplateAdmin extends AbstractAdmin
+class EventAdmin extends AbstractAdmin
 {
     /**
      * @param RouteCollection $collection
@@ -78,6 +77,9 @@ class TemplateAdmin extends AbstractAdmin
             ->add('isJudicial', null, [
                 'label' =>  'Судебный'
             ])
+            ->add('parent', null, [
+                'label' =>  'Родительское событие'
+            ])
             ->add('_action', null, array(
                 'label'     =>  'Действия',
                 'actions'   =>  array(
@@ -92,20 +94,20 @@ class TemplateAdmin extends AbstractAdmin
      */
     protected function configureFormFields(FormMapper $formMapper)
     {
-        /** @var Template $object */
+        /** @var Event $object */
         $object = $this->getSubject();
 
         /** @var array $templateFields */
-        $templateFields = $this->getTemplateGenerator()->getTemplateFields();
+        $templateFields = $this->getTemplateGenerator()->getTemplateFields();//поля подстановки для шаблонов
 
-        /** @var Template $startTemplate */
-        $startTemplate = $this->getDoctrine()->getRepository('AppBundle:Template')
-            ->createQueryBuilder('template')
-            ->where('template.isStart = :isStart')
+        /** @var Event|null $startEvent */
+        $startEvent = $this->getDoctrine()->getRepository('AppBundle:Event')
+            ->createQueryBuilder('event')
+            ->where('event.isStart = :isStart')
             ->setMaxResults(1)
             ->setParameter('isStart', true)
             ->getQuery()
-            ->getOneOrNullResult();
+            ->getOneOrNullResult();//стартовое событие
 
         $formMapper
             ->add('name', TextType::class, [
@@ -123,19 +125,13 @@ class TemplateAdmin extends AbstractAdmin
             ])
             ->add('templateFields', ChoiceType::class, [
                 'label'         =>  'Список полей для шаблона',
-                'required'      =>  true,
+                'required'      =>  false,
                 'choices'       =>  $templateFields,
-                'multiple'      =>  true,
-                'constraints'   =>  [
-                    new NotBlank(['message' =>  'Укажите список полей подстановки'])
-                ]
+                'multiple'      =>  true
             ])
             ->add('template', CKEditorType::class, [
                 'label'         =>  'Шаблон',
-                'required'      =>  true,
-                'constraints'   =>  [
-                    new NotBlank(['message' =>  'Укажите шаблон'])
-                ]
+                'required'      =>  false
             ])
             ->add('timePerformAction', NumberType::class, [
                 'label'         =>  'Через какое количество дней выполнить',
@@ -149,28 +145,36 @@ class TemplateAdmin extends AbstractAdmin
                 'required'      =>  false
             ])
             ->add('parent', EntityType::class, [
-                'label'         =>  'Родительский шаблон',
+                'label'         =>  'Родительское событие',
                 'required'      =>  false,
-                'class'         =>  Template::class,
-                'query_builder' =>  function (EntityRepository $er) {
-                    /** @var QueryBuilder $templateQueryBuilder */
-                    $templateQueryBuilder = $er->createQueryBuilder('template');
+                'class'         =>  Event::class,
+                'query_builder' =>  function (EntityRepository $er) use ($object) {
+                    /** @var QueryBuilder $eventQueryBuilder */
+                    $eventQueryBuilder = $er->createQueryBuilder('event');
 
-                    return $templateQueryBuilder
+                    //выводим события текущее родительское или у которых родительское поле пустое и не является стартовым
+                    return $eventQueryBuilder
                         ->where(
-                            $templateQueryBuilder->expr()->andX(
-                                $templateQueryBuilder->expr()->isNull('template.parent'),
-                                $templateQueryBuilder->expr()->orX(
-                                    'template.isStart != :isStart',
-                                    $templateQueryBuilder->expr()->isNull('template.isStart')
+                            $eventQueryBuilder->expr()->orX(
+                                'event.id = :currentParent',
+                                $eventQueryBuilder->expr()->andX(
+                                    $eventQueryBuilder->expr()->isNull('event.parent'),
+                                    $eventQueryBuilder->expr()->orX(
+                                        'event.isStart != :isStart',
+                                        $eventQueryBuilder->expr()->isNull('event.isStart')
+                                    )
                                 )
                             )
                         )
-                        ->setParameter('isStart', 1);
+                        ->setParameters([
+                            'isStart' => 1,
+                            'currentParent' => $object->getParent() ? $object->getParent()->getId() : null
+                        ]);
                 }
-            ]);
+            ])
+        ;
 
-        if (!$startTemplate || $object->getIsStart()) {
+        if (!$startEvent || $object->getIsStart()) {
             $formMapper
                 ->add('isStart', CheckboxType::class, [
                     'label'         =>  'Является стартовым',
