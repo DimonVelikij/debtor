@@ -1,10 +1,5 @@
 services:
 
-    app.service.address_book_validator:
-        class: AppBundle\Service\AddressBookValidator
-        arguments:
-            - "@doctrine.orm.entity_manager"
-
     app.service.template_generator:
         class: AppBundle\Service\TemplateGenerator
         arguments:

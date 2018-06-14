@@ -6,7 +6,7 @@ use AppBundle\Admin\traits\UserTrait;
 use AppBundle\Entity\Event;
 use AppBundle\Entity\Flat;
 use AppBundle\Entity\User;
-use AppBundle\Service\AddressBookValidator;
+use AppBundle\Validator\Constraints\FlatExist;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
@@ -196,7 +196,8 @@ class FlatAdmin extends AbstractAdmin
                         'group_by'      =>  'street.city',
                         'help'          =>  "<span style='color: blue;'>Если в списке нет нужного дома, необходимо <a target='_blank' href='{$this->getRouter()->generate('admin_app_house_create')}'>добавить дом</a> и обновить страницу</span>",
                         'constraints'   =>  [
-                            new NotBlank(['message' => 'Укажите дом'])
+                            new NotBlank(['message' => 'Укажите дом']),
+                            new FlatExist()
                         ],
                         'query_builder' =>  function (EntityRepository $er) use ($user) {
                             if (!$user->isSuperAdmin()) {
@@ -288,9 +289,6 @@ class FlatAdmin extends AbstractAdmin
                 ->end()
             ->end();
 
-        /** @var AddressBookValidator $addressBookValidator */
-        $addressBookValidator = $this->getContainer()->get('app.service.address_book_validator');
-
         /** @var Event $startEvent */
         $startEvent = $this->getDoctrine()->getRepository('AppBundle:Event')
             ->createQueryBuilder('event')
@@ -300,7 +298,7 @@ class FlatAdmin extends AbstractAdmin
             ->getQuery()
             ->getOneOrNullResult();
 
-        $formMapper->getFormBuilder()->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) use ($addressBookValidator, $startEvent) {
+        $formMapper->getFormBuilder()->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) use ($startEvent) {
             /** @var Flat $flat */
             $flat = $event->getData();
 
@@ -310,11 +308,6 @@ class FlatAdmin extends AbstractAdmin
 
             if (!$flat->getDateFillFine()) {
                 $flat->setDateFillFine(new \DateTime());
-            }
-
-            $error = $addressBookValidator->validateFlat($flat);
-            if ($error) {
-                $event->getForm()->get('number')->addError(new FormError($error));
             }
 
             if (!$startEvent) {

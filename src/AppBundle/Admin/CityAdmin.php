@@ -2,7 +2,7 @@
 
 namespace AppBundle\Admin;
 
-use AppBundle\Service\AddressBookValidator;
+use AppBundle\Validator\Constraints\CityExist;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
@@ -10,9 +10,6 @@ use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\FormError;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class CityAdmin extends AbstractAdmin
@@ -77,7 +74,8 @@ class CityAdmin extends AbstractAdmin
                 'label'         =>  'Название',
                 'required'      =>  true,
                 'constraints'   =>  [
-                    new NotBlank(['message' => 'Укажите название города'])
+                    new NotBlank(['message' => 'Укажите название города']),
+                    new CityExist()
                 ]
             ])
             ->add('slug', TextType::class, [
@@ -87,16 +85,6 @@ class CityAdmin extends AbstractAdmin
                 'disabled'      =>  true
             ])
         ;
-
-        /** @var AddressBookValidator $addressBookValidator */
-        $addressBookValidator = $this->getContainer()->get('app.service.address_book_validator');
-
-        $formMapper->getFormBuilder()->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) use ($addressBookValidator) {
-            $error = $addressBookValidator->validateCity($event->getData());
-            if ($error) {
-                $event->getForm()->get('title')->addError(new FormError($error));
-            }
-        });
     }
 
     /**

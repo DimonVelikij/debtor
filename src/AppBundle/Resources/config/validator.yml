@@ -12,3 +12,31 @@ services:
             - "@doctrine.orm.doctrine_entity_manager"
         tags:
             - { name: validator.constraint_validator, alias: ownership_status }
+
+    app.validator.city_exist:
+        class: AppBundle\Validator\Constraints\CityExistValidator
+        arguments:
+            - "@doctrine.orm.doctrine_entity_manager"
+        tags:
+            - { name: validator.constraint_validator, alias: city_exist }
+
+    app.validator.street_exist:
+        class: AppBundle\Validator\Constraints\StreetExistValidator
+        arguments:
+            - "@doctrine.orm.doctrine_entity_manager"
+        tags:
+            - { name: validator.constraint_validator, alias: street_exist }
+
+    app.validator.house_exist:
+        class: AppBundle\Validator\Constraints\HouseExistValidator
+        arguments:
+            - "@doctrine.orm.doctrine_entity_manager"
+        tags:
+            - { name: validator.constraint_validator, alias: house_exist }
+
+    app.validator.flat_exist:
+        class: AppBundle\Validator\Constraints\FlatExistValidator
+        arguments:
+            - "@doctrine.orm.doctrine_entity_manager"
+        tags:
+            - { name: validator.constraint_validator, alias: flat_exist }
