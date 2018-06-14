@@ -141,11 +141,9 @@ class FlatAdmin extends AbstractAdmin
             ->add('sumFine', null, [
                 'label'     =>  'Сумма пени, руб.'
             ])
-            ->add('archive', null, [
-                'label'     =>  'Архивный'
-            ])
             ->add('isGenerateErrors', null, [
-                'label'     =>  'Ошибки генерации шаблона'
+                'label'     =>  'Ошибки генерации шаблона',
+                'template'  =>  '@App/Admin/Flat/List/is_generate_errors.html.twig'
             ])
             ->add('isNewLogs', 'boolean', [
                 'label'     =>  'Новые события',
@@ -161,16 +159,18 @@ class FlatAdmin extends AbstractAdmin
             ])
             ->add('event', null, [
                 'label'     =>  'Текущее событие',
-                'template'  =>  '@App/Admin/Flat/List/current_action.html.twig'
+                'template'  =>  '@App/Admin/Flat/List/current_event.html.twig'
             ])
             ->add('event.parent', null, [
-                'label'     =>  'Следующее событие'
+                'label'     =>  'Следующее событие',
+                'template'  =>  '@App/Admin/Flat/List/next_event.html.twig'
             ])
             ->add('_action', null, array(
                 'label'     =>  'Действия',
                 'actions'   => array(
                     'edit'  => array(),
                 ),
+                'template'  =>  '@App/Admin/Flat/List/list__action_edit.html.twig'
             ))
         ;
     }
@@ -325,16 +325,6 @@ class FlatAdmin extends AbstractAdmin
         $formMapper->getFormBuilder()->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) use ($startEvent) {
             /** @var Flat $flat */
             $flat = $event->getData();
-
-            //если новый объект и форма валидна
-            if (!$flat->getId() && $event->getForm()->isValid()) {
-                $flat
-                    ->addEvent($startEvent)//стартовый шаблон
-                    ->setEventData([
-                        'lastDataGenerate' => new \DateTime()//дата последней генерации шаблона - текущая
-                    ])
-                ;
-            }
 
             //если были ошибки генерации шаблона, при сохранени записи считаем что они исправлены
             $flat->setIsGenerateErrors(false);

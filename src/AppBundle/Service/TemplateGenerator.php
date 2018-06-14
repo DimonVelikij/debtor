@@ -3,9 +3,13 @@
 namespace AppBundle\Service;
 
 use AppBundle\Entity\Debtor;
+use AppBundle\Entity\Event;
 use AppBundle\Entity\Flat;
+use AppBundle\Entity\FlatEvent;
 use AppBundle\Entity\Subscriber;
+use AppBundle\Exception\NoProcessException;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\PersistentCollection;
 use Doctrine\ORM\QueryBuilder;
 use Knp\Bundle\SnappyBundle\Snappy\LoggableGenerator;
 
@@ -105,44 +109,71 @@ class TemplateGenerator
     }
 
     /**
+     * получение стартового события
+     * @return Event|null
+     */
+    public function getStartEvent()
+    {
+        return $this->em
+            ->getRepository('AppBundle:Event')
+            ->createQueryBuilder('event')
+            ->where('event.isStart = :isStart')
+            ->setParameter('isStart', true)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function generateTemplate(Flat $flat, FlatEvent $flatEvent)
+    {
+        if (!$this->isProcessEvent($flatEvent)) {
+            throw new NoProcessException();
+        }
+    }
+
+    /**
      * генерация pdf документа
      * @param Flat $flat
      * @return array
      */
-    public function generateTemplate(Flat $flat)
+//    public function generateTemplate(Flat $flat)
+//    {
+//        //если судебный шаблон - работаем с должниками, иначе с абонентами
+//        $subjects = $flat->getTemplate()->getIsJudicial() ? $flat->getDebtors() : $flat->getSubscribers();
+//
+//        $pdfLinks = [];
+//
+//        /** @var Debtor|Subscriber $subject */
+//        foreach ($subjects as $subject) {
+//            /** @var string $template */
+//            $template = $flat->getTemplate()->getTemplate();
+//            /** @var string $field */
+//            foreach ($flat->getTemplate()->getTemplateFields() as $field) {
+//                $fieldValueMethod = $this->getFieldValueMethod($field);
+//                //заменяем поля подстановки на реальные данные
+//                $template = $this->templateReplace(
+//                    '{{' . $field . '}}',
+//                    $this->$fieldValueMethod(TemplateGenerator::$templateFieldValueEntity[$field] === 'flat' ? $flat : $subject),
+//                    $template
+//                );
+//            }
+//
+//            $pdfDir = '/pdf/' . $flat->getId() . '/' . $flat->getTemplate()->getSlug() . '_' . md5(uniqid()) . '.pdf';
+//
+//            //генерация pdf
+//            $this->pdfGenerator->generateFromHtml(
+//                $this->wrapUpTemplate($template),
+//                $this->rootDir . $pdfDir
+//            );
+//
+//            $pdfLinks[] = $pdfDir;
+//        }
+//
+//        return $pdfLinks;
+//    }
+
+    private function isProcessEvent(FlatEvent $flatEvent)
     {
-        //если судебный шаблон - работаем с должниками, иначе с абонентами
-        $subjects = $flat->getTemplate()->getIsJudicial() ? $flat->getDebtors() : $flat->getSubscribers();
 
-        $pdfLinks = [];
-
-        /** @var Debtor|Subscriber $subject */
-        foreach ($subjects as $subject) {
-            /** @var string $template */
-            $template = $flat->getTemplate()->getTemplate();
-            /** @var string $field */
-            foreach ($flat->getTemplate()->getTemplateFields() as $field) {
-                $fieldValueMethod = $this->getFieldValueMethod($field);
-                //заменяем поля подстановки на реальные данные
-                $template = $this->templateReplace(
-                    '{{' . $field . '}}',
-                    $this->$fieldValueMethod(TemplateGenerator::$templateFieldValueEntity[$field] === 'flat' ? $flat : $subject),
-                    $template
-                );
-            }
-
-            $pdfDir = '/pdf/' . $flat->getId() . '/' . $flat->getTemplate()->getSlug() . '_' . md5(uniqid()) . '.pdf';
-
-            //генерация pdf
-            $this->pdfGenerator->generateFromHtml(
-                $this->wrapUpTemplate($template),
-                $this->rootDir . $pdfDir
-            );
-
-            $pdfLinks[] = $pdfDir;
-        }
-
-        return $pdfLinks;
     }
 
     /**

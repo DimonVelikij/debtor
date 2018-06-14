@@ -46,7 +46,7 @@ class Event
     /**
      * @ORM\Column(name="time_perform_action", type="integer", nullable=false)
      *
-     * через какое количество дней выполнить генерацию
+     * через какое количество дней выполнить родительское событие
      */
     private $timePerformAction;
 

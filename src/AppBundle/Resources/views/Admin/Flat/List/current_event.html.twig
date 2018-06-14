@@ -1,0 +1,16 @@
+{% extends admin.getTemplate('base_list_field') %}
+
+{% block field %}
+    {% if object.archive %}
+        <span class="label label-success">в архиве</span>
+    {% else %}
+        {% if object.flatsEvents | length %}
+            {% for flatEvent in object.flatsEvents %}
+                <span>{{ flatEvent.event.name }}({{ flatEvent.dateGenerate.format('d.m.Y') }})</span>
+                <a href="">Посмотреть</a> <a href="">Скачать</a>
+            {% endfor %}
+        {% else %}
+            <span class="label label-success">отсутствует</span>
+        {% endif %}
+    {% endif %}
+{% endblock %}

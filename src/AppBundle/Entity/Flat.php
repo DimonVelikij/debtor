@@ -121,13 +121,6 @@ class Flat
     private $isGenerateErrors;
 
     /**
-     * @ORM\Column(name="event_data", type="object", nullable=true)
-     *
-     * информация о событиях
-     */
-    private $eventData;
-
-    /**
      * @ORM\ManyToOne(targetEntity="House", inversedBy="flats")
      * @ORM\JoinColumn(name="house_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      */
@@ -144,18 +137,14 @@ class Flat
     private $debtors;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Event")
-     * @ORM\JoinTable(name="flats_events",
-     *     joinColumns={@ORM\JoinColumn(name="flat_id", referencedColumnName="id", onDelete="CASCADE")},
-     *     inverseJoinColumns={@ORM\JoinColumn(name="event_id", referencedColumnName="id")})
-     *
-     */
-    private $events;
-
-    /**
      * @ORM\OneToMany(targetEntity="Log", mappedBy="flat")
      */
     private $logs;
+
+    /**
+     * @ORM\OneToMany(targetEntity="FlatEvent", mappedBy="flat")
+     */
+    private $flatsEvents;
 
     /**
      * @return string
@@ -191,8 +180,8 @@ class Flat
     {
         $this->subscribers = new \Doctrine\Common\Collections\ArrayCollection();
         $this->debtors = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->events = new \Doctrine\Common\Collections\ArrayCollection();
         $this->logs = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->flatsEvents = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -542,30 +531,6 @@ class Flat
     }
 
     /**
-     * Set eventData
-     *
-     * @param \stdClass $eventData
-     *
-     * @return Flat
-     */
-    public function setEventData($eventData)
-    {
-        $this->eventData = $eventData;
-
-        return $this;
-    }
-
-    /**
-     * Get eventData
-     *
-     * @return \stdClass
-     */
-    public function getEventData()
-    {
-        return $this->eventData;
-    }
-
-    /**
      * Set house
      *
      * @param \AppBundle\Entity\House $house
@@ -658,40 +623,6 @@ class Flat
     }
 
     /**
-     * Add event
-     *
-     * @param \AppBundle\Entity\Event $event
-     *
-     * @return Flat
-     */
-    public function addEvent(\AppBundle\Entity\Event $event)
-    {
-        $this->events[] = $event;
-
-        return $this;
-    }
-
-    /**
-     * Remove event
-     *
-     * @param \AppBundle\Entity\Event $event
-     */
-    public function removeEvent(\AppBundle\Entity\Event $event)
-    {
-        $this->events->removeElement($event);
-    }
-
-    /**
-     * Get events
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getEvents()
-    {
-        return $this->events;
-    }
-
-    /**
      * Add log
      *
      * @param \AppBundle\Entity\Log $log
@@ -723,5 +654,39 @@ class Flat
     public function getLogs()
     {
         return $this->logs;
+    }
+
+    /**
+     * Add flatsEvent
+     *
+     * @param \AppBundle\Entity\FlatEvent $flatsEvent
+     *
+     * @return Flat
+     */
+    public function addFlatsEvent(\AppBundle\Entity\FlatEvent $flatsEvent)
+    {
+        $this->flatsEvents[] = $flatsEvent;
+
+        return $this;
+    }
+
+    /**
+     * Remove flatsEvent
+     *
+     * @param \AppBundle\Entity\FlatEvent $flatsEvent
+     */
+    public function removeFlatsEvent(\AppBundle\Entity\FlatEvent $flatsEvent)
+    {
+        $this->flatsEvents->removeElement($flatsEvent);
+    }
+
+    /**
+     * Get flatsEvents
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getFlatsEvents()
+    {
+        return $this->flatsEvents;
     }
 }

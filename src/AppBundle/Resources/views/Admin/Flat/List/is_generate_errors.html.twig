@@ -1,0 +1,9 @@
+{% extends admin.getTemplate('base_list_field') %}
+
+{% block field %}
+    {% if object.isGenerateErrors %}
+        <span class="label label-danger">Ошибка</span>
+    {% else %}
+        <span class="label label-success">OK</span>
+    {% endif %}
+{% endblock %}

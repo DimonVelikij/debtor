@@ -44,7 +44,7 @@ class EventAdmin extends AbstractAdmin
                 'label' =>  'Алиас'
             ])
             ->add('timePerformAction', null, [
-                'label' =>  'Через сколько дней выполнится'
+                'label' =>  'Через сколько дней выполнится следующее событие'
             ])
             ->add('isStart', null, [
                 'label' =>  'Стартовый'
@@ -69,7 +69,7 @@ class EventAdmin extends AbstractAdmin
                 'label' =>  'Алиас'
             ])
             ->add('timePerformAction', null, [
-                'label' =>  'Через сколько дней выполнится'
+                'label' =>  'Через сколько дней выполнится следующее событие'
             ])
             ->add('isStart', null, [
                 'label' =>  'Стартовый'
@@ -134,7 +134,7 @@ class EventAdmin extends AbstractAdmin
                 'required'      =>  false
             ])
             ->add('timePerformAction', NumberType::class, [
-                'label'         =>  'Через какое количество дней выполнить',
+                'label'         =>  'Через какое количество дней выполнить следующее событие',
                 'required'      =>  true,
                 'constraints'   =>  [
                     new NotBlank(['message' =>  'Укажите количество дней'])
