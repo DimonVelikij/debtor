@@ -5,6 +5,8 @@ namespace AppBundle\Admin;
 use AppBundle\Admin\traits\UserTrait;
 use AppBundle\Entity\Event;
 use AppBundle\Entity\Flat;
+use AppBundle\Entity\FlatEvent;
+use AppBundle\Entity\Log;
 use AppBundle\Entity\User;
 use AppBundle\Validator\Constraints\FlatExist;
 use Doctrine\ORM\EntityRepository;
@@ -289,16 +291,7 @@ class FlatAdmin extends AbstractAdmin
                 ->end()
             ->end();
 
-        /** @var Event $startEvent */
-        $startEvent = $this->getDoctrine()->getRepository('AppBundle:Event')
-            ->createQueryBuilder('event')
-            ->where('event.isStart = :isStart')
-            ->setParameter('isStart', true)
-            ->setMaxResults(1)
-            ->getQuery()
-            ->getOneOrNullResult();
-
-        $formMapper->getFormBuilder()->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) use ($startEvent) {
+        $formMapper->getFormBuilder()->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) {
             /** @var Flat $flat */
             $flat = $event->getData();
 
@@ -309,18 +302,38 @@ class FlatAdmin extends AbstractAdmin
             if (!$flat->getDateFillFine()) {
                 $flat->setDateFillFine(new \DateTime());
             }
-
-            if (!$startEvent) {
-                $event->getForm()->get('number')->addError(new FormError('Прежде чем добавить помещение - нужно добавить событие'));
-            }
         });
 
-        $formMapper->getFormBuilder()->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) use ($startEvent) {
+        $container = $this->getContainer();
+
+        $formMapper->getFormBuilder()->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) use ($container) {
             /** @var Flat $flat */
             $flat = $event->getData();
 
             //если были ошибки генерации шаблона, при сохранени записи считаем что они исправлены
             $flat->setIsGenerateErrors(false);
+
+            if (!$flat->getId()) {//если помещение новое
+                //создаем событие "поступил в работу"
+                $flatEvent = new FlatEvent();
+                $flatEvent
+                    ->setFlat($flat)
+                    ->setEvent($container->get('app.generator.aggregate')->getStartEvent())
+                    ->setDateGenerate(new \DateTime())
+                    ->setData([
+                        'entered_processing'    =>  []
+                    ]);
+                $flat->addFlatsEvent($flatEvent);
+
+                //пишем лог
+                $log = new Log();
+                $log
+                    ->setFlat($flat)
+                    ->setIsRead(false)
+                    ->setDate(new \DateTime())
+                    ->setData('Должник поступил в работу');
+                $flat->addLog($log);
+            }
         });
     }
 
@@ -338,13 +351,5 @@ class FlatAdmin extends AbstractAdmin
     private function getRouter()
     {
         return $this->getContainer()->get('router');
-    }
-
-    /**
-     * @return \Doctrine\ORM\EntityManager
-     */
-    private function getDoctrine()
-    {
-        return $this->getContainer()->get('doctrine.orm.entity_manager');
     }
 }

@@ -137,12 +137,12 @@ class Flat
     private $debtors;
 
     /**
-     * @ORM\OneToMany(targetEntity="Log", mappedBy="flat")
+     * @ORM\OneToMany(targetEntity="Log", mappedBy="flat", cascade={"persist"})
      */
     private $logs;
 
     /**
-     * @ORM\OneToMany(targetEntity="FlatEvent", mappedBy="flat")
+     * @ORM\OneToMany(targetEntity="FlatEvent", mappedBy="flat", cascade={"persist"})
      */
     private $flatsEvents;
 

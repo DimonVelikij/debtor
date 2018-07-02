@@ -5,17 +5,17 @@
         {% if object.flatsEvents | length %}
             {% for flatEvent in object.flatsEvents %}
                 {#если переход между неюридическими и юридическими#}
-                {% if flatEvent.event.parent and not flatEvent.event.isJudicial and flatEvent.event.parent.isJudicial %}
+                {#{% if flatEvent.event.parent and not flatEvent.event.isJudicial and flatEvent.event.parent.isJudicial %}
                     <span>{{ flatEvent.event.name ~ '(' ~ flatEvent.dateGenerate | date_modify('+' ~ flatEvent.getParameter('time_perform_action') ~ ' day') | date('d.m.Y') ~ ')' }}</span>
                     <a href="">Пропустить</a>
                     <br>
                 {% endif %}
-                {#если у текущего события есть родительское#}
+                #}{#если у текущего события есть родительское#}{#
                 {% if flatEvent.event.parent %}
                     <span>{{ flatEvent.event.parent.name ~ ' (' ~ flatEvent.dateGenerate | date_modify('+' ~ flatEvent.event.timePerformAction ~ ' day') | date('d.m.Y') ~ ')' }}</span>
                     <a href="">Пропустить</a>
                     <br>
-                {% endif %}
+                {% endif %}#}
             {% endfor %}
         {% else %}
             <span class="label label-success">отсутствует</span>

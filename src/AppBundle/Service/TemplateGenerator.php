@@ -5,12 +5,11 @@ namespace AppBundle\Service;
 use AppBundle\Entity\Debtor;
 use AppBundle\Entity\Event;
 use AppBundle\Entity\Flat;
-use AppBundle\Entity\FlatEvent;
 use AppBundle\Entity\Subscriber;
-use AppBundle\Exception\NoProcessException;
+use AppBundle\EventGenerator\EventType;
+use AppBundle\Exception\NoDebtorsException;
+use AppBundle\Exception\NoSubscribersException;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\PersistentCollection;
-use Doctrine\ORM\QueryBuilder;
 use Knp\Bundle\SnappyBundle\Snappy\LoggableGenerator;
 
 class TemplateGenerator
@@ -86,94 +85,61 @@ class TemplateGenerator
     }
 
     /**
-     * получение списка помещений для обработки
-     * помещения без ошибок генерации и у которых шаблон не финальный
-     * @return array
-     */
-    public function getProcessFlats()
-    {
-        /** @var QueryBuilder $flatQueryBuilder */
-        $flatQueryBuilder = $this->em
-            ->getRepository('AppBundle:Flat')
-            ->createQueryBuilder('flat');
-
-        return $flatQueryBuilder
-            ->where('flat.isGenerateErrors = :isGenerateErrors')
-            ->andWhere('flat.archive = :isArchive')
-            ->setParameters([
-                'isGenerateErrors'  =>  false,
-                'isArchive'         =>  false
-            ])
-            ->getQuery()
-            ->getResult();
-    }
-
-    /**
-     * получение стартового события
-     * @return Event|null
-     */
-    public function getStartEvent()
-    {
-        return $this->em
-            ->getRepository('AppBundle:Event')
-            ->createQueryBuilder('event')
-            ->where('event.isStart = :isStart')
-            ->setParameter('isStart', true)
-            ->getQuery()
-            ->getOneOrNullResult();
-    }
-
-    public function generateTemplate(Flat $flat, FlatEvent $flatEvent)
-    {
-        if (!$this->isProcessEvent($flatEvent)) {
-            throw new NoProcessException();
-        }
-    }
-
-    /**
      * генерация pdf документа
      * @param Flat $flat
+     * @param Event $event
      * @return array
+     * @throws NoDebtorsException
+     * @throws NoSubscribersException
      */
-//    public function generateTemplate(Flat $flat)
-//    {
-//        //если судебный шаблон - работаем с должниками, иначе с абонентами
-//        $subjects = $flat->getTemplate()->getIsJudicial() ? $flat->getDebtors() : $flat->getSubscribers();
-//
-//        $pdfLinks = [];
-//
-//        /** @var Debtor|Subscriber $subject */
-//        foreach ($subjects as $subject) {
-//            /** @var string $template */
-//            $template = $flat->getTemplate()->getTemplate();
-//            /** @var string $field */
-//            foreach ($flat->getTemplate()->getTemplateFields() as $field) {
-//                $fieldValueMethod = $this->getFieldValueMethod($field);
-//                //заменяем поля подстановки на реальные данные
-//                $template = $this->templateReplace(
-//                    '{{' . $field . '}}',
-//                    $this->$fieldValueMethod(TemplateGenerator::$templateFieldValueEntity[$field] === 'flat' ? $flat : $subject),
-//                    $template
-//                );
-//            }
-//
-//            $pdfDir = '/pdf/' . $flat->getId() . '/' . $flat->getTemplate()->getSlug() . '_' . md5(uniqid()) . '.pdf';
-//
-//            //генерация pdf
-//            $this->pdfGenerator->generateFromHtml(
-//                $this->wrapUpTemplate($template),
-//                $this->rootDir . $pdfDir
-//            );
-//
-//            $pdfLinks[] = $pdfDir;
-//        }
-//
-//        return $pdfLinks;
-//    }
-
-    private function isProcessEvent(FlatEvent $flatEvent)
+    public function generateTemplate(Flat $flat, Event $event)
     {
+        $subjects = $event->getType() == EventType::PRETENSE_ALIAS ?
+            $flat->getSubscribers() :
+            $flat->getDebtors();
 
+        if ($event->getType() == EventType::PRETENSE_ALIAS && !count($subjects)) {
+            throw new NoSubscribersException("Список абонентов пуст, для генерации шаблона '{$event->getName()}' нужно добавить хотя бы одного абонента");
+        }
+
+        if ($event->getType() != EventType::PRETENSE_ALIAS && !count($subjects)) {
+            throw new NoDebtorsException("Список должников пуст, для генерации шаблона '{$event->getName()}' необходимо добавить хотя бы одного должника");
+        }
+
+        $pdfLinks = [];
+
+        /** @var Debtor|Subscriber $subject */
+        foreach ($subjects as $subject) {
+            /** @var string $template */
+            $template = $event->getTemplate();
+
+            /** @var string $field */
+            foreach ($event->getTemplateFields() as $field) {
+                $fieldValueMethod = $this->getFieldValueMethod($field);
+
+                $template = $this->templateReplace(
+                    '{{' . $field . '}}',
+                    $this->$fieldValueMethod(
+                        TemplateGenerator::$templateFieldValueEntity[$field] == 'flat' ?
+                            $flat :
+                            $subject
+                    ),
+                    $template
+                );
+
+                $pdfDir = '/pdf/' . $flat->getId() . '/' . $event->getAlias() . '_' . md5(uniqid()) . '.pdf';
+
+                //генерация pdf
+                /*$this->pdfGenerator->generateFromHtml(
+                    $this->wrapUpTemplate($template),
+                    $this->rootDir . $pdfDir
+                );*/
+
+                $pdfLinks[] = $pdfDir;
+            }
+        }
+
+        return $pdfLinks;
     }
 
     /**

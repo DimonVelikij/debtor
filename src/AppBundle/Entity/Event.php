@@ -2,8 +2,8 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\EventGenerator\EventType;
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity
@@ -29,12 +29,11 @@ class Event
     private $name;
 
     /**
-     * @Gedmo\Slug(fields={"name"}, updatable=false, unique=true)
-     * @ORM\Column(length=255, unique=true)
+     * @ORM\Column(name="alias", type="string", length=255, nullable=false, unique=true)
      *
-     * slug названия шаблона
+     * alias шаблона
      */
-    private $slug;
+    private $alias;
 
     /**
      * @ORM\Column(name="template", type="text", nullable=true)
@@ -44,13 +43,6 @@ class Event
     private $template;
 
     /**
-     * @ORM\Column(name="time_perform_action", type="integer", nullable=false)
-     *
-     * через какое количество дней выполнить родительское событие
-     */
-    private $timePerformAction;
-
-    /**
      * @ORM\Column(name="template_fields", type="object", nullable=true)
      *
      * поля шаблона
@@ -58,26 +50,9 @@ class Event
     private $templateFields;
 
     /**
-     * @ORM\Column(name="is_start", type="boolean", nullable=true, options={"default":0})
-     *
-     * является ли стартовым
+     * @ORM\Column(name="type", type="string", columnDefinition="ENUM('pretense', 'judicature', 'performance')")
      */
-    private $isStart;
-
-    /**
-     * @ORM\Column(name="is_judicial", type="boolean", nullable=true, options={"default":0})
-     *
-     * является ли судебным
-     */
-    private $isJudicial;
-
-    /**
-     * @ORM\OneToOne(targetEntity="Event")
-     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", nullable=true)
-     *
-     * следующий шаблон
-     */
-    private $parent;
+    private $type;
 
     /**
      * @return string
@@ -85,6 +60,14 @@ class Event
     public function __toString()
     {
         return $this->name ?? '';
+    }
+
+    /**
+     * @return mixed|null
+     */
+    public function getTypeTitle()
+    {
+        return EventType::$types[$this->type] ?? null;
     }
 
     /**
@@ -122,27 +105,27 @@ class Event
     }
 
     /**
-     * Set slug
+     * Set alias
      *
-     * @param string $slug
+     * @param string $alias
      *
      * @return Event
      */
-    public function setSlug($slug)
+    public function setAlias($alias)
     {
-        $this->slug = $slug;
+        $this->alias = $alias;
 
         return $this;
     }
 
     /**
-     * Get slug
+     * Get alias
      *
      * @return string
      */
-    public function getSlug()
+    public function getAlias()
     {
-        return $this->slug;
+        return $this->alias;
     }
 
     /**
@@ -170,30 +153,6 @@ class Event
     }
 
     /**
-     * Set timePerformAction
-     *
-     * @param integer $timePerformAction
-     *
-     * @return Event
-     */
-    public function setTimePerformAction($timePerformAction)
-    {
-        $this->timePerformAction = $timePerformAction;
-
-        return $this;
-    }
-
-    /**
-     * Get timePerformAction
-     *
-     * @return integer
-     */
-    public function getTimePerformAction()
-    {
-        return $this->timePerformAction;
-    }
-
-    /**
      * Set templateFields
      *
      * @param \stdClass $templateFields
@@ -218,74 +177,26 @@ class Event
     }
 
     /**
-     * Set isStart
+     * Set type
      *
-     * @param boolean $isStart
+     * @param string $type
      *
      * @return Event
      */
-    public function setIsStart($isStart)
+    public function setType($type)
     {
-        $this->isStart = $isStart;
+        $this->type = $type;
 
         return $this;
     }
 
     /**
-     * Get isStart
+     * Get type
      *
-     * @return boolean
+     * @return string
      */
-    public function getIsStart()
+    public function getType()
     {
-        return $this->isStart;
-    }
-
-    /**
-     * Set isJudicial
-     *
-     * @param boolean $isJudicial
-     *
-     * @return Event
-     */
-    public function setIsJudicial($isJudicial)
-    {
-        $this->isJudicial = $isJudicial;
-
-        return $this;
-    }
-
-    /**
-     * Get isJudicial
-     *
-     * @return boolean
-     */
-    public function getIsJudicial()
-    {
-        return $this->isJudicial;
-    }
-
-    /**
-     * Set parent
-     *
-     * @param \AppBundle\Entity\Event $parent
-     *
-     * @return Event
-     */
-    public function setParent(\AppBundle\Entity\Event $parent = null)
-    {
-        $this->parent = $parent;
-
-        return $this;
-    }
-
-    /**
-     * Get parent
-     *
-     * @return \AppBundle\Entity\Event
-     */
-    public function getParent()
-    {
-        return $this->parent;
+        return $this->type;
     }
 }

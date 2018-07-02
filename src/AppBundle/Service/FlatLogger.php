@@ -55,4 +55,13 @@ class FlatLogger
             $flat->getHouse()->getNumber() . ' Помещение №' .
             $flat->getNumber() . '. ';
     }
+
+    /**
+     * получения разделителя между логами
+     * @return string
+     */
+    public function getDelimiter()
+    {
+        return "==================================================\n";
+    }
 }
