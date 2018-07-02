@@ -98,7 +98,8 @@ class EventAdmin extends AbstractAdmin
                 'constraints'   =>  [
                     new NotBlank(['message' => 'Укажите тип'])
                 ],
-                'choices'       =>  EventType::$sonataTypeChoice
+                'choices'       =>  EventType::$sonataTypeChoice,
+                'disabled'      =>  true
             ])
             ->add('templateFields', ChoiceType::class, [
                 'label'         =>  'Список полей для шаблона',

@@ -50,7 +50,7 @@ class Event
     private $templateFields;
 
     /**
-     * @ORM\Column(name="type", type="string", columnDefinition="ENUM('pretense', 'judicature', 'performance')")
+     * @ORM\Column(name="type", type="string", length=255, nullable=false)
      */
     private $type;
 
