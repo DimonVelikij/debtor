@@ -1,0 +1,11 @@
+<div class="form-group" ng-class="{'has-error': subscriber.dateOpenAccount.$invalid && subscriber.dateOpenAccount.$dirty}">
+    <label for="dateOpenAccount" class="control-label required">Дата открытия лицевого счета</label>
+    <input name="dateOpenAccount" id="dateOpenAccount" type="text" class="form-control" ng-model="state.currentSubscriber.dateOpenAccount" ui-mask="99.99.9999" ng-pattern="/^([0-2]\d|3[01])\.(0\d|1[012])\.(19|20)(\d\d)$/" required backend>
+    <div class="help-block sonata-ba-field-error-messages" ng-if="subscriber.dateOpenAccount.$invalid && subscriber.dateOpenAccount.$dirty" ng-messages="subscriber.dateOpenAccount.$error">
+        <ul class="list-unstyled">
+            <li ng-message="required"><i class="fa fa-exclamation-circle"></i>Укажите дату открытия лицевого счета</li>
+            <li ng-message="pattern"><i class="fa fa-exclamation-circle"></i>Неверно указана дата открытия лицевого счета</li>
+            <li ng-message="backend"><i class="fa fa-exclamation-circle"></i>[[ subscriber.dateOpenAccount.errorMessages.backend ]]</li>
+        </ul>
+    </div>
+</div>

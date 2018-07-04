@@ -96,6 +96,30 @@ class Subscriber
     private $sumFine;
 
     /**
+     * дата открытия лицевого счета
+     * @ORM\Column(name="date_open_account", type="date", nullable=false)
+     *
+     * @JMS\Expose
+     * @JMS\Type("string")
+     * @JMS\SerializedName("dateOpenAccount")
+     * @JMS\Accessor(getter="getDateOpenAccountString")
+     * @JMS\Groups({"cms-subscriber"})
+     */
+    private $dateOpenAccount;
+
+    /**
+     * дата закрытия лицевого счета
+     * @ORM\Column(name="date_close_account", type="date", nullable=true)
+     *
+     * @JMS\Expose
+     * @JMS\Type("string")
+     * @JMS\SerializedName("dateCloseAccount")
+     * @JMS\Accessor(getter="getDateCloseAccountString")
+     * @JMS\Groups({"cms-subscriber"})
+     */
+    private $dateCloseAccount;
+
+    /**
      * @ORM\ManyToOne(targetEntity="Flat", inversedBy="subscribers")
      * @ORM\JoinColumn(name="flat_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      */
@@ -118,6 +142,30 @@ class Subscriber
     {
         if ($this->dateDebt instanceof \DateTime) {
             return $this->dateDebt->format('dmY');
+        }
+
+        return null;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getDateOpenAccountString()
+    {
+        if ($this->dateOpenAccount instanceof \DateTime) {
+            return $this->dateOpenAccount->format('dmY');
+        }
+
+        return null;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getDateCloseAccountString()
+    {
+        if ($this->dateCloseAccount instanceof \DateTime) {
+            return $this->dateCloseAccount->format('dmY');
         }
 
         return null;
@@ -275,6 +323,54 @@ class Subscriber
     public function getSumFine()
     {
         return $this->sumFine;
+    }
+
+    /**
+     * Set dateOpenAccount
+     *
+     * @param \DateTime $dateOpenAccount
+     *
+     * @return Subscriber
+     */
+    public function setDateOpenAccount($dateOpenAccount)
+    {
+        $this->dateOpenAccount = $dateOpenAccount;
+
+        return $this;
+    }
+
+    /**
+     * Get dateOpenAccount
+     *
+     * @return \DateTime
+     */
+    public function getDateOpenAccount()
+    {
+        return $this->dateOpenAccount;
+    }
+
+    /**
+     * Set dateCloseAccount
+     *
+     * @param \DateTime $dateCloseAccount
+     *
+     * @return Subscriber
+     */
+    public function setDateCloseAccount($dateCloseAccount)
+    {
+        $this->dateCloseAccount = $dateCloseAccount;
+
+        return $this;
+    }
+
+    /**
+     * Get dateCloseAccount
+     *
+     * @return \DateTime
+     */
+    public function getDateCloseAccount()
+    {
+        return $this->dateCloseAccount;
     }
 
     /**

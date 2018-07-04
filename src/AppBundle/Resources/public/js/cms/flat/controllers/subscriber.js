@@ -47,7 +47,9 @@
                     email: subscriber.email,
                     dateDebt: $filter('date')(subscriber.dateDebt),
                     sumDebt: subscriber.sumDebt,
-                    sumFine: subscriber.sumFine
+                    sumFine: subscriber.sumFine,
+                    dateOpenAccount: $filter('date')(subscriber.dateOpenAccount),
+                    dateCloseAccount: $filter('date')(subscriber.dateCloseAccount)
                 };
             }
         };
@@ -95,7 +97,9 @@
                 email: $scope.state.currentSubscriber.email,
                 dateDebt: $scope.state.currentSubscriber.dateDebt ? $scope.state.currentSubscriber.dateDebt.replace(/\./g, '') : null,
                 sumDebt: parseFloat($scope.state.currentSubscriber.sumDebt),
-                sumFine: parseFloat($scope.state.currentSubscriber.sumFine)
+                sumFine: parseFloat($scope.state.currentSubscriber.sumFine),
+                dateOpenAccount: $scope.state.currentSubscriber.dateOpenAccount ? $scope.state.currentSubscriber.dateOpenAccount.replace(/\./g, '') : null,
+                dateCloseAccount: $scope.state.currentSubscriber.dateCloseAccount ? $scope.state.currentSubscriber.dateCloseAccount.replace(/\./g, '') : null
             };
 
             $http.post(Initializer.Path.AdminSubmitSubscriber, submitData)

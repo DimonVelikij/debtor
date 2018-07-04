@@ -11,6 +11,8 @@
                         <th>Дата заполнения</th>
                         <th>Сумма долга, руб</th>
                         <th>Сумма пени, руб</th>
+                        <th>Дата открытия лицевого счета</th>
+                        <th>Дата закрытия лицевого счета</th>
                         <th>Действия</th>
                     </tr>
                 </thead>
@@ -23,6 +25,8 @@
                         <td>[[ subscriber.dateDebt | date ]]</td>
                         <td>[[ subscriber.sumDebt ]]</td>
                         <td>[[ subscriber.sumFine ]]</td>
+                        <td>[[ subscriber.dateOpenAccount | date ]]</td>
+                        <td>[[ subscriber.dateCloseAccount | date ]]</td>
                         <td>
                             <a class="btn btn-success" ng-click="subscriber.isShow = !subscriber.isShow" ng-hide="subscriber.isShow"><i class="fa fa-eye"></i> Показать</a>
                             <a class="btn btn-success" ng-click="subscriber.isShow = !subscriber.isShow" ng-show="subscriber.isShow"><i class="fa fa-eye"></i> Скрыть</a>
