@@ -152,7 +152,7 @@ class FlatAdmin extends AbstractAdmin
             ])
             ->add('updatedAt', null, [
                 'label'     =>  'Дата последнего обновления',
-                'template'  =>  '@App/Admin/Flat/List/updated_at.html.twig'
+                'format'    =>  'd.m.Y H:i'
             ])
             ->add('subscribers.personalAccount.account', null, [
                 'label'     =>  'Лицевые счета',
