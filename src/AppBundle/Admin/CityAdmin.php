@@ -11,6 +11,7 @@ use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Regex;
 
 class CityAdmin extends AbstractAdmin
 {
@@ -38,6 +39,9 @@ class CityAdmin extends AbstractAdmin
             ->add('slug', null, [
                 'label' =>  'Алиас'
             ])
+            ->add('cityIndex', null, [
+                'label' =>  'Идекс'
+            ])
         ;
     }
 
@@ -53,6 +57,9 @@ class CityAdmin extends AbstractAdmin
             ])
             ->add('slug', null, [
                 'label' =>  'Алиас'
+            ])
+            ->add('cityIndex', null, [
+                'label' =>  'Идекс'
             ])
             ->add('_action', null, array(
                 'label'     =>  'Действия',
@@ -84,6 +91,13 @@ class CityAdmin extends AbstractAdmin
                 'sonata_help'   =>  'Сгенерируется автоматически по полю "Название"',
                 'disabled'      =>  true
             ])
+            ->add('cityIndex', null, [
+                'label'         =>  'Индекс',
+                'required'      =>  false,
+                'constraints'   =>  [
+                    new Regex(['pattern' => '/^\d{6}$/', 'message' => 'Неверно введен индекс. Он должен состоять из 6 цифр'])
+                ]
+            ])
         ;
     }
 
@@ -99,6 +113,9 @@ class CityAdmin extends AbstractAdmin
             ])
             ->add('slug', null, [
                 'label' =>  'Алиас'
+            ])
+            ->add('cityIndex', null, [
+                'label' =>  'Идекс'
             ])
         ;
     }

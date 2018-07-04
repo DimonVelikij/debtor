@@ -43,6 +43,12 @@ class House
     private $company;
 
     /**
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\MKD")
+     * @ORM\JoinColumn(name="mkd_id", referencedColumnName="id", nullable=false)
+     */
+    private $mkd;
+
+    /**
      * @return string
      */
     public function __toString()
@@ -172,5 +178,29 @@ class House
     public function getCompany()
     {
         return $this->company;
+    }
+
+    /**
+     * Set mkd
+     *
+     * @param \AppBundle\Entity\MKD $mkd
+     *
+     * @return House
+     */
+    public function setMkd(\AppBundle\Entity\MKD $mkd)
+    {
+        $this->mkd = $mkd;
+
+        return $this;
+    }
+
+    /**
+     * Get mkd
+     *
+     * @return \AppBundle\Entity\MKD
+     */
+    public function getMkd()
+    {
+        return $this->mkd;
     }
 }

@@ -38,6 +38,11 @@ class City
     private $streets;
 
     /**
+     * @ORM\Column(name="city_index", type="integer", nullable=true)
+     */
+    private $cityIndex;
+
+    /**
      * @return string
      */
     public function __toString()
@@ -109,6 +114,30 @@ class City
     public function getSlug()
     {
         return $this->slug;
+    }
+
+    /**
+     * Set cityIndex
+     *
+     * @param integer $cityIndex
+     *
+     * @return City
+     */
+    public function setCityIndex($cityIndex)
+    {
+        $this->cityIndex = $cityIndex;
+
+        return $this;
+    }
+
+    /**
+     * Get cityIndex
+     *
+     * @return integer
+     */
+    public function getCityIndex()
+    {
+        return $this->cityIndex;
     }
 
     /**

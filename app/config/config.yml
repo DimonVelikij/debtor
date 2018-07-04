@@ -121,6 +121,21 @@ sonata_admin:
                 icon: '<i class="fa fa-calendar"></i>'
                 on_top: true
                 roles:  [ROLE_SUPER_ADMIN]
+            cms.judicial_sector:
+                label: Судебные участки
+                icon: '<i class="fa fa-balance-scale"></i>'
+                on_top: true
+                roles: [ROLE_ADMIN]
+            cms.fssp:
+                label: Отделения ФССП
+                icon: '<i class="fa fa-binoculars"></i>'
+                on_top: true
+                roles: [ROLE_ADMIN]
+            cms.mkd:
+                label: МКД
+                icon: '<i class="fa fa-building"></i>'
+                on_top: true
+                roles: [ROLE_ADMIN]
 
 #fos user
 fos_user:

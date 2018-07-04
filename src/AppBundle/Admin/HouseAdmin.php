@@ -70,6 +70,9 @@ class HouseAdmin extends AbstractAdmin
             ->add('street.city', null, [
                 'label' =>  'Город'
             ])
+            ->add('mkd', null, [
+                'label' =>  'МКД'
+            ])
         ;
 
         if ($user->isSuperAdmin()) {
@@ -101,6 +104,9 @@ class HouseAdmin extends AbstractAdmin
             ])
             ->add('company', $user->isSuperAdmin() ? null : 'text', [
                 'label' =>  'Управляющая компания'
+            ])
+            ->add('mkd', null, [
+                'label' =>  'МКД'
             ])
             ->add('_action', null, array(
                 'label'     =>  'Действия',
@@ -155,6 +161,15 @@ class HouseAdmin extends AbstractAdmin
                     new HouseExist()
                 ]
             ])
+            ->add('mkd', 'entity', [
+                'label'         =>  'МКД',
+                'required'      =>  true,
+                'class'         =>  'AppBundle\Entity\MKD',
+                'constraints'   =>  [
+                    new NotBlank(['message' => 'Укажите МКД'])
+                ],
+                'help'          =>  "<span style='color: blue;'>Если в списке нет нужного МКД, необходимо <a target='_blank' href='{$this->getRouter()->generate('admin_app_mkd_create')}'>добавить МКД</a> и обновить страницу</span>",
+            ])
         ;
     }
 
@@ -179,6 +194,9 @@ class HouseAdmin extends AbstractAdmin
             ])
             ->add('company', $user->isSuperAdmin() ? null : 'text', [
                 'label' =>  'Управляющая компания'
+            ])
+            ->add('mkd', null, [
+                'label' =>  'МКД'
             ])
         ;
     }

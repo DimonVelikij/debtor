@@ -40,3 +40,10 @@ services:
             - "@doctrine.orm.doctrine_entity_manager"
         tags:
             - { name: validator.constraint_validator, alias: flat_exist }
+
+    app.validator.mkd_exist:
+        class: AppBundle\Validator\Constraints\MKDExistValidator
+        arguments:
+            - "@doctrine.orm.doctrine_entity_manager"
+        tags:
+            - { name: validator.constraint_validator, alias: mkd_exist }
