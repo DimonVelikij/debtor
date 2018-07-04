@@ -183,7 +183,7 @@ class FlatAdminController extends CRUDController
             ->setSumDebt($input['sumDebt'])
             ->setSumFine($input['sumFine'])
             ->setDateOpenAccount(\DateTime::createFromFormat('dmY', $input['dateOpenAccount']))
-            ->setDateCloseAccount($input['dateCloseAccount'] ? \DateTime::createFromFormat('dmY', $input['dateCloseAccount']) : new \DateTime())
+            ->setDateCloseAccount($input['dateCloseAccount'] ? \DateTime::createFromFormat('dmY', $input['dateCloseAccount']) : null)
             ->setFlat($flat)
             ->setPersonalAccount($personalAccount);
 
