@@ -99,7 +99,7 @@ class UserAdmin extends AbstractAdmin
             ])
             ->add('lastLogin', null, [
                 'label'     =>  'Последняя авторизация',
-                'template'  =>  '@App/Admin/User/List/last_login.html.twig'
+                'format'    =>  'd.m.Y H:i'
             ])
             ->add('_action', null, array(
                 'label'     =>  'Действия',
@@ -277,7 +277,7 @@ class UserAdmin extends AbstractAdmin
         $showMapper
             ->add('lastLogin', null, [
                 'label'     =>  'Последняя авторизация',
-                'template'  =>  '@App/Admin/User/Show/last_login.html.twig'
+                'format'    =>  'd.m.Y H:i'
             ])
             ->add('userRole', null, [
                 'label' =>  'Роль'
