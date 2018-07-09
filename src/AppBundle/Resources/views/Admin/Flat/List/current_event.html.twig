@@ -7,7 +7,7 @@
         {% if object.flatsEvents | length %}
             {% for flatEvent in object.flatsEvents %}
                 <span>{{ flatEvent.event.name }}({{ flatEvent.dateGenerate.format('d.m.Y') }})</span>
-                <a href="">Посмотреть</a> <a href="">Скачать</a>
+                <span>{{ flatEvent.data.show | raw }}</span>
             {% endfor %}
         {% else %}
             <span class="label label-success">отсутствует</span>

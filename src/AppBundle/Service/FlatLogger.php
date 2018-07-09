@@ -21,11 +21,12 @@ class FlatLogger
     }
 
     /**
-     * добавляем запись в таблицу logs, привязанную к помещению
+     * создание объекта лога
      * @param Flat $flat
      * @param $message
+     * @return Log
      */
-    public function log(Flat $flat, $message)
+    public function createLog(Flat $flat, $message)
     {
         $log = new Log();
 
@@ -35,8 +36,23 @@ class FlatLogger
             ->setIsRead(false)
             ->setFlat($flat);
 
+        return $log;
+    }
+
+    /**
+     * добавляем запись в таблицу logs, привязанную к помещению
+     * @param Flat $flat
+     * @param $message
+     * @return Log
+     */
+    public function log(Flat $flat, $message)
+    {
+        $log = $this->createLog($flat, $message);
+
         $this->em->persist($log);
         $this->em->flush();
+
+        return $log;
     }
 
     /**

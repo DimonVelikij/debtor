@@ -5,6 +5,7 @@ namespace AppBundle\Command;
 use AppBundle\Entity\Flat;
 use AppBundle\EventGenerator\Generator\GeneratorAggregate;
 use AppBundle\Service\FlatLogger;
+use Doctrine\ORM\QueryBuilder;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -24,7 +25,7 @@ class EventGeneratorCommand extends ContainerAwareCommand
         $generator = $this->getContainer()->get('app.generator.aggregate');
 
         /** @var array $processFlats */
-        $processFlats = $generator->getProcessFlats();
+        $processFlats = $this->getProcessFlats();
 
         $currentDate = new \DateTime();
 
@@ -52,5 +53,27 @@ class EventGeneratorCommand extends ContainerAwareCommand
 
         $output->writeln($currentDate->format('d.m.Y H:i') . ' Обработка помещения завершена');
         $output->writeln($flatLogger->getDelimiter());
+    }
+
+    /**
+     * получение помещений для обработки
+     * @return array
+     */
+    private function getProcessFlats()
+    {
+        /** @var QueryBuilder $flatQueryBuilder */
+        $flatQueryBuilder = $this->getContainer()->get('doctrine.orm.doctrine_entity_manager')
+            ->getRepository('AppBundle:Flat')
+            ->createQueryBuilder('flat');
+
+        return $flatQueryBuilder
+            ->where('flat.isGenerateErrors = :isGenerateErrors')
+            ->andWhere('flat.archive = :isArchive')
+            ->setParameters([
+                'isGenerateErrors'  =>  false,
+                'isArchive'         =>  false
+            ])
+            ->getQuery()
+            ->getResult();
     }
 }

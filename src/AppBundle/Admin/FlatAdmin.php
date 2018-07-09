@@ -3,12 +3,12 @@
 namespace AppBundle\Admin;
 
 use AppBundle\Admin\traits\UserTrait;
-use AppBundle\Entity\Event;
 use AppBundle\Entity\Flat;
 use AppBundle\Entity\FlatEvent;
-use AppBundle\Entity\Log;
 use AppBundle\Entity\User;
+use AppBundle\Service\FlatLogger;
 use AppBundle\Validator\Constraints\FlatExist;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
@@ -303,9 +303,13 @@ class FlatAdmin extends AbstractAdmin
             }
         });
 
-        $container = $this->getContainer();
+        /** @var EntityManager $em */
+        $em = $this->getContainer()->get('doctrine.orm.doctrine_entity_manager');
 
-        $formMapper->getFormBuilder()->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) use ($container) {
+        /** @var FlatLogger $flatLogger */
+        $flatLogger = $this->getContainer()->get('app.service.flat_logger');
+
+        $formMapper->getFormBuilder()->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) use ($em, $flatLogger) {
             /** @var Flat $flat */
             $flat = $event->getData();
 
@@ -317,21 +321,15 @@ class FlatAdmin extends AbstractAdmin
                 $flatEvent = new FlatEvent();
                 $flatEvent
                     ->setFlat($flat)
-                    ->setEvent($container->get('app.generator.aggregate')->getStartEvent())
+                    ->setEvent($em->getRepository('AppBundle:Event')->findOneBy(['alias' => 'entered_processing']))
                     ->setDateGenerate(new \DateTime())
-                    ->setData([
-                        'entered_processing'    =>  []
-                    ]);
+                    ->setData(['show' => '']);
+
                 $flat->addFlatsEvent($flatEvent);
 
                 //пишем лог
-                $log = new Log();
-                $log
-                    ->setFlat($flat)
-                    ->setIsRead(false)
-                    ->setDate(new \DateTime())
-                    ->setData('Должник поступил в работу');
-                $flat->addLog($log);
+                //если добавлять через метод log - будет ошибка вставки лога, т.к. помещения еще не существует
+                $flat->addLog($flatLogger->createLog($flat, 'Должник поступил в работу')/*$log*/);
             }
         });
     }

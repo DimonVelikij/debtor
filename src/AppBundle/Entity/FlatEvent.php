@@ -38,28 +38,6 @@ class FlatEvent
     private $data;
 
     /**
-     * @param $name
-     * @param bool $default
-     * @return bool
-     */
-    public function getParameter($name, $default = false)
-    {
-        return $this->data[$name] ?? $default;
-    }
-
-    /**
-     * @param $name
-     * @param $data
-     * @return FlatEvent
-     */
-    public function addData($name, $data)
-    {
-        $this->data[$name] = $data;
-
-        return $this;
-    }
-
-    /**
      * Set dateGenerate
      *
      * @param \DateTime $dateGenerate

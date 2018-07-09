@@ -1,1 +1,55 @@
 services:
+
+    # базовый генератор
+    app.generator.base:
+        class: AppBundle\EventGenerator\Generator\BaseGenerator
+        arguments:
+            - "@doctrine.orm.doctrine_entity_manager"
+            - "@app.service.flat_logger"
+            - "@router"
+            - "@app.service.template_generator"
+        abstract: true
+
+    # аггрегатор генераторов
+    app.generator.aggregate:
+        class: AppBundle\EventGenerator\Generator\GeneratorAggregate
+        arguments:
+            - "@doctrine.orm.doctrine_entity_manager"
+            - "@app.service.flat_logger"
+        calls:
+            - [ addEventGenerator, ["@app.generator.entered_processing", "entered_processing"] ]
+            - [ addEventGenerator, ["@app.generator.pretense1", "pretense1"] ]
+            - [ addEventGenerator, ["@app.generator.pretense2", "pretense2"] ]
+
+    # должник поступил в работу
+    app.generator.entered_processing:
+        class: AppBundle\EventGenerator\Generator\EnteredProcessingGenerator
+        parent: app.generator.base
+        calls:
+            - [ addNextEventGenerator, ["@app.generator.pretense1"] ]
+
+    # претензия1
+    app.generator.pretense1:
+        class: AppBundle\EventGenerator\Generator\Pretense1Generator
+        parent: app.generator.base
+        calls:
+            - [ addNextEventGenerator, ["@app.generator.pretense2"] ]
+
+    # претензия2
+    app.generator.pretense2:
+        class: AppBundle\EventGenerator\Generator\Pretense2Generator
+        parent: app.generator.base
+        calls:
+            - [ addNextEventGenerator, ["@app.generator.formation_court_order"] ]
+
+    # формирование заявления на выдачу судебного приказа
+    app.generator.formation_court_order:
+        class: AppBundle\EventGenerator\Generator\FormationCourtOrderGenerator
+        parent: app.generator.base
+        calls:
+            - [ addNextEventGenerator, ["@app.generator.applying_court_order"] ]
+
+    # подача заявления на выдачу судебного приказа
+    app.generator.applying_court_order:
+        class: AppBundle\EventGenerator\Generator\ApplyingCourtOrderGenerator
+        parent: app.generator.applying_court_order
