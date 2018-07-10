@@ -11,10 +11,10 @@ use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\HttpFoundation\Request;
 
-class ApplyingCourtOrderGenerator extends BaseGenerator implements GeneratorInterface
+class ApplyingStatementClaimGenerator extends BaseGenerator implements GeneratorInterface
 {
     /**
-     * ApplyingCourtOrderGenerator constructor.
+     * ApplyingStatementClaimGenerator constructor.
      * @param EntityManager $em
      * @param FlatLogger $flatLogger
      * @param Router $router
@@ -31,7 +31,7 @@ class ApplyingCourtOrderGenerator extends BaseGenerator implements GeneratorInte
      */
     public function getEventAlias()
     {
-        return 'applying_court_order';
+        return 'applying_statement_claim';
     }
 
     /**
@@ -40,8 +40,8 @@ class ApplyingCourtOrderGenerator extends BaseGenerator implements GeneratorInte
      */
     public function getTimePerformAction(FlatEvent $flatEvent)
     {
-        //если подача заявления подтверждена, то можно приступать к следующему событию, иначе нельзя
-        return $flatEvent->getParameter('confirm') ? 40 : INF;
+        //если подача искового заявления подтверждена, то можно приступать к следующему событию, иначе нельзя
+        return $flatEvent->getParameter('confirm') ? 7 : INF;
     }
 
     /**
@@ -79,7 +79,7 @@ class ApplyingCourtOrderGenerator extends BaseGenerator implements GeneratorInte
             ->setDateGenerate($currentData)
             ->setData([
                 'show'      =>  $showData,
-                'confirm' =>  true//подтверждено - можно через 40 дней выполнять следующее событие
+                'confirm'   =>  true//подтверждено - можно через 7 дней выполнять следующее событие
             ]);
 
         $this->em->persist($currentFlatEvent);
@@ -98,12 +98,12 @@ class ApplyingCourtOrderGenerator extends BaseGenerator implements GeneratorInte
      */
     public function eventGenerate(Flat $flat, FlatEvent $flatEvent)
     {
-        $showData = "<a href='{$this->router->generate('admin_app_flat_process_user', ['event' => $this->event->getAlias(), 'flat_id' => $flat->getId()])}'>Подтвердить подачу заявления судебного приказа в суд</a>";
+        $showData = "<a href='{$this->router->generate('admin_app_flat_process_user', ['event' => $this->event->getAlias(), 'flat_id' => $flat->getId()])}'>Подтвердить подачу заявления искового заявления в суд</a>";
 
-        //удаляем событие "Формирование заявления на выдачу судебного приказа"
+        //удаляем событие "Формирование искового заявления"
         $this->em->remove($flatEvent);
 
-        //добавляем событие "Подача заявления на выдачу судебного приказа"
+        //добавляем событие "Подача искового заявления"
         $executeFlatEvent = new FlatEvent();
         $executeFlatEvent
             ->setFlat($flat)
@@ -111,13 +111,13 @@ class ApplyingCourtOrderGenerator extends BaseGenerator implements GeneratorInte
             ->setEvent($this->event)
             ->setData([
                 'show'      =>  $showData,
-                'confirm'   =>  false//подача заявления не подтверждена, следующее событие нельзя выполнять до подтверждения
+                'confirm'   =>  false//не подтверждено
             ]);
 
         $this->em->persist($executeFlatEvent);
         $this->em->flush();
 
-        //добавляем лог - сгенерировалось событие "Подача заявления на выдачу судебного приказа"
+        //добавляем лог - сгенерировалось событие "Подача искового заявления"
         $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}");
 
         return true;

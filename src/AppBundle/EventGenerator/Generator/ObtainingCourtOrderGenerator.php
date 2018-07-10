@@ -14,23 +14,16 @@ use Symfony\Component\HttpFoundation\Request;
 class ObtainingCourtOrderGenerator extends BaseGenerator implements GeneratorInterface
 {
     /**
-     * @var GeneratorInterface
-     */
-    private $formationCourtOrderGenerator;
-
-    /**
      * ObtainingCourtOrderGenerator constructor.
      * @param EntityManager $em
      * @param FlatLogger $flatLogger
      * @param Router $router
      * @param TemplateGenerator $templateGenerator
      * @param TwigEngine $templating
-     * @param GeneratorInterface $formationCourtOrderGenerator
      */
-    public function __construct(EntityManager $em, FlatLogger $flatLogger, Router $router, TemplateGenerator $templateGenerator, TwigEngine $templating, GeneratorInterface $formationCourtOrderGenerator)
+    public function __construct(EntityManager $em, FlatLogger $flatLogger, Router $router, TemplateGenerator $templateGenerator, TwigEngine $templating)
     {
         parent::__construct($em, $flatLogger, $router, $templateGenerator, $templating);
-        $this->formationCourtOrderGenerator = $formationCourtOrderGenerator;
     }
 
     /**
@@ -47,16 +40,45 @@ class ObtainingCourtOrderGenerator extends BaseGenerator implements GeneratorInt
      */
     public function getTimePerformAction(FlatEvent $flatEvent)
     {
-        //если пользователь не подтвердил подтверждение или отказ или отмену - дальше ничего нельзя генерировать
-        return
-            !$flatEvent->getParameter('confirm', false) &&
-            !$flatEvent->getParameter('failure', false) &&
-            !$flatEvent->getParameter('cancel', false) ? INF : 1;
+        //если пользователь подтвердил или отменил получение приказа - выполняем следующее событие через 1 день
+        if ($flatEvent->getParameter('confirm', false) || $flatEvent->getParameter('cancel', false)) {
+            return 1;
+        } elseif ($flatEvent->getParameter('failure', false)) {//если пользователю отказано - выполняем следующее событие сразу при следующей генерации
+            return 0;
+        } else {//если пользователь ничего не делел - следующее событие не генерируем
+            return INF;
+        }
     }
 
+    /**
+     * @param FlatEvent $flatEvent
+     * @return array
+     */
     public function getNextEventGenerators(FlatEvent $flatEvent)
     {
-        
+        if ($flatEvent->getParameter('confirm', false)) {
+            //если подтверждено получение приказа - следующее событие "Заявление на возбуждение исполнительного производства"
+            $generatorAlias = 'statement_commencement_enforcement_proceedings';
+        } elseif ($flatEvent->getParameter('failure', false)) {
+            //если отказано получение приказа - следующее событие "Формирование заявления на выдачу судебного приказа"
+            $generatorAlias = 'formation_court_order';
+        } else {
+            //если отменено получение приказа - следующее событие "Формирование искового заявления"
+            $generatorAlias = 'formation_statement_claim';
+        }
+
+        //ищем по алиасу нужный генератор
+        $nextEventGenerators = [];
+
+        /** @var GeneratorInterface $nextEventGenerator */
+        foreach ($this->nextEventGenerators as $nextEventGenerator) {
+            if ($nextEventGenerator->getEventAlias() == $generatorAlias) {
+                $nextEventGenerators[] = $nextEventGenerator;
+                break;
+            }
+        }
+
+        return $nextEventGenerators;
     }
 
     /**
@@ -79,6 +101,16 @@ class ObtainingCourtOrderGenerator extends BaseGenerator implements GeneratorInt
             }
         }
 
+        if(
+            !$currentFlatEvent ||
+            $currentFlatEvent->getParameter('confirm', false) ||
+            $currentFlatEvent->getParameter('failure', false) ||
+            $currentFlatEvent->getParameter('cancel', false)
+        ) {
+            //действие уже выполнено
+            return true;
+        }
+
         $currentDate = new \DateTime();
         $actions = [
             'confirm'   =>  'Подтверждено',
@@ -88,34 +120,32 @@ class ObtainingCourtOrderGenerator extends BaseGenerator implements GeneratorInt
 
         $showData = "{$actions[$request->get('action')]} {$currentDate->format('d.m.Y')}";
 
-        //добавляем лог - либо подтверждение, либо отказ, либо отмена судебного приказа
-        $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}");
-
         switch ($request->get('action')) {
             case 'confirm':
                 $currentFlatEvent
                     ->setParameter('show', $showData)
                     ->setParameter('confirm', true);
 
-                $this->em->persist($currentFlatEvent);
-                $this->em->flush();
-
                 break;
             case 'failure':
-                //при отказе заново выполняется событие "Формирование заявления на выдачу судебного приказа"
-                //текущее событите будет удалено
-                $this->formationCourtOrderGenerator->eventGenerate($flat, $flatEvent);
+                $currentFlatEvent
+                    ->setParameter('show', $showData)
+                    ->setParameter('failure', true);
+
                 break;
             case 'cancel':
                 $currentFlatEvent
                     ->setParameter('show', $showData)
                     ->setParameter('cancel', true);
 
-                $this->em->persist($currentFlatEvent);
-                $this->em->flush();
-
                 break;
         }
+
+        $this->em->persist($currentFlatEvent);
+        $this->em->flush();
+
+        //добавляем лог - либо подтверждение, либо отказ, либо отмена судебного приказа
+        $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}");
 
         return true;
     }

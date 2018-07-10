@@ -83,7 +83,7 @@ class GeneratorAggregate
             $this->flatLogger->log($flat, $e->getMessage());
             $flat->setIsGenerateErrors(true);
         } catch (\Exception $e) {
-            $this->flatLogger->log($flat, "Ошибка: '{$e->getMessage()}'");
+            $this->flatLogger->log($flat, "Ошибка: 'File:{$e->getFile()}. Line:{$e->getLine()}. Error:{$e->getMessage()}'. Событие:{$flatEvent->getEvent()->getName()}");
             //если ошибка выполнения программы - ставим признак ошибки у помещения
             $flat->setIsGenerateErrors(true);
         }

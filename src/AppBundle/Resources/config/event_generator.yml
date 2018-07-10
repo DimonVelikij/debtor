@@ -25,6 +25,7 @@ services:
             - [ addEventGenerator, ["@app.generator.applying_court_order", "applying_court_order"] ]
             - [ addEventGenerator, ["@app.generator.obtaining_court_order", "obtaining_court_order"] ]
             - [ addEventGenerator, ["@app.generator.formation_statement_claim", "formation_statement_claim"] ]
+            - [ addEventGenerator, ["@app.generator.applying_statement_claim", "applying_statement_claim"] ]
 
     # должник поступил в работу
     app.generator.entered_processing:
@@ -65,13 +66,19 @@ services:
     app.generator.obtaining_court_order:
         class: AppBundle\EventGenerator\Generator\ObtainingCourtOrderGenerator
         parent: app.generator.base
-        arguments:
-          - "@app.generator.formation_court_order"
         calls:
+            - [ addNextEventGenerator, ["@app.generator.formation_court_order" ] ]
             - [ addNextEventGenerator, ["@app.generator.formation_statement_claim"] ]
             # добавить генератор "Заявление на возбуждение исполнительного производства"
 
     # формирование искового заявления
     app.generator.formation_statement_claim:
         class: AppBundle\EventGenerator\Generator\FormationStatementClaimGenerator
+        parent: app.generator.base
+        calls:
+            - [ addNextEventGenerator, ["@app.generator.applying_statement_claim"] ]
+
+    # подача искового заявления
+    app.generator.applying_statement_claim:
+        class: AppBundle\EventGenerator\Generator\ApplyingStatementClaimGenerator
         parent: app.generator.base

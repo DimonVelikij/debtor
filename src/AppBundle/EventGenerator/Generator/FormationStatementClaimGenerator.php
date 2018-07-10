@@ -60,6 +60,37 @@ class FormationStatementClaimGenerator extends BaseGenerator implements Generato
      */
     public function eventGenerate(Flat $flat, FlatEvent $flatEvent)
     {
+        $this->validateEvent();
+
+        /** @var array $documentLinks */
+        $documentLinks = $this->templateGenerator->generateTemplate($flat, $this->event);
+
+        $showData = '';
+
+        /** @var string $documentLink */
+        foreach ($documentLinks as $documentLink) {
+            $showData .= "<a href='{$documentLink}' target='_blank'>Посмотреть</a> <a href='{$documentLink}' target='_blank' download>Скачать</a><br>";
+        }
+
+        //удаляем событие "Получение судебного приказа"
+        $this->em->remove($flatEvent);
+
+        //добавляем событие "Формирование искового заявления"
+        $executeFlatEvent = new FlatEvent();
+        $executeFlatEvent
+            ->setFlat($flat)
+            ->setDateGenerate(new \DateTime())
+            ->setEvent($this->event)
+            ->setData([
+                'show'  =>  $showData
+            ]);
+
+        $this->em->persist($executeFlatEvent);
+        $this->em->flush();
+
+        //добавляем лог - сгенерировалось событие "Формирование искового заявления"
+        $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}");
+
         return true;
     }
 }
