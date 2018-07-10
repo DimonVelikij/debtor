@@ -11,10 +11,10 @@ use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\HttpFoundation\Request;
 
-class EnteredProcessingGenerator extends BaseGenerator implements GeneratorInterface
+class FormationStatementClaimGenerator extends BaseGenerator implements GeneratorInterface
 {
     /**
-     * EnteredProcessingGenerator constructor.
+     * FormationStatementClaimGenerator constructor.
      * @param EntityManager $em
      * @param FlatLogger $flatLogger
      * @param Router $router
@@ -31,7 +31,7 @@ class EnteredProcessingGenerator extends BaseGenerator implements GeneratorInter
      */
     public function getEventAlias()
     {
-        return 'entered_processing';
+        return 'formation_statement_claim';
     }
 
     /**
@@ -40,7 +40,7 @@ class EnteredProcessingGenerator extends BaseGenerator implements GeneratorInter
      */
     public function getTimePerformAction(FlatEvent $flatEvent)
     {
-        return 1;
+        return 3;
     }
 
     /**
@@ -60,8 +60,6 @@ class EnteredProcessingGenerator extends BaseGenerator implements GeneratorInter
      */
     public function eventGenerate(Flat $flat, FlatEvent $flatEvent)
     {
-        //у первого события ничего не делаем
-        //оно выполнилось при добавлении помещения
         return true;
     }
 }

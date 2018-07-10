@@ -70,7 +70,6 @@ class GeneratorAggregate
 
             /** @var GeneratorInterface $nextEventGenerator */
             foreach ($currentEventGenerator->getNextEventGenerators($flatEvent) as $nextEventGenerator) {
-                dump(get_class($nextEventGenerator));die;
                 $nextEventGenerator->eventGenerate($flat, $flatEvent);
             }
         } catch (NoTemplateEventException $e) {

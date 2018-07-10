@@ -8,6 +8,7 @@ use AppBundle\Service\FlatLogger;
 use AppBundle\Service\TemplateGenerator;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
+use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\HttpFoundation\Request;
 
 class FormationCourtOrderGenerator extends BaseGenerator implements GeneratorInterface
@@ -18,16 +19,17 @@ class FormationCourtOrderGenerator extends BaseGenerator implements GeneratorInt
      * @param FlatLogger $flatLogger
      * @param Router $router
      * @param TemplateGenerator $templateGenerator
+     * @param TwigEngine $templating
      */
-    public function __construct(EntityManager $em, FlatLogger $flatLogger, Router $router, TemplateGenerator $templateGenerator)
+    public function __construct(EntityManager $em, FlatLogger $flatLogger, Router $router, TemplateGenerator $templateGenerator, TwigEngine $templating)
     {
-        parent::__construct($em, $flatLogger, $router, $templateGenerator);
+        parent::__construct($em, $flatLogger, $router, $templateGenerator, $templating);
     }
 
     /**
      * @return string
      */
-    protected function getEventAlias()
+    public function getEventAlias()
     {
         return 'formation_court_order';
     }
@@ -70,7 +72,13 @@ class FormationCourtOrderGenerator extends BaseGenerator implements GeneratorInt
             $showData .= "<a href='{$documentLink}' target='_blank'>Посмотреть</a> <a href='{$documentLink}' target='_blank' download>Скачать</a><br>";
         }
 
-        //удалять предыдущее событие "Претензия 2" не нужно, т.к. оно должно выполняться пока не погасится долг
+        if ($flatEvent->getEvent()->getAlias() == 'obtaining_court_order') {
+            //если вернулись с события "Получение судебного приказа" - был отказ
+            //удаляем событие "Получение судебного приказа"
+            $this->em->remove($flatEvent);
+        }
+
+        //если предыдущее событие "Претензия 2", то его удалять не нужно, т.к. оно должно выполняться пока не погасится долг
         //добавляем событие "Формирование заявления на выдачу судебного приказа"
         $executeFlatEvent = new FlatEvent();
         $executeFlatEvent
@@ -85,7 +93,7 @@ class FormationCourtOrderGenerator extends BaseGenerator implements GeneratorInt
         $this->em->flush();
 
         //добавляем лог - сгенерировалось событие "Формирование заявления на выдачу судебного приказа"
-        $this->flatLogger->log($flat, $this->event->getName() . "<br>" . $showData);
+        $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}");
 
         return true;
     }

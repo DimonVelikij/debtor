@@ -8,6 +8,7 @@ use AppBundle\Service\FlatLogger;
 use AppBundle\Service\TemplateGenerator;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
+use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\HttpFoundation\Request;
 
 class Pretense2Generator extends BaseGenerator implements GeneratorInterface
@@ -18,16 +19,17 @@ class Pretense2Generator extends BaseGenerator implements GeneratorInterface
      * @param FlatLogger $flatLogger
      * @param Router $router
      * @param TemplateGenerator $templateGenerator
+     * @param TwigEngine $templating
      */
-    public function __construct(EntityManager $em, FlatLogger $flatLogger, Router $router, TemplateGenerator $templateGenerator)
+    public function __construct(EntityManager $em, FlatLogger $flatLogger, Router $router, TemplateGenerator $templateGenerator, TwigEngine $templating)
     {
-        parent::__construct($em, $flatLogger, $router, $templateGenerator);
+        parent::__construct($em, $flatLogger, $router, $templateGenerator, $templating);
     }
 
     /**
      * @return string
      */
-    protected function getEventAlias()
+    public function getEventAlias()
     {
         return 'pretense2';
     }
@@ -112,7 +114,7 @@ class Pretense2Generator extends BaseGenerator implements GeneratorInterface
         $this->em->flush();
 
         //добавляем лог - сгенерировалось событие "Претензия2"
-        $this->flatLogger->log($flat, $this->event->getName() . "<br>" . $showData);
+        $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}");
 
         return true;
     }

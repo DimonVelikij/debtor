@@ -8,6 +8,7 @@ use AppBundle\Entity\Log;
 use AppBundle\Entity\PersonalAccount;
 use AppBundle\Entity\Subscriber;
 use AppBundle\Entity\User;
+use AppBundle\EventGenerator\Generator\GeneratorInterface;
 use AppBundle\Validator\Constraints\OwnershipStatus;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
@@ -534,6 +535,23 @@ class FlatAdminController extends CRUDController
         return new JsonResponse([
             'success'   =>  true
         ]);
+    }
+
+    /**
+     * @param Request $request
+     * @param $event
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function processUserAction(Request $request, $event)
+    {
+        /** @var GeneratorInterface $eventGenerator */
+        $eventGenerator = $this->get('app.generator.' . $event);
+
+        $eventGenerator->processUserAction($request);
+
+        $referer = $request->headers->get('referer') ?: $this->generateUrl('admin_app_flat_list');
+
+        return $this->redirect($referer);
     }
 
     /**

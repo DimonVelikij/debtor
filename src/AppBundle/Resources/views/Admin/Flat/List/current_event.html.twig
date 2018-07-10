@@ -6,7 +6,7 @@
     {% else %}
         {% if object.flatsEvents | length %}
             {% for flatEvent in object.flatsEvents %}
-                <span>{{ flatEvent.event.name }}({{ flatEvent.dateGenerate.format('d.m.Y') }})</span>
+                <span><b>{{ flatEvent.event.name }}({{ flatEvent.dateGenerate.format('d.m.Y') }})</b></span>
                 <span>{{ flatEvent.data.show | raw }}</span>
             {% endfor %}
         {% else %}

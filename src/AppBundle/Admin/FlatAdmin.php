@@ -64,6 +64,7 @@ class FlatAdmin extends AbstractAdmin
             ->add('personal_accounts', 'personal_accounts/{flat_id}')
             ->add('logs', 'logs/{flat_id}')
             ->add('read_logs', 'read_logs/{flat_id}')
+            ->add('process_user', 'process_user/{event}')
             ->remove('batch')
             ->remove('export')
             ->remove('delete');
@@ -329,7 +330,7 @@ class FlatAdmin extends AbstractAdmin
 
                 //пишем лог
                 //если добавлять через метод log - будет ошибка вставки лога, т.к. помещения еще не существует
-                $flat->addLog($flatLogger->createLog($flat, 'Должник поступил в работу')/*$log*/);
+                $flat->addLog($flatLogger->createLog($flat, "<b>Должник поступил в работу</b>"));
             }
         });
     }

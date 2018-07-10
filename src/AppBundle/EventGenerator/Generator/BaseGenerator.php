@@ -10,6 +10,7 @@ use AppBundle\Service\FlatLogger;
 use AppBundle\Service\TemplateGenerator;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
+use Symfony\Bundle\TwigBundle\TwigEngine;
 
 abstract class BaseGenerator
 {
@@ -25,6 +26,9 @@ abstract class BaseGenerator
     /** @var TemplateGenerator  */
     protected $templateGenerator;
 
+    /** @var TwigEngine  */
+    protected $templating;
+
     /** @var  Event */
     protected $event;
 
@@ -37,13 +41,15 @@ abstract class BaseGenerator
      * @param FlatLogger $flatLogger
      * @param Router $router
      * @param TemplateGenerator $templateGenerator
+     * @param TwigEngine $templating
      */
-    public function __construct(EntityManager $em, FlatLogger $flatLogger, Router $router, TemplateGenerator $templateGenerator)
+    public function __construct(EntityManager $em, FlatLogger $flatLogger, Router $router, TemplateGenerator $templateGenerator, TwigEngine $templating)
     {
         $this->em = $em;
         $this->flatLogger = $flatLogger;
         $this->router = $router;
         $this->templateGenerator = $templateGenerator;
+        $this->templating = $templating;
         $this->event = $this->em->getRepository('AppBundle:Event')->findOneBy(['alias' => $this->getEventAlias()]);
     }
 
@@ -86,5 +92,5 @@ abstract class BaseGenerator
      * alias текущего события
      * @return string
      */
-    abstract protected function getEventAlias();
+    abstract public function getEventAlias();
 }
