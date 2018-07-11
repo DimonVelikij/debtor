@@ -82,3 +82,10 @@ services:
     app.generator.applying_statement_claim:
         class: AppBundle\EventGenerator\Generator\ApplyingStatementClaimGenerator
         parent: app.generator.base
+        calls:
+            - [ addNextEventGenerator, ["@app.generator.verification_case"] ]
+
+    # проверка принятия дела к производству
+    app.generator.verification_case:
+        class: AppBundle\EventGenerator\Generator\VerificationCaseGenerator
+        parent: app.generator.base

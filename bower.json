@@ -21,6 +21,7 @@
     "angular-messages": "^1.6.9",
     "angular-ui-mask": "^1.8.7",
     "angular-ui-select": "^0.19.8",
-    "angular-sanitize": "^1.6.10"
+    "angular-sanitize": "^1.6.10",
+    "fancybox": "^3.3.5"
   }
 }

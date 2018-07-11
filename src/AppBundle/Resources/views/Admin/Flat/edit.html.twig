@@ -138,12 +138,6 @@
                         %}
                             <script type="text/javascript" src="{{ asset(asset_url, 'js') }}"></script>
                         {% endjavascripts %}
-                        {% stylesheets
-                            'bundles/app/css/select.min.min.css'
-                            filter='cssrewrite'
-                        %}
-                            <link rel="stylesheet" href="{{ asset(asset_url, 'css') }}">
-                        {% endstylesheets %}
                     {% endif %}
                 </div>
             </div>

@@ -5,6 +5,16 @@
     ng-app="cms"
 {% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    {% stylesheets
+        'bundles/app/css/libs.min.css'
+        filter='cssrewrite'
+    %}
+        <link rel="stylesheet" href="{{ asset(asset_url, 'css') }}">
+    {% endstylesheets %}
+{% endblock %}
+
 {% block sonata_javascript_pool %}
     {{ parent() }}
     {% javascripts
