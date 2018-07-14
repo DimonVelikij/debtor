@@ -9,7 +9,6 @@ use AppBundle\Service\TemplateGenerator;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Bundle\TwigBundle\TwigEngine;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Translation\DataCollectorTranslator;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -101,7 +100,7 @@ class VerificationCaseGenerator extends BaseGenerator implements GeneratorInterf
 
     /**
      * @param Request $request
-     * @return mixed
+     * @return bool|array
      */
     public function processUserAction(Request $request)
     {
@@ -183,10 +182,10 @@ class VerificationCaseGenerator extends BaseGenerator implements GeneratorInterf
             }
 
             if (count($errors)) {
-                return new JsonResponse([
+                return [
                     'success'   =>  false,
                     'errors'    =>  $errors
-                ]);
+                ];
             }
 
             $showData = "
@@ -213,10 +212,10 @@ class VerificationCaseGenerator extends BaseGenerator implements GeneratorInterf
             //добавляем лог - подтверждено принятие искового заявления
             $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}");
 
-            return new JsonResponse([
+            return [
                 'success'   =>  true,
                 'errors'    =>  false
-            ]);
+            ];
         }
     }
 

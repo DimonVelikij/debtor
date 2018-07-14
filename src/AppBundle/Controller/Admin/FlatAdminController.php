@@ -538,20 +538,22 @@ class FlatAdminController extends CRUDController
     }
 
     /**
+     * выполнение действий пользователя
      * @param Request $request
      * @param $event
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function processUserAction(Request $request, $event)
     {
         /** @var GeneratorInterface $eventGenerator */
         $eventGenerator = $this->get('app.generator.' . $event);
 
-        $eventGenerator->processUserAction($request);
+        /** @var bool|array $result */
+        $result = $eventGenerator->processUserAction($request);
 
-        $referer = $request->headers->get('referer') ?: $this->generateUrl('admin_app_flat_list');
-
-        return $this->redirect($referer);
+        return $request->isXmlHttpRequest() ?
+            new JsonResponse($result) ://если ajax запрос - возвращаем json
+            $this->redirect($request->headers->get('referer') ?: $this->generateUrl('admin_app_flat_list'));//если обычный переход по ссылку - редиректим на страницу на которой была нажата ссылка
     }
 
     /**

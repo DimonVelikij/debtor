@@ -8,6 +8,7 @@
     EventCtrl.$inject = [
         '$scope',
         '$http',
+        '$window',
         'FormHelper',
         'Initializer'
     ];
@@ -15,6 +16,7 @@
     function EventCtrl(
         $scope,
         $http,
+        $window,
         FormHelper,
         Initializer
     ) {
@@ -33,9 +35,21 @@
                 return;
             }
 
-            $http.post('/app_dev.php' + Initializer.Path.SubmitEvent, $scope.formData)
+            var requestConfigs = {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'//отправляем заголовок, чтобы на бэекенде определить isXmlHttpRequest
+                }
+            };
+
+            $http.post('/app_dev.php' + Initializer.Path.SubmitEvent, $scope.formData, requestConfigs)
                 .then(function (response) {
-                    console.log(response.data);
+                    if (response.data.success) {
+                        //если все ок - перезагружем странцу, чтобы подтянуть новый лог
+                        $window.location.reload();
+                    } else {
+                        //если не success - выводим ошибки с бэкенда
+                        FormHelper.showBackendErrors(response.data.errors, form);
+                    }
                 });
         }
     }
