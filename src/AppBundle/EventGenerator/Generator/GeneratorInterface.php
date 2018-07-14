@@ -9,6 +9,12 @@ use Symfony\Component\HttpFoundation\Request;
 interface GeneratorInterface
 {
     /**
+     * alias текущего события
+     * @return string
+     */
+    public function getEventAlias();
+
+    /**
      * через сколько дней выполнить следующее событие
      * @param FlatEvent $flatEvent
      * @return integer

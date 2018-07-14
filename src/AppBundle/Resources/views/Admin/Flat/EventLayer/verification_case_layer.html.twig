@@ -1,0 +1,61 @@
+<a href="{{ path('admin_app_flat_process_user', {event: event.alias, flat_id: flat.id, action: 'failure'}) }}">Подтвердить отказ</a>
+<a data-fancybox data-src="#verification-case-layer" href="javascript:;">Подтвердить принятие</a>
+
+<div style="display: none;" id="verification-case-layer" ng-controller="EventCtrl">
+    <ng-form name="event" novalidate ng-cloak>
+        <script type="text/ng-init" name="Path">{{ {
+                SubmitEvent: path('admin_app_flat_process_user', {event: event.alias, flat_id: flat.id, action: 'confirm'})
+            } | json_encode | raw }}</script>
+
+        <div class="form-group" ng-class="{'has-error': event.courtCaseNumber.$invalid && event.courtCaseNumber.$dirty}">
+            <label for="courtCaseNumber" class="control-label required">Номер дела</label>
+            <input name="courtCaseNumber" id="courtCaseNumber" type="text" class="form-control" ng-model="formData.courtCaseNumber" required backend>
+            <div class="help-block sonata-ba-field-error-messages" ng-if="event.courtCaseNumber.$invalid && event.courtCaseNumber.$dirty" ng-messages="event.courtCaseNumber.$error">
+                <ul class="list-unstyled">
+                    <li ng-message="required"><i class="fa fa-exclamation-circle"></i>Укажите номер дела</li>
+                    <li ng-message="backend"><i class="fa fa-exclamation-circle"></i>[[ event.courtCaseNumber.errorMessages.backend ]]</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="form-group" ng-class="{'has-error': event.judge.$invalid && event.judge.$dirty}">
+            <label for="judge" class="control-label required">Судья</label>
+            <input name="judge" id="judge" type="text" class="form-control" ng-model="formData.judge" required backend>
+            <div class="help-block sonata-ba-field-error-messages" ng-if="event.judge.$invalid && event.judge.$dirty" ng-messages="event.judge.$error">
+                <ul class="list-unstyled">
+                    <li ng-message="required"><i class="fa fa-exclamation-circle"></i>Укажите информацию о судье</li>
+                    <li ng-message="backend"><i class="fa fa-exclamation-circle"></i>[[ event.judge.errorMessages.backend ]]</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="form-group" ng-class="{'has-error': event.dateMeeting.$invalid && event.dateMeeting.$dirty}">
+            <label for="dateMeeting" class="control-label required">Дата заседания</label>
+            <input name="dateMeeting" id="dateMeeting" type="text" class="form-control" ng-model="formData.dateMeeting" ui-mask="99.99.9999" ng-pattern="/^([0-2]\d|3[01])\.(0\d|1[012])\.(19|20)(\d\d)$/" required backend>
+            <div class="help-block sonata-ba-field-error-messages" ng-if="event.dateMeeting.$invalid && event.dateMeeting.$dirty" ng-messages="event.dateMeeting.$error">
+                <ul class="list-unstyled">
+                    <li ng-message="pattern"><i class="fa fa-exclamation-circle"></i>Неверно указана дата заседания</li>
+                    <li ng-message="required"><i class="fa fa-exclamation-circle"></i>Укажите дату заседания</li>
+                    <li ng-message="backend"><i class="fa fa-exclamation-circle"></i>[[ event.dateMeeting.errorMessages.backend ]]</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="form-group" ng-class="{'has-error': event.timeMeeting.$invalid && event.timeMeeting.$dirty}">
+            <label for="timeMeeting" class="control-label required">Время заседания</label>
+            <input name="timeMeeting" id="timeMeeting" type="text" class="form-control" ng-model="formData.timeMeeting" ui-mask="99:99" ng-pattern="/^([0,1]\d|2[0-3]):([0-4]\d|5[0-9])$/" required backend>
+            <div class="help-block sonata-ba-field-error-messages" ng-if="event.timeMeeting.$invalid && event.timeMeeting.$dirty" ng-messages="event.timeMeeting.$error">
+                <ul class="list-unstyled">
+                    <li ng-message="pattern"><i class="fa fa-exclamation-circle"></i>Неверно указано время заседания</li>
+                    <li ng-message="required"><i class="fa fa-exclamation-circle"></i>Укажите время заседания</li>
+                    <li ng-message="backend"><i class="fa fa-exclamation-circle"></i>[[ event.timeMeeting.errorMessages.backend ]]</li>
+                </ul>
+            </div>
+        </div>
+
+        <button class="btn btn-success" ng-click="submit($event, event)">
+            <i class="fa fa-save"></i>
+            Сохранить
+        </button>
+    </ng-form>
+</div>

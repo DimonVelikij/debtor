@@ -8,7 +8,6 @@
     LogCtrl.$inject = [
         '$scope',
         '$http',
-        '$sce',
         '_',
         'Initializer'
     ];
@@ -16,7 +15,6 @@
     function LogCtrl(
         $scope,
         $http,
-        $sce,
         _,
         Initializer
     ) {
@@ -49,10 +47,6 @@
                 });
             }
         });
-
-        $scope.trustHtml = function (data) {
-            return $sce.trustAsHtml(data);
-        };
     }
 
 })(angular);

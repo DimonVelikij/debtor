@@ -8,7 +8,6 @@ services:
             - "@app.service.flat_logger"
             - "@router"
             - "@app.service.template_generator"
-            - "@templating"
         abstract: true
 
     # аггрегатор генераторов
@@ -26,6 +25,7 @@ services:
             - [ addEventGenerator, ["@app.generator.obtaining_court_order", "obtaining_court_order"] ]
             - [ addEventGenerator, ["@app.generator.formation_statement_claim", "formation_statement_claim"] ]
             - [ addEventGenerator, ["@app.generator.applying_statement_claim", "applying_statement_claim"] ]
+            - [ addEventGenerator, ["@app.generator.verification_case", "verification_case"] ]
 
     # должник поступил в работу
     app.generator.entered_processing:
@@ -89,3 +89,10 @@ services:
     app.generator.verification_case:
         class: AppBundle\EventGenerator\Generator\VerificationCaseGenerator
         parent: app.generator.base
+        arguments:
+            - "@templating"
+            - "@validator"
+            - "@translator"
+        calls:
+            - [ addNextEventGenerator, ["@app.generator.formation_statement_claim"] ]
+            # добавить судебное делопроизводство

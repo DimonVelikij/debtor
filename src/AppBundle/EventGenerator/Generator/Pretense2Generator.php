@@ -19,11 +19,10 @@ class Pretense2Generator extends BaseGenerator implements GeneratorInterface
      * @param FlatLogger $flatLogger
      * @param Router $router
      * @param TemplateGenerator $templateGenerator
-     * @param TwigEngine $templating
      */
-    public function __construct(EntityManager $em, FlatLogger $flatLogger, Router $router, TemplateGenerator $templateGenerator, TwigEngine $templating)
+    public function __construct(EntityManager $em, FlatLogger $flatLogger, Router $router, TemplateGenerator $templateGenerator)
     {
-        parent::__construct($em, $flatLogger, $router, $templateGenerator, $templating);
+        parent::__construct($em, $flatLogger, $router, $templateGenerator);
     }
 
     /**

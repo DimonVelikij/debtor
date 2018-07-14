@@ -19,11 +19,10 @@ class ApplyingCourtOrderGenerator extends BaseGenerator implements GeneratorInte
      * @param FlatLogger $flatLogger
      * @param Router $router
      * @param TemplateGenerator $templateGenerator
-     * @param TwigEngine $templating
      */
-    public function __construct(EntityManager $em, FlatLogger $flatLogger, Router $router, TemplateGenerator $templateGenerator, TwigEngine $templating)
+    public function __construct(EntityManager $em, FlatLogger $flatLogger, Router $router, TemplateGenerator $templateGenerator)
     {
-        parent::__construct($em, $flatLogger, $router, $templateGenerator, $templating);
+        parent::__construct($em, $flatLogger, $router, $templateGenerator);
     }
 
     /**
@@ -41,7 +40,19 @@ class ApplyingCourtOrderGenerator extends BaseGenerator implements GeneratorInte
     public function getTimePerformAction(FlatEvent $flatEvent)
     {
         //если подача заявления подтверждена, то можно приступать к следующему событию, иначе нельзя
-        return $flatEvent->getParameter('confirm') ? 40 : INF;
+        return $flatEvent->getParameter('confirm', false) ? 40 : INF;
+    }
+
+    /**
+     * @param FlatEvent $flatEvent
+     * @return array
+     */
+    public function getNextEventGenerators(FlatEvent $flatEvent)
+    {
+        //если подача заявления подтверждена, то отдаем следующие генераторы, иначе - пустой массив
+        return $flatEvent->getParameter('confirm', false) ?
+            $this->nextEventGenerators :
+            [];
     }
 
     /**

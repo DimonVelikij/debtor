@@ -50,9 +50,9 @@ class GeneratorAggregate
             $currentEventGenerator = $this->eventGenerators[$flatEvent->getEvent()->getAlias()];
 
             //если время не пришло
-            /*if ((new \DateTime())->diff($flatEvent->getDateGenerate())->d < $currentEventGenerator->getTimePerformAction($flatEvent)) {
+            if ((new \DateTime())->diff($flatEvent->getDateGenerate())->d < $currentEventGenerator->getTimePerformAction($flatEvent)) {
                 continue;
-            }*/
+            }
 
             $this->eventGenerate($flat, $flatEvent);
         }
@@ -68,8 +68,16 @@ class GeneratorAggregate
             /** @var GeneratorInterface $currentEventGenerator */
             $currentEventGenerator = $this->eventGenerators[$flatEvent->getEvent()->getAlias()];
 
+            /** @var array $nextEventGenerators */
+            $nextEventGenerators = $currentEventGenerator->getNextEventGenerators($flatEvent);
+
+            //если генераторов нет - ничего не делаем
+            if (!count($nextEventGenerators)) {
+                return;
+            }
+
             /** @var GeneratorInterface $nextEventGenerator */
-            foreach ($currentEventGenerator->getNextEventGenerators($flatEvent) as $nextEventGenerator) {
+            foreach ($nextEventGenerators as $nextEventGenerator) {
                 $nextEventGenerator->eventGenerate($flat, $flatEvent);
             }
         } catch (NoTemplateEventException $e) {

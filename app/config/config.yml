@@ -177,6 +177,7 @@ assetic:
         cms_flat:
             inputs:
                 - 'bundles/app/js/cms/flat/controllers/*.js'
+                - 'bundles/app/js/cms/flat/directives/*.js'
                 - 'bundles/app/js/cms/flat/filters/*.js'
 
         cms_modules:

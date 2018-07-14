@@ -19,11 +19,10 @@ class ObtainingCourtOrderGenerator extends BaseGenerator implements GeneratorInt
      * @param FlatLogger $flatLogger
      * @param Router $router
      * @param TemplateGenerator $templateGenerator
-     * @param TwigEngine $templating
      */
-    public function __construct(EntityManager $em, FlatLogger $flatLogger, Router $router, TemplateGenerator $templateGenerator, TwigEngine $templating)
+    public function __construct(EntityManager $em, FlatLogger $flatLogger, Router $router, TemplateGenerator $templateGenerator)
     {
-        parent::__construct($em, $flatLogger, $router, $templateGenerator, $templating);
+        parent::__construct($em, $flatLogger, $router, $templateGenerator);
     }
 
     /**
@@ -40,12 +39,14 @@ class ObtainingCourtOrderGenerator extends BaseGenerator implements GeneratorInt
      */
     public function getTimePerformAction(FlatEvent $flatEvent)
     {
-        //если пользователь подтвердил или отменил получение приказа - выполняем следующее событие через 1 день
         if ($flatEvent->getParameter('confirm', false) || $flatEvent->getParameter('cancel', false)) {
+            //если пользователь подтвердил или отменил получение приказа - выполняем следующее событие через 1 день
             return 1;
-        } elseif ($flatEvent->getParameter('failure', false)) {//если пользователю отказано - выполняем следующее событие сразу при следующей генерации
+        } elseif ($flatEvent->getParameter('failure', false)) {
+            //если пользователю отказано - выполняем следующее событие сразу при следующей генерации
             return 0;
-        } else {//если пользователь ничего не делел - следующее событие не генерируем
+        } else {
+            //если пользователь ничего не делел - следующее событие не генерируем
             return INF;
         }
     }
@@ -62,9 +63,12 @@ class ObtainingCourtOrderGenerator extends BaseGenerator implements GeneratorInt
         } elseif ($flatEvent->getParameter('failure', false)) {
             //если отказано получение приказа - следующее событие "Формирование заявления на выдачу судебного приказа"
             $generatorAlias = 'formation_court_order';
-        } else {
+        } elseif ($flatEvent->getParameter('cancel', false)) {
             //если отменено получение приказа - следующее событие "Формирование искового заявления"
             $generatorAlias = 'formation_statement_claim';
+        } else {
+            //если пользователь ничего не делал - не отдаем генератор
+            $generatorAlias = false;
         }
 
         //ищем по алиасу нужный генератор
