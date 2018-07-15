@@ -41,6 +41,9 @@ class GeneratorAggregate
         $this->eventGenerators[$generatorAlias] = $generator;
     }
 
+    /**
+     * @param Flat $flat
+     */
     public function processFlat(Flat $flat)
     {
         //проверка на долг

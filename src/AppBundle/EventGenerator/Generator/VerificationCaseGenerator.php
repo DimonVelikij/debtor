@@ -62,8 +62,11 @@ class VerificationCaseGenerator extends BaseGenerator implements GeneratorInterf
             //если пользователь выбрал отказ - генерируем следующее событие при следующем выполнении таски
             return 0;
         } elseif ($flatEvent->getParameter('confirm', false)) {
-            //если пользователь выбрал принятие - генерируем в дату заседания
-            return 12;
+            //если пользователь выбрал принятие - вычисляем разницу между текущим временем и датой заседания
+            /** @var \DateTime $dateMeeting */
+            $dateMeeting = $flatEvent->getParameter('dateMeeting');
+
+            return $dateMeeting->diff((new \DateTime()))->d;
         } else {
             //если пользователь ничего не выбрал - ничего не делаем
             return INF;
@@ -207,7 +210,7 @@ class VerificationCaseGenerator extends BaseGenerator implements GeneratorInterf
                 ]);
 
             $this->em->persist($currentFlatEvent);
-//            $this->em->flush();
+            $this->em->flush();
 
             //добавляем лог - подтверждено принятие искового заявления
             $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}");
