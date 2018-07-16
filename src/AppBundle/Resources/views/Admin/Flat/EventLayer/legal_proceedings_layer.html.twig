@@ -1,36 +1,14 @@
-<a href="{{ path('admin_app_flat_process_user', {event: event.alias, flat_id: flat.id, action: 'failure'}) }}">Подтвердить отказ в принятии искового зявлени</a>
+<a href="{{ path('admin_app_flat_process_user', {event: event.alias, flat_id: flat.id, action: 'confirm'}) }}">Принято решение</a>
 <br>
-<a data-fancybox data-src="#verification-case-layer" href="javascript:;">Подтвердить принятие искового заявления к производству</a>
+<a data-fancybox data-src="#legal-proceedings-layer" href="javascript:;">Заседание отложено</a>
 
-<div style="display: none;" id="verification-case-layer" ng-controller="EventCtrl">
+<div style="display: none;" id="legal-proceedings-layer" ng-controller="EventCtrl">
     <ng-form name="event" novalidate ng-cloak ng-init="eventAlias = '{{ event.alias }}'">
         <script type="text/ng-init" name="Path">{{ {
-                (event.alias) : {
-                    Submit: path('admin_app_flat_process_user', {event: event.alias, flat_id: flat.id, action: 'confirm'})
+                (event.alias): {
+                    Submit: path('admin_app_flat_process_user', {event: event.alias, flat_id: flat.id, action: 'deferred'})
                 }
             } | json_encode | raw }}</script>
-
-        <div class="form-group" ng-class="{'has-error': event.courtCaseNumber.$invalid && event.courtCaseNumber.$dirty}">
-            <label for="courtCaseNumber" class="control-label required">Номер дела</label>
-            <input name="courtCaseNumber" id="courtCaseNumber" type="text" class="form-control" ng-model="formData.courtCaseNumber" required backend>
-            <div class="help-block sonata-ba-field-error-messages" ng-if="event.courtCaseNumber.$invalid && event.courtCaseNumber.$dirty" ng-messages="event.courtCaseNumber.$error">
-                <ul class="list-unstyled">
-                    <li ng-message="required"><i class="fa fa-exclamation-circle"></i>Укажите номер дела</li>
-                    <li ng-message="backend"><i class="fa fa-exclamation-circle"></i>[[ event.courtCaseNumber.errorMessages.backend ]]</li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="form-group" ng-class="{'has-error': event.judge.$invalid && event.judge.$dirty}">
-            <label for="judge" class="control-label required">Судья</label>
-            <input name="judge" id="judge" type="text" class="form-control" ng-model="formData.judge" required backend>
-            <div class="help-block sonata-ba-field-error-messages" ng-if="event.judge.$invalid && event.judge.$dirty" ng-messages="event.judge.$error">
-                <ul class="list-unstyled">
-                    <li ng-message="required"><i class="fa fa-exclamation-circle"></i>Укажите информацию о судье</li>
-                    <li ng-message="backend"><i class="fa fa-exclamation-circle"></i>[[ event.judge.errorMessages.backend ]]</li>
-                </ul>
-            </div>
-        </div>
 
         <div class="form-group" ng-class="{'has-error': event.dateMeeting.$invalid && event.dateMeeting.$dirty}">
             <label for="dateMeeting" class="control-label required">Дата заседания</label>

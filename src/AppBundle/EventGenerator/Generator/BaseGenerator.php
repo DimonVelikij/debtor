@@ -10,6 +10,9 @@ use AppBundle\Service\FlatLogger;
 use AppBundle\Service\TemplateGenerator;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
+use Symfony\Bundle\TwigBundle\TwigEngine;
+use Symfony\Component\Translation\DataCollectorTranslator;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 abstract class BaseGenerator
 {
@@ -25,6 +28,15 @@ abstract class BaseGenerator
     /** @var TemplateGenerator  */
     protected $templateGenerator;
 
+    /** @var TwigEngine  */
+    protected $twig;
+
+    /** @var ValidatorInterface  */
+    protected $validator;
+
+    /** @var DataCollectorTranslator  */
+    protected $translator;
+
     /** @var  Event */
     protected $event;
 
@@ -37,13 +49,19 @@ abstract class BaseGenerator
      * @param FlatLogger $flatLogger
      * @param Router $router
      * @param TemplateGenerator $templateGenerator
+     * @param TwigEngine $twig
+     * @param ValidatorInterface $validator
+     * @param DataCollectorTranslator $translator
      */
-    public function __construct(EntityManager $em, FlatLogger $flatLogger, Router $router, TemplateGenerator $templateGenerator)
+    public function __construct(EntityManager $em, FlatLogger $flatLogger, Router $router, TemplateGenerator $templateGenerator, TwigEngine $twig, ValidatorInterface $validator, DataCollectorTranslator $translator)
     {
         $this->em = $em;
         $this->flatLogger = $flatLogger;
         $this->router = $router;
         $this->templateGenerator = $templateGenerator;
+        $this->twig = $twig;
+        $this->validator = $validator;
+        $this->translator = $translator;
         $this->event = $this->em->getRepository('AppBundle:Event')->findOneBy(['alias' => $this->getEventAlias()]);
     }
 

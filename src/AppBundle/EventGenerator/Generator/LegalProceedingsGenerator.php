@@ -15,10 +15,10 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class VerificationCaseGenerator extends BaseGenerator implements GeneratorInterface
+class LegalProceedingsGenerator extends BaseGenerator implements GeneratorInterface
 {
     /**
-     * VerificationCaseGenerator constructor.
+     * LegalProceedingsGenerator constructor.
      * @param EntityManager $em
      * @param FlatLogger $flatLogger
      * @param Router $router
@@ -37,7 +37,7 @@ class VerificationCaseGenerator extends BaseGenerator implements GeneratorInterf
      */
     public function getEventAlias()
     {
-        return 'verification_case';
+        return 'legal_proceedings';
     }
 
     /**
@@ -46,15 +46,15 @@ class VerificationCaseGenerator extends BaseGenerator implements GeneratorInterf
      */
     public function getTimePerformAction(FlatEvent $flatEvent)
     {
-        if ($flatEvent->getParameter('failure', false)) {
-            //если пользователь выбрал отказ - генерируем следующее событие при следующем выполнении таски
-            return 0;
-        } elseif ($flatEvent->getParameter('confirm', false)) {
-            //если пользователь выбрал принятие - вычисляем разницу между текущим временем и датой заседания
+        if ($flatEvent->getParameter('deferred', false)) {
+            //если заседаные было отложено - выполняем текущее событие в дату на которое отложено заседание
             /** @var \DateTime $dateMeeting */
-            $dateMeeting = $flatEvent->getParameter('dateMeeting');
+            $dateMeeting = $flatEvent->getParameter('dateMeeting', false);
 
-            return $dateMeeting->diff((new \DateTime()))->d;
+            return $dateMeeting->diff(new \DateTime())->d;
+        } elseif ($flatEvent->getParameter('confirm', false)) {
+            //если решение принято - через 30 дней заявление на получение исполнительного листа
+            return 30;
         } else {
             //если пользователь ничего не выбрал - ничего не делаем
             return INF;
@@ -67,11 +67,14 @@ class VerificationCaseGenerator extends BaseGenerator implements GeneratorInterf
      */
     public function getNextEventGenerators(FlatEvent $flatEvent)
     {
-        if ($flatEvent->getParameter('failure', false)) {
-            $generatorAlias = 'formation_statement_claim';
+        if ($flatEvent->getParameter('deferred', false)) {
+            //если заседание было отложено - возвращаем текущий генератор
+            return [$this];
         } elseif ($flatEvent->getParameter('confirm', false)) {
-            $generatorAlias = 'legal_proceedings';
+            //если принято решение - возвращаем генератор "заявление на получение исполнительного листа"
+            $generatorAlias = 'statement_receipt_writ_execution';
         } else {
+            //пользователь ничего не делал - ничего не возвращаем
             $generatorAlias = false;
         }
 
@@ -111,47 +114,39 @@ class VerificationCaseGenerator extends BaseGenerator implements GeneratorInterf
 
         if (
             !$currentFlatEvent ||
-            $flatEvent->getParameter('confirm', false) ||
-            $flatEvent->getParameter('failure', false)
+            $flatEvent->getParameter('deferred') ||
+            $flatEvent->getParameter('confirm')
         ) {
             //действие выполнено
             return true;
         }
 
-        //если отказ
-        if ($request->get('action') == 'failure') {
-            $showData = "Отказ в принятии искового заявления к производству";
-            $currentFlatEvent
+        if ($request->get('action') == 'confirm') {
+            $showData = "Принято решение";
+            $flatEvent
                 ->setData([
                     'show'      =>  $showData,
-                    'failure'   =>  true
+                    'confirm'   =>  true
                 ]);
 
-            $this->em->persist($currentFlatEvent);
+            $this->em->persist($flatEvent);
             $this->em->flush();
 
-            //добавляем лог - отказ принятия искового заявления
+            //добавляем лог - принято решение
             $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}");
 
             return true;
-        } else {//если принятие
+        } else {
+            //заседание отложено
             $data = json_decode($request->getContent(), true);
 
-            //входные данные с фронта
+            //входные данные
             $input = [
-                'courtCaseNumber'   =>  $data['courtCaseNumber'] ?? null,
-                'judge'             =>  $data['judge'] ?? null,
-                'dateMeeting'       =>  $data['dateMeeting'] ?? null,
-                'timeMeeting'       =>  $data['timeMeeting'] ?? null
+                'dateMeeting'   => $data['dateMeeting'] ?? null,
+                'timeMeeting'   =>  $data['timeMeeting'] ?? null
             ];
 
             $constraints = [
-                'courtCaseNumber'   =>  [
-                    new NotBlank(['message' => 'Укажите номер дела'])
-                ],
-                'judge'             =>  [
-                    new NotBlank(['message' =>  'Укажите информацию о судье'])
-                ],
                 'dateMeeting'       =>  [
                     new NotBlank(['message' =>  'Укажите дату заседания']),
                     new Regex(['pattern'    => '/^([0-2]\d|3[01])(0\d|1[012])(19|20)(\d\d)$/', 'message' => 'Неверно указана дата заседания'])
@@ -180,26 +175,22 @@ class VerificationCaseGenerator extends BaseGenerator implements GeneratorInterf
             }
 
             $showData = "
-                    Подтверждено принятие искового заявления к производству<br>
-                    Номер дела: {$input['courtCaseNumber']}<br>
-                    Судья: {$input['judge']}<br>
-                    Дата заседания: " . substr($input['dateMeeting'], 0, 2) . ":" . substr($input['dateMeeting'], 2, 2) . ":" . substr($input['dateMeeting'], 4, 4) . "<>
-                    Время заседания: " . substr($input['timeMeeting'], 0, 2) . ":" . substr($input['timeMeeting'], 2, 2);
+                Заседание отложено<br>
+                Дата заседания: " . substr($input['dateMeeting'], 0, 2) . ":" . substr($input['dateMeeting'], 2, 2) . ":" . substr($input['dateMeeting'], 4, 4) . "<br>
+                Время заседания: " . substr($input['timeMeeting'], 0, 2) . ":" . substr($input['timeMeeting'], 2, 2);
 
             $currentFlatEvent
                 ->setData([
-                    'confirm'           =>  true,
-                    'courtCaseNumber'   =>  $input['courtCaseNumber'],
-                    'judge'             =>  $input['judge'],
-                    'dateMeeting'       =>  \DateTime::createFromFormat('dmY', $input['dateMeeting']),
-                    'timeMeeting'       =>  $input['timeMeeting'],
-                    'show'              =>  $showData
+                    'deferred'      =>  true,
+                    'dateMeeting'   =>  \DateTime::createFromFormat('dmY', $input['dateMeeting']),
+                    'timeMeeting'   =>  $input['timeMeeting'],
+                    'show'          =>  $showData
                 ]);
 
             $this->em->persist($currentFlatEvent);
             $this->em->flush();
 
-            //добавляем лог - подтверждено принятие искового заявления
+            //добавляем лог - заседание отложено
             $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}");
 
             return [
@@ -218,15 +209,15 @@ class VerificationCaseGenerator extends BaseGenerator implements GeneratorInterf
         /** @var Flat $flat */
         $flat = $flatEvent->getFlat();
 
-        $showData = $this->twig->render('@App/Admin/Flat/EventLayer/verification_case_layer.html.twig', [
+        $showData = $this->twig->render('@App/Admin/Flat/EventLayer/legal_proceedings_layer.html.twig', [
             'flat'  =>  $flat,
             'event' =>  $this->event
         ]);
 
-        //удаляем событие "Подача искового заявления"
         $this->em->remove($flatEvent);
+        $this->em->flush();
 
-        //добавляем событие "Проверка принятия дела к производству"
+        //добавляем событие "Судебное делопроизводство"
         $executeFlatEvent = new FlatEvent();
         $executeFlatEvent
             ->setFlat($flat)
@@ -239,7 +230,7 @@ class VerificationCaseGenerator extends BaseGenerator implements GeneratorInterf
         $this->em->persist($executeFlatEvent);
         $this->em->flush();
 
-        //добавляем лог - сгенерировалось событие "Проверка принятия дела к производству"
+        //добавляем лог - сгенерировалось событие "Судебное делопроизводство"
         $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}");
 
         return true;

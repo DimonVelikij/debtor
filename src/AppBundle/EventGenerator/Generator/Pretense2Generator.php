@@ -10,6 +10,8 @@ use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Translation\DataCollectorTranslator;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class Pretense2Generator extends BaseGenerator implements GeneratorInterface
 {
@@ -19,10 +21,13 @@ class Pretense2Generator extends BaseGenerator implements GeneratorInterface
      * @param FlatLogger $flatLogger
      * @param Router $router
      * @param TemplateGenerator $templateGenerator
+     * @param TwigEngine $twig
+     * @param ValidatorInterface $validator
+     * @param DataCollectorTranslator $translator
      */
-    public function __construct(EntityManager $em, FlatLogger $flatLogger, Router $router, TemplateGenerator $templateGenerator)
+    public function __construct(EntityManager $em, FlatLogger $flatLogger, Router $router, TemplateGenerator $templateGenerator, TwigEngine $twig, ValidatorInterface $validator, DataCollectorTranslator $translator)
     {
-        parent::__construct($em, $flatLogger, $router, $templateGenerator);
+        parent::__construct($em, $flatLogger, $router, $templateGenerator, $twig, $validator, $translator);
     }
 
     /**
@@ -67,13 +72,15 @@ class Pretense2Generator extends BaseGenerator implements GeneratorInterface
     }
 
     /**
-     * @param Flat $flat
      * @param FlatEvent $flatEvent
      * @return bool
      */
-    public function eventGenerate(Flat $flat, FlatEvent $flatEvent)
+    public function generateEvent(FlatEvent $flatEvent)
     {
         $this->validateEvent();
+
+        /** @var Flat $flat */
+        $flat = $flatEvent->getFlat();
 
         /** @var array $documentLinks */
         $documentLinks = $this->templateGenerator->generateTemplate($flat, $this->event);

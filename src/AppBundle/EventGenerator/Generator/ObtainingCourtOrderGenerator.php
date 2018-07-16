@@ -10,6 +10,8 @@ use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Translation\DataCollectorTranslator;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class ObtainingCourtOrderGenerator extends BaseGenerator implements GeneratorInterface
 {
@@ -19,10 +21,13 @@ class ObtainingCourtOrderGenerator extends BaseGenerator implements GeneratorInt
      * @param FlatLogger $flatLogger
      * @param Router $router
      * @param TemplateGenerator $templateGenerator
+     * @param TwigEngine $twig
+     * @param ValidatorInterface $validator
+     * @param DataCollectorTranslator $translator
      */
-    public function __construct(EntityManager $em, FlatLogger $flatLogger, Router $router, TemplateGenerator $templateGenerator)
+    public function __construct(EntityManager $em, FlatLogger $flatLogger, Router $router, TemplateGenerator $templateGenerator, TwigEngine $twig, ValidatorInterface $validator, DataCollectorTranslator $translator)
     {
-        parent::__construct($em, $flatLogger, $router, $templateGenerator);
+        parent::__construct($em, $flatLogger, $router, $templateGenerator, $twig, $validator, $translator);
     }
 
     /**
@@ -117,9 +122,9 @@ class ObtainingCourtOrderGenerator extends BaseGenerator implements GeneratorInt
 
         $currentDate = new \DateTime();
         $actions = [
-            'confirm'   =>  'Подтверждено',
-            'failure'   =>  'Отказано',
-            'cancel'    =>  'Отменено'
+            'confirm'   =>  'Подтверждено получение судебного приказа на руки',
+            'failure'   =>  'Подтверждено получение определения об отказе в принятии',
+            'cancel'    =>  'Получено определение об отмене судебного приказа'
         ];
 
         $showData = "{$actions[$request->get('action')]} {$currentDate->format('d.m.Y')}";
@@ -155,16 +160,18 @@ class ObtainingCourtOrderGenerator extends BaseGenerator implements GeneratorInt
     }
 
     /**
-     * @param Flat $flat
      * @param FlatEvent $flatEvent
      * @return bool
      */
-    public function eventGenerate(Flat $flat, FlatEvent $flatEvent)
+    public function generateEvent(FlatEvent $flatEvent)
     {
+        /** @var Flat $flat */
+        $flat = $flatEvent->getFlat();
+
         $showData = "
-            <a href='{$this->router->generate('admin_app_flat_process_user', ['event' => $this->event->getAlias(), 'flat_id' => $flat->getId(), 'action' => 'confirm'])}'>Подтвердить получение</a><br>
-            <a href='{$this->router->generate('admin_app_flat_process_user', ['event' => $this->event->getAlias(), 'flat_id' => $flat->getId(), 'action' => 'failure'])}'>Отказ в принятии</a><br>
-            <a href='{$this->router->generate('admin_app_flat_process_user', ['event' => $this->event->getAlias(), 'flat_id' => $flat->getId(), 'action' => 'cancel'])}'>Отмена судебного приказа</a><br>
+            <a href='{$this->router->generate('admin_app_flat_process_user', ['event' => $this->event->getAlias(), 'flat_id' => $flat->getId(), 'action' => 'confirm'])}'>Подтвердить получение судебного приказа на руки</a><br>
+            <a href='{$this->router->generate('admin_app_flat_process_user', ['event' => $this->event->getAlias(), 'flat_id' => $flat->getId(), 'action' => 'failure'])}'>Подтвердить получения определения об отказе  принятии</a><br>
+            <a href='{$this->router->generate('admin_app_flat_process_user', ['event' => $this->event->getAlias(), 'flat_id' => $flat->getId(), 'action' => 'cancel'])}'>Получить определение об отмене судебного приказа</a><br>
             ";
 
         //удаляем событие "Подача заявления на выдачу судебного приказа"

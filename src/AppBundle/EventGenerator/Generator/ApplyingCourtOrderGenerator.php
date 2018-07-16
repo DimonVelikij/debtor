@@ -10,6 +10,8 @@ use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Translation\DataCollectorTranslator;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class ApplyingCourtOrderGenerator extends BaseGenerator implements GeneratorInterface
 {
@@ -19,10 +21,13 @@ class ApplyingCourtOrderGenerator extends BaseGenerator implements GeneratorInte
      * @param FlatLogger $flatLogger
      * @param Router $router
      * @param TemplateGenerator $templateGenerator
+     * @param TwigEngine $twig
+     * @param ValidatorInterface $validator
+     * @param DataCollectorTranslator $translator
      */
-    public function __construct(EntityManager $em, FlatLogger $flatLogger, Router $router, TemplateGenerator $templateGenerator)
+    public function __construct(EntityManager $em, FlatLogger $flatLogger, Router $router, TemplateGenerator $templateGenerator, TwigEngine $twig, ValidatorInterface $validator, DataCollectorTranslator $translator)
     {
-        parent::__construct($em, $flatLogger, $router, $templateGenerator);
+        parent::__construct($em, $flatLogger, $router, $templateGenerator, $twig, $validator, $translator);
     }
 
     /**
@@ -103,12 +108,14 @@ class ApplyingCourtOrderGenerator extends BaseGenerator implements GeneratorInte
     }
 
     /**
-     * @param Flat $flat
      * @param FlatEvent $flatEvent
      * @return bool
      */
-    public function eventGenerate(Flat $flat, FlatEvent $flatEvent)
+    public function generateEvent(FlatEvent $flatEvent)
     {
+        /** @var Flat $flat */
+        $flat = $flatEvent->getFlat();
+
         $showData = "<a href='{$this->router->generate('admin_app_flat_process_user', ['event' => $this->event->getAlias(), 'flat_id' => $flat->getId()])}'>Подтвердить подачу заявления судебного приказа в суд</a>";
 
         //удаляем событие "Формирование заявления на выдачу судебного приказа"

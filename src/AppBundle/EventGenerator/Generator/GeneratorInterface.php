@@ -23,11 +23,10 @@ interface GeneratorInterface
 
     /**
      * генерация события
-     * @param Flat $flat
      * @param FlatEvent $flatEvent
      * @return bool
      */
-    public function eventGenerate(Flat $flat, FlatEvent $flatEvent);
+    public function generateEvent(FlatEvent $flatEvent);
 
     /**
      * добавление следующиего генератора

@@ -25,7 +25,7 @@
          * @type {{}}
          */
         $scope.formData = {};
-        
+
         $scope.submit = function ($event, form) {
             $event.preventDefault();
 
@@ -41,7 +41,7 @@
                 }
             };
 
-            $http.post('/app_dev.php' + Initializer.Path.SubmitEvent, $scope.formData, requestConfigs)
+            $http.post('/app_dev.php' + Initializer.Path[$scope.eventAlias].Submit, $scope.formData, requestConfigs)
                 .then(function (response) {
                     if (response.data.success) {
                         //если все ок - перезагружем странцу, чтобы подтянуть новый лог

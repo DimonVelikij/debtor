@@ -53,20 +53,22 @@ class GeneratorAggregate
             $currentEventGenerator = $this->eventGenerators[$flatEvent->getEvent()->getAlias()];
 
             //если время не пришло
-            if ((new \DateTime())->diff($flatEvent->getDateGenerate())->d < $currentEventGenerator->getTimePerformAction($flatEvent)) {
+            /*if ((new \DateTime())->diff($flatEvent->getDateGenerate())->d < $currentEventGenerator->getTimePerformAction($flatEvent)) {
                 continue;
-            }
+            }*/
 
-            $this->eventGenerate($flat, $flatEvent);
+            $this->eventGenerate($flatEvent);
         }
     }
 
     /**
-     * @param Flat $flat
      * @param FlatEvent $flatEvent
      */
-    public function eventGenerate(Flat $flat, FlatEvent $flatEvent)
+    public function eventGenerate(FlatEvent $flatEvent)
     {
+        /** @var Flat $flat */
+        $flat = $flatEvent->getFlat();
+
         try {
             /** @var GeneratorInterface $currentEventGenerator */
             $currentEventGenerator = $this->eventGenerators[$flatEvent->getEvent()->getAlias()];
@@ -81,7 +83,7 @@ class GeneratorAggregate
 
             /** @var GeneratorInterface $nextEventGenerator */
             foreach ($nextEventGenerators as $nextEventGenerator) {
-                $nextEventGenerator->eventGenerate($flat, $flatEvent);
+                $nextEventGenerator->generateEvent($flatEvent);
             }
         } catch (NoTemplateEventException $e) {
             $this->flatLogger->log($flat, $e->getMessage());
@@ -95,8 +97,6 @@ class GeneratorAggregate
             $flat->setIsGenerateErrors(true);
         } catch (\Exception $e) {
             $this->flatLogger->log($flat, "Ошибка: 'File:{$e->getFile()}. Line:{$e->getLine()}. Error:{$e->getMessage()}'. Событие:{$flatEvent->getEvent()->getName()}");
-            //если ошибка выполнения программы - ставим признак ошибки у помещения
-            $flat->setIsGenerateErrors(true);
         }
 
         $this->em->persist($flat);
