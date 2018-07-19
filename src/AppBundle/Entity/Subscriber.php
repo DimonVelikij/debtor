@@ -74,28 +74,6 @@ class Subscriber
     private $dateDebt;
 
     /**
-     * сумма долга
-     * @ORM\Column(name="sum_debt", type="float", precision=10, scale=2, nullable=true)
-     *
-     * @JMS\Expose
-     * @JMS\Type("string")
-     * @JMS\SerializedName("sumDebt")
-     * @JMS\Groups({"cms-subscriber"})
-     */
-    private $sumDebt;
-
-    /**
-     * сумма пени
-     * @ORM\Column(name="sum_fine", type="float", precision=10, scale=2, nullable=true)
-     *
-     * @JMS\Expose
-     * @JMS\Type("string")
-     * @JMS\SerializedName("sumFine")
-     * @JMS\Groups({"cms-subscriber"})
-     */
-    private $sumFine;
-
-    /**
      * дата открытия лицевого счета
      * @ORM\Column(name="date_open_account", type="date", nullable=false)
      *
@@ -275,54 +253,6 @@ class Subscriber
     public function getDateDebt()
     {
         return $this->dateDebt;
-    }
-
-    /**
-     * Set sumDebt
-     *
-     * @param float $sumDebt
-     *
-     * @return Subscriber
-     */
-    public function setSumDebt($sumDebt)
-    {
-        $this->sumDebt = $sumDebt;
-
-        return $this;
-    }
-
-    /**
-     * Get sumDebt
-     *
-     * @return float
-     */
-    public function getSumDebt()
-    {
-        return $this->sumDebt;
-    }
-
-    /**
-     * Set sumFine
-     *
-     * @param float $sumFine
-     *
-     * @return Subscriber
-     */
-    public function setSumFine($sumFine)
-    {
-        $this->sumFine = $sumFine;
-
-        return $this;
-    }
-
-    /**
-     * Get sumFine
-     *
-     * @return float
-     */
-    public function getSumFine()
-    {
-        return $this->sumFine;
     }
 
     /**

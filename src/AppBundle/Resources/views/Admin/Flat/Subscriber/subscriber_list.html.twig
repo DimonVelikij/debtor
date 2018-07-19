@@ -9,8 +9,6 @@
                         <th>Телефон</th>
                         <th>E-mail</th>
                         <th>Дата заполнения</th>
-                        <th>Сумма долга, руб</th>
-                        <th>Сумма пени, руб</th>
                         <th>Дата открытия лицевого счета</th>
                         <th>Дата закрытия лицевого счета</th>
                         <th>Действия</th>
@@ -23,8 +21,6 @@
                         <td>[[ subscriber.phone ]]</td>
                         <td>[[ subscriber.email ]]</td>
                         <td>[[ subscriber.dateDebt | date ]]</td>
-                        <td>[[ subscriber.sumDebt ]]</td>
-                        <td>[[ subscriber.sumFine ]]</td>
                         <td>[[ subscriber.dateOpenAccount | date ]]</td>
                         <td>[[ subscriber.dateCloseAccount | date ]]</td>
                         <td>
@@ -40,8 +36,6 @@
                             <p>Телефон: <strong>[[ subscriber.phone ]]</strong></p>
                             <p>E-mail: <strong>[[ subscriber.email ]]</strong></p>
                             <p>Дата заполнения: <strong>[[ subscriber.dateDebt | date ]]</strong></p>
-                            <p>Сумма долга: <strong>[[ subscriber.sumDebt ]]</strong> руб</p>
-                            <p>Сумма пени: <strong>[[ subscriber.sumFine ]]</strong> руб</p>
                         </td>
                     </tr>
                 </tbody>

@@ -30,6 +30,7 @@ services:
             - [ addEventGenerator, ["@app.generator.applying_statement_claim", "applying_statement_claim"] ]
             - [ addEventGenerator, ["@app.generator.verification_case", "verification_case"] ]
             - [ addEventGenerator, ["@app.generator.legal_proceedings", "legal_proceedings"] ]
+            - [ addEventGenerator, ["@app.generator.statement_receipt_writ_execution", "statement_receipt_writ_execution"] ]
 
     # должник поступил в работу
     app.generator.entered_processing:
@@ -100,4 +101,11 @@ services:
     # судебное делопроизводство
     app.generator.legal_proceedings:
         class: AppBundle\EventGenerator\Generator\LegalProceedingsGenerator
+        parent: app.generator.base
+        calls:
+            - [ addNextEventGenerator, ["@app.generator.statement_receipt_writ_execution"] ]
+
+    # заявление на получение исполнительного листа
+    app.generator.statement_receipt_writ_execution:
+        class: AppBundle\EventGenerator\Generator\StatementReceiptWritExecutionGenerator
         parent: app.generator.base

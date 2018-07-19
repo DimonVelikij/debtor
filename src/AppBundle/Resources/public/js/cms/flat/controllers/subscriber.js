@@ -46,8 +46,6 @@
                     phone: parseInt(subscriber.phone),
                     email: subscriber.email,
                     dateDebt: $filter('date')(subscriber.dateDebt),
-                    sumDebt: subscriber.sumDebt,
-                    sumFine: subscriber.sumFine,
                     dateOpenAccount: $filter('date')(subscriber.dateOpenAccount),
                     dateCloseAccount: $filter('date')(subscriber.dateCloseAccount)
                 };
@@ -96,8 +94,6 @@
                 phone: $scope.state.currentSubscriber.phone,
                 email: $scope.state.currentSubscriber.email,
                 dateDebt: $scope.state.currentSubscriber.dateDebt ? $scope.state.currentSubscriber.dateDebt.replace(/\./g, '') : null,
-                sumDebt: parseFloat($scope.state.currentSubscriber.sumDebt),
-                sumFine: parseFloat($scope.state.currentSubscriber.sumFine),
                 dateOpenAccount: $scope.state.currentSubscriber.dateOpenAccount ? $scope.state.currentSubscriber.dateOpenAccount.replace(/\./g, '') : null,
                 dateCloseAccount: $scope.state.currentSubscriber.dateCloseAccount ? $scope.state.currentSubscriber.dateCloseAccount.replace(/\./g, '') : null
             };

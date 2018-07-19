@@ -88,8 +88,6 @@ class FlatAdminController extends CRUDController
             'phone'             =>  $data['phone'] ?? null,
             'email'             =>  $data['email'] ?? null,
             'dateDebt'          =>  $data['dateDebt'] ?? null,
-            'sumDebt'           =>  $data['sumDebt'] ?? null,
-            'sumFine'           =>  $data['sumFine'] ?? null,
             'dateOpenAccount'   =>  $data['dateOpenAccount'] ?? null,
             'dateCloseAccount'  =>  $data['dateCloseAccount'] ?? null
         ];
@@ -128,12 +126,6 @@ class FlatAdminController extends CRUDController
             ],
             'dateDebt'          =>  [
                 new Regex(['pattern'    =>  '/^([0-2]\d|3[01])(0\d|1[012])(19|20)(\d\d)$/', 'message' => 'Неверно указана дата заполнения'])
-            ],
-            'sumDebt'           =>  [
-                new Regex(['pattern'    =>  '/^\d{1,}(\.\d{1,2})?$/', 'message' =>  'Неверно указана сумма долга'])
-            ],
-            'sumFine'           =>  [
-                new Regex(['pattern'    =>  '/^\d{1,}(\.\d{1,2})?$/', 'message' =>  'Неверно указана сумма пени'])
             ],
             'dateOpenAccount'   =>  [
                 new NotBlank(['message' => 'Укажите дату открытия лицевого счета']),
@@ -181,8 +173,6 @@ class FlatAdminController extends CRUDController
             ->setPhone($input['phone'])
             ->setEmail($input['email'])
             ->setDateDebt($input['dateDebt'] ? \DateTime::createFromFormat('dmY', $input['dateDebt']) : new \DateTime())
-            ->setSumDebt($input['sumDebt'])
-            ->setSumFine($input['sumFine'])
             ->setDateOpenAccount(\DateTime::createFromFormat('dmY', $input['dateOpenAccount']))
             ->setDateCloseAccount($input['dateCloseAccount'] ? \DateTime::createFromFormat('dmY', $input['dateCloseAccount']) : null)
             ->setFlat($flat)
