@@ -183,7 +183,7 @@ class VerificationCaseGenerator extends BaseGenerator implements GeneratorInterf
                     Подтверждено принятие искового заявления к производству<br>
                     Номер дела: {$input['courtCaseNumber']}<br>
                     Судья: {$input['judge']}<br>
-                    Дата заседания: " . substr($input['dateMeeting'], 0, 2) . ":" . substr($input['dateMeeting'], 2, 2) . ":" . substr($input['dateMeeting'], 4, 4) . "<br>
+                    Дата заседания: " . substr($input['dateMeeting'], 0, 2) . "-" . substr($input['dateMeeting'], 2, 2) . "-" . substr($input['dateMeeting'], 4, 4) . "<br>
                     Время заседания: " . substr($input['timeMeeting'], 0, 2) . ":" . substr($input['timeMeeting'], 2, 2);
 
             $currentFlatEvent
