@@ -1,0 +1,61 @@
+<a data-fancybox data-src="#statement-receipt-writ-execution-layer" href="javascript:;">Подтвердить подачу заявления в ФССП</a>
+
+<div style="display: none;" id="statement-receipt-writ-execution-layer" ng-controller="EventCtrl">
+    <ng-form name="event" novalidate ng-cloak ng-init="eventAlias = '{{ event.alias }}'">
+        <script type="text/ng-init" name="Path">{{ {
+                (event.alias): {
+                    Submit: path('admin_app_flat_process_user', {event: event.alias, flat_id: flat.id, action: 'confirm'})
+                }
+            } | json_encode | raw }}</script>
+
+        <div class="form-group" ng-class="{'has-error': event.enforcementNumber.$invalid && event.enforcementNumber.$dirty}">
+            <label for="enforcementNumber" class="control-label required">№ исполнительного производства</label>
+            <input name="enforcementNumber" id="enforcementNumber" type="text" class="form-control" ng-model="formData.enforcementNumber" required backend>
+            <div class="help-block sonata-ba-field-error-messages" ng-if="event.enforcementNumber.$invalid && event.enforcementNumber.$dirty" ng-messages="event.enforcementNumber.$error">
+                <ul class="list-unstyled">
+                    <li ng-message="required"><i class="fa fa-exclamation-circle"></i>Укажите № исполнительного производства</li>
+                    <li ng-message="backend"><i class="fa fa-exclamation-circle"></i>[[ event.enforcementNumber.errorMessages.backend ]]</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="form-group" ng-class="{'has-error': event.bailiffName.$invalid && event.bailiffName.$dirty}">
+            <label for="bailiffName" class="control-label required">ФИО пристава</label>
+            <input name="bailiffName" id="bailiffName" type="text" class="form-control" ng-model="formData.bailiffName" required backend>
+            <div class="help-block sonata-ba-field-error-messages" ng-if="event.bailiffName.$invalid && event.bailiffName.$dirty" ng-messages="event.bailiffName.$error">
+                <ul class="list-unstyled">
+                    <li ng-message="required"><i class="fa fa-exclamation-circle"></i>Укажите ФИО пристава</li>
+                    <li ng-message="backend"><i class="fa fa-exclamation-circle"></i>[[ event.bailiffName.errorMessages.backend ]]</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="form-group" ng-class="{'has-error': event.bailiffContacts.$invalid && event.bailiffContacts.$dirty}">
+            <label for="bailiffContacts" class="control-label required">Контакты пристава</label>
+            <textarea name="bailiffContacts" id="bailiffContacts" class="form-control" ng-model="formData.bailiffContacts" required backend></textarea>
+            <div class="help-block sonata-ba-field-error-messages" ng-if="event.bailiffContacts.$invalid && event.bailiffContacts.$dirty" ng-messages="event.bailiffContacts.$error">
+                <ul class="list-unstyled">
+                    <li ng-message="required"><i class="fa fa-exclamation-circle"></i>Укажите контакты пристава</li>
+                    <li ng-message="backend"><i class="fa fa-exclamation-circle"></i>[[ event.bailiffContacts.errorMessages.backend ]]</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="form-group" ng-class="{'has-error': event.deadline.$invalid && event.deadline.$dirty}">
+            <label for="deadline" class="control-label required">Контрольный строк</label>
+            <input name="deadline" id="deadline" type="text" class="form-control" ng-model="formData.deadline" ui-mask="99.99.9999" ng-pattern="/^([0-2]\d|3[01])\.(0\d|1[012])\.(19|20)(\d\d)$/" required backend>
+            <div class="help-block sonata-ba-field-error-messages" ng-if="event.deadline.$invalid && event.deadline.$dirty" ng-messages="event.deadline.$error">
+                <ul class="list-unstyled">
+                    <li ng-message="pattern"><i class="fa fa-exclamation-circle"></i>Неверно указан контрольный срок</li>
+                    <li ng-message="required"><i class="fa fa-exclamation-circle"></i>Укажите контрольный срок</li>
+                    <li ng-message="backend"><i class="fa fa-exclamation-circle"></i>[[ event.deadline.errorMessages.backend ]]</li>
+                </ul>
+            </div>
+        </div>
+
+        <button class="btn btn-success" ng-click="submit($event, event)">
+            <i class="fa fa-save"></i>
+            Сохранить
+        </button>
+    </ng-form>
+</div>
