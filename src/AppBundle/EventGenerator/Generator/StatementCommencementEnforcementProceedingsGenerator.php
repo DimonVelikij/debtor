@@ -15,10 +15,10 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class StatementReceiptWritExecutionGenerator extends BaseGenerator implements GeneratorInterface
+class StatementCommencementEnforcementProceedingsGenerator extends BaseGenerator implements GeneratorInterface
 {
     /**
-     * StatementReceiptWritExecutionGenerator constructor.
+     * StatementCommencementEnforcementProceedingsGenerator constructor.
      * @param EntityManager $em
      * @param FlatLogger $flatLogger
      * @param Router $router
@@ -37,7 +37,7 @@ class StatementReceiptWritExecutionGenerator extends BaseGenerator implements Ge
      */
     public function getEventAlias()
     {
-        return 'statement_receipt_writ_execution';
+        return 'statement_commencement_enforcement_proceedings';
     }
 
     /**
@@ -46,15 +46,15 @@ class StatementReceiptWritExecutionGenerator extends BaseGenerator implements Ge
      */
     public function getTimePerformAction(FlatEvent $flatEvent)
     {
-        if ($flatEvent->getParameter('appealed', false)) {
-            //если обжаловано получение исполнительного листа - вычисляем разницу между текущим временем и датой заседания
-            /** @var \DateTime $dateMeeting */
-            $dateMeeting = $flatEvent->getParameter('dateMeeting');
+        if ($flatEvent->getParameter('deferred', false)) {
+            //если обращение в ФССП отложено - вычисляем разницу между текущим временем и датой выполнения
+            /** @var \DateTime $deadline */
+            $deadline = $flatEvent->getParameter('deadline');
 
-            return $dateMeeting->diff(new \DateTime())->days;
-        } elseif ($flatEvent->getParameter('not_appealed', false)) {
-            //если не обжаловано получение исполнительного листа - через 7 дней переходим к следующему событию
-            return 7;
+            return $deadline->diff(new \DateTime())->days;
+        } elseif ($flatEvent->getParameter('perform', false)) {
+            //если успешное обращение - через 3 дня выполняем следующее событие
+            return 3;
         } else {
             //если пользователь ничего не выбрал - ничего не делаем
             return INF;
@@ -67,12 +67,12 @@ class StatementReceiptWritExecutionGenerator extends BaseGenerator implements Ge
      */
     public function getNextEventGenerators(FlatEvent $flatEvent)
     {
-        if ($flatEvent->getParameter('appealed', false)) {
-            //если обжаловано заявление на получение исполнительного листа - снова генерим текущее событие
+        if ($flatEvent->getParameter('deferred', false)) {
+            //если обращение в ФССП отложено - снова выполняем текущее событие
             return [$this];
-        } elseif ($flatEvent->getParameter('not_appealed')) {
-            //если не обжаловано заявление на получение исполнительного листа - выполняем следующее событие
-            $generatorAlias = 'obtaining_writ_execution';
+        } elseif ($flatEvent->getParameter('perform', false)) {
+            //если обращение в ФССП успешное - выполняем следующее событие
+            $generatorAlias = 'submission_commencement_enforcement_proceedings';
         } else {
             $generatorAlias = false;
         }
@@ -113,46 +113,46 @@ class StatementReceiptWritExecutionGenerator extends BaseGenerator implements Ge
 
         if (
             !$currentFlatEvent ||
-            $flatEvent->getParameter('not_appealed', false)
-            //если заявление на получение исполнительного листа обжаловано - пользователь может снова указать дату след заседания
+            $currentFlatEvent->getParameter('perform', false)
+            //если обращение в ФССП отложено - пользователь снова может указать вид работ с дату выполнения
         ) {
             //действие уже выполнено
             return true;
         }
 
-        //если не обжаловано - переходим к следующему событию
-        if ($request->get('action') == 'not_appealed') {
-            $showData = "Решение вступилов в силу (не обжаловано)";
+        //если формирование выполнено - переходим к следующему событию
+        if ($request->get('action') == 'perform') {
+            $showData = "Выполнено формирование заявления на возбеждение исполнительного производства";
             $currentFlatEvent
+                ->setDateGenerate(new \DateTime())
                 ->setData([
-                    'show'          =>  $showData,
-                    'not_appealed'  =>  true
+                    'show'      =>  $showData,
+                    'perform'   =>  true
                 ]);
 
             $this->em->persist($currentFlatEvent);
             $this->em->flush();
 
-            //добавляем лог - не обжаловано заявление на получение исполнительного листа
+            //добавляем лог - выполнено формирование заявления на возбеждение исполнительного производства
             $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}");
 
             return true;
-        } else {//если обжаловано - заседаные переносится
+        } else {//если отложено обращение в ФССП - обращение переносится
             $data = json_decode($request->getContent(), true);
 
             //входные данные по переносу заседания
             $input = [
-                'dateMeeting'   =>  $data['dateMeeting'] ?? null,
-                'timeMeeting'   =>  $data['timeMeeting'] ?? null
+                'typeEvent' =>  $data['typeEvent'] ?? null,
+                'deadline'  =>  $data['deadline'] ?? null
             ];
 
             $constraints = [
-                'dateMeeting'       =>  [
-                    new NotBlank(['message' =>  'Укажите дату заседания']),
-                    new Regex(['pattern'    => '/^([0-2]\d|3[01])(0\d|1[012])(19|20)(\d\d)$/', 'message' => 'Неверно указана дата заседания'])
+                'typeEvent'       =>  [
+                    new NotBlank(['message' =>  'Укажите плановый вид мероприятия'])
                 ],
-                'timeMeeting'       =>  [
-                    new NotBlank(['message' =>  'Укажите время заседания']),
-                    new Regex(['pattern'    =>  '/^([0,1]\d|2[0-3])([0-4]\d|5[0-9])$/', 'message' => 'Неверно указано время заседания'])
+                'deadline'       =>  [
+                    new NotBlank(['message' =>  'Укажите дату выполнения']),
+                    new Regex(['pattern'    => '/^([0-2]\d|3[01])(0\d|1[012])(19|20)(\d\d)$/', 'message' => 'Неверно указана дата выполнения'])
                 ]
             ];
 
@@ -174,22 +174,23 @@ class StatementReceiptWritExecutionGenerator extends BaseGenerator implements Ge
             }
 
             $showData = "
-                Решение не вступило в силу (обжаловано)<br>
-                Дата заседания: " . substr($input['dateMeeting'], 0, 2) . "-" . substr($input['dateMeeting'], 2, 2) . "-" . substr($input['dateMeeting'], 4, 4) . "<br>
-                Время заседания: " . substr($input['timeMeeting'], 0, 2) . ":" . substr($input['timeMeeting'], 2, 2);
+                Обращение в ФССП отложено<br>
+                Плановый вид мероприятия: {$input['typeEvent']}<br>
+                Дата выполнения: " . substr($input['deadline'], 0, 2) . "-" . substr($input['deadline'], 2, 2) . "-" . substr($input['deadline'], 4, 4);
 
             $currentFlatEvent
+                ->setDateGenerate(new \DateTime())
                 ->setData([
-                    'appealed'          =>  true,
-                    'dateMeeting'       =>  \DateTime::createFromFormat('dmY', $input['dateMeeting']),
-                    'timeMeeting'       =>  $input['timeMeeting'],
-                    'show'              =>  $showData
+                   'show'       =>  $showData,
+                    'deferred'  =>  true,
+                    'typeEvent' =>  $input['typeEvent'],
+                    'deadline'  =>  \DateTime::createFromFormat('dmY', $input['deadline'])
                 ]);
 
             $this->em->persist($currentFlatEvent);
             $this->em->flush();
 
-            //добавляем лог - обжаловано заявление на получение исполнительного листа
+            //добавляем лог - отложено обращение в ФССП
             $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}");
 
             return [
@@ -212,22 +213,22 @@ class StatementReceiptWritExecutionGenerator extends BaseGenerator implements Ge
 
         //если не было никаких действий по этому событию - генерируем документ
         if (
-            !$flatEvent->getParameter('appealed', false) &&
-            !$flatEvent->getParameter('not_appealed', false)
+            !$flatEvent->getParameter('perform') &&
+            !$flatEvent->getParameter('deferred')
         ) {
             /** @var array $documentLinks */
             $documentLinks = $this->templateGenerator->generateTemplate($flat, $this->event);
 
-            $showData = $this->twig->render('@App/Admin/Flat/EventLayer/statement_receipt_writ_execution_layer.html.twig', [
+            $showData = $this->twig->render('@App/Admin/Flat/EventLayer/statement_commencement_enforcement_proceedings_layer.html.twig', [
                 'flat'              =>  $flat,
                 'event'             =>  $this->event,
                 'document_links'    =>  $documentLinks
             ]);
 
-            //удаляем событие "Судебное делопроизводство"
+            //удаляем событие "Получение исполнительного листа" или "Получение судебного приказа"
             $this->em->remove($flatEvent);
 
-            //добавляем событие "Заявление на получение исполнительного листа"
+            //добавляем событие "Заявление на возбуждение сполнительного производства"
             $executeFlatEvent = new FlatEvent();
             $executeFlatEvent
                 ->setFlat($flat)
@@ -240,8 +241,8 @@ class StatementReceiptWritExecutionGenerator extends BaseGenerator implements Ge
             $this->em->persist($executeFlatEvent);
             $this->em->flush();
         } else {
-            //если обжаловано - снова генерируем это же событие только без генерации документов
-            $showData = $this->twig->render('@App/Admin/Flat/EventLayer/statement_receipt_writ_execution_layer.html.twig', [
+            //если обращение было отложено - снова генерируем это же событие только без генерации документа
+            $showData = $this->twig->render('@App/Admin/Flat/EventLayer/statement_commencement_enforcement_proceedings_layer.html.twig', [
                 'flat'              =>  $flat,
                 'event'             =>  $this->event,
                 'document_links'    =>  []
@@ -255,7 +256,7 @@ class StatementReceiptWritExecutionGenerator extends BaseGenerator implements Ge
             $this->em->flush();
         }
 
-        //добавляем лог - сгенерировалось событие "Заявление на получение исполнительного листа"
+        //добавляем лог - сгенерировалось событие "Заявление на возбуждение сполнительного производства"
         $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}");
 
         return true;

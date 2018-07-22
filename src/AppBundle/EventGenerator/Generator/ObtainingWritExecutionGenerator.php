@@ -44,7 +44,7 @@ class ObtainingWritExecutionGenerator extends BaseGenerator implements Generator
      */
     public function getTimePerformAction(FlatEvent $flatEvent)
     {
-        return 7;
+        return 1;
     }
 
     /**

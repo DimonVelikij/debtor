@@ -32,6 +32,7 @@ services:
             - [ addEventGenerator, ["@app.generator.legal_proceedings", "legal_proceedings"] ]
             - [ addEventGenerator, ["@app.generator.statement_receipt_writ_execution", "statement_receipt_writ_execution"] ]
             - [ addEventGenerator, ["@app.generator.obtaining_writ_execution", "obtaining_writ_execution"] ]
+            - [ addEventGenerator, ["@app.generator.statement_commencement_enforcement_proceedings", "statement_commencement_enforcement_proceedings"] ]
 
     # должник поступил в работу
     app.generator.entered_processing:
@@ -75,7 +76,7 @@ services:
         calls:
             - [ addNextEventGenerator, ["@app.generator.formation_court_order" ] ]
             - [ addNextEventGenerator, ["@app.generator.formation_statement_claim"] ]
-            # добавить генератор "Заявление на возбуждение исполнительного производства"
+            - [ addNextEventGenerator, ["@app.generator.statement_commencement_enforcement_proceedings"] ]
 
     # формирование искового заявления
     app.generator.formation_statement_claim:
@@ -116,4 +117,11 @@ services:
     # получение исполнительного листа
     app.generator.obtaining_writ_execution:
         class: AppBundle\EventGenerator\Generator\ObtainingWritExecutionGenerator
+        parent: app.generator.base
+        calls:
+            - [ addNextEventGenerator, ["@app.generator.statement_commencement_enforcement_proceedings"] ]
+
+    # заявление на возбуждение исполнительного производства
+    app.generator.statement_commencement_enforcement_proceedings:
+        class: AppBundle\EventGenerator\Generator\StatementCommencementEnforcementProceedingsGenerator
         parent: app.generator.base
