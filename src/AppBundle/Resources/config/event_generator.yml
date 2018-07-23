@@ -34,6 +34,9 @@ services:
             - [ addEventGenerator, ["@app.generator.obtaining_writ_execution", "obtaining_writ_execution"] ]
             - [ addEventGenerator, ["@app.generator.statement_commencement_enforcement_proceedings", "statement_commencement_enforcement_proceedings"] ]
             - [ addEventGenerator, ["@app.generator.submission_commencement_enforcement_proceedings", "submission_commencement_enforcement_proceedings"] ]
+            - [ addEventGenerator, ["@app.generator.control_enforcement_proceedings", "control_enforcement_proceedings"] ]
+            - [ addEventGenerator, ["@app.generator.statement_preparation_fssp", "statement_preparation_fssp"] ]
+            - [ addEventGenerator, ["@app.generator.applying_statement_fssp", "applying_statement_fssp"] ]
 
     # должник поступил в работу
     app.generator.entered_processing:
@@ -133,4 +136,26 @@ services:
     app.generator.submission_commencement_enforcement_proceedings:
         class: AppBundle\EventGenerator\Generator\SubmissionCommencementEnforcementProceedingsGenerator
         parent: app.generator.base
+        calls:
+            - [ addNextEventGenerator, ["@app.generator.control_enforcement_proceedings"] ]
 
+    # контроль исполнительного производства
+    app.generator.control_enforcement_proceedings:
+        class: AppBundle\EventGenerator\Generator\ControlEnforcementProceedingsGenerator
+        parent: app.generator.base
+        calls:
+            - [ addNextEventGenerator, ["@app.generator.statement_preparation_fssp"] ]
+
+    # подготовка заявления на бездействие ФССП
+    app.generator.statement_preparation_fssp:
+        class: AppBundle\EventGenerator\Generator\StatementPreparationFSSPGenerator
+        parent: app.generator.base
+        calls:
+            - [ addNextEventGenerator, ["@app.generator.applying_statement_fssp"] ]
+
+    # подача заявления на бездействие ФССП
+    app.generator.applying_statement_fssp:
+        class: AppBundle\EventGenerator\Generator\ApplyingStatementFSSPGenerator
+        parent: app.generator.base
+        calls:
+            - [ addNextEventGenerator, ["@app.generator.control_enforcement_proceedings"] ]

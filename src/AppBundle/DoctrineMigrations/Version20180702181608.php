@@ -30,8 +30,8 @@ class Version20180702181608 extends AbstractMigration
         $this->addSql("INSERT INTO events (id, name, alias, template, template_fields, type) VALUES (NULL, 'Заявление на возбуждение исполнительного производства', 'statement_commencement_enforcement_proceedings', NULL, NULL, 'performance')");
         $this->addSql("INSERT INTO events (id, name, alias, template, template_fields, type) VALUES (NULL, 'Подача заявления на возбуждение исполнительного производства', 'submission_commencement_enforcement_proceedings', NULL, NULL, 'performance')");
         $this->addSql("INSERT INTO events (id, name, alias, template, template_fields, type) VALUES (NULL, 'Контроль исполнительного производства', 'control_enforcement_proceedings', NULL, NULL, 'performance')");
-        $this->addSql("INSERT INTO events (id, name, alias, template, template_fields, type) VALUES (NULL, 'Подготовка заявления на бездействие ФССП', 'statement_preparation_FSSP', NULL, NULL, 'performance')");
-        $this->addSql("INSERT INTO events (id, name, alias, template, template_fields, type) VALUES (NULL, 'Подача заявления на бездействие ФССП', 'applying_statement_FSSP', NULL, NULL, 'performance')");
+        $this->addSql("INSERT INTO events (id, name, alias, template, template_fields, type) VALUES (NULL, 'Подготовка заявления на бездействие ФССП', 'statement_preparation_fssp', NULL, NULL, 'performance')");
+        $this->addSql("INSERT INTO events (id, name, alias, template, template_fields, type) VALUES (NULL, 'Подача заявления на бездействие ФССП', 'applying_statement_fssp', NULL, NULL, 'performance')");
 
     }
 
