@@ -547,6 +547,32 @@ class FlatAdminController extends CRUDController
     }
 
     /**
+     * выполнить действие не дожидаясь времени выполнения
+     * @param Request $request
+     * @param $event
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function performAction(Request $request, $event)
+    {
+        $this->get('app.generator.' . $event)->perform($request);
+
+        return $this->redirect($request->headers->get('referer') ?: $this->generateUrl('admin_app_flat_list'));
+    }
+
+    /**
+     * пропустить действие не дожидаясь времени выполнения
+     * @param Request $request
+     * @param $event
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function missAction(Request $request, $event)
+    {
+        $this->get('app.generator.' . $event)->miss($request);
+
+        return $this->redirect($request->headers->get('referer') ?: $this->generateUrl('admin_app_flat_list'));
+    }
+
+    /**
      * валидация формы
      * @param array $input
      * @return array

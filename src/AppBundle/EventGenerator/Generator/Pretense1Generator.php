@@ -99,4 +99,9 @@ class Pretense1Generator extends BaseGenerator implements GeneratorInterface
 
         return true;
     }
+
+    public function getNextEvent(FlatEvent $flatEvent)
+    {
+        // TODO: Implement getNextEvent() method.
+    }
 }

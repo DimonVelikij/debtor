@@ -16,5 +16,6 @@ class AppExtension extends Extension
         $loader->load('validator.yml');
         $loader->load('service.yml');
         $loader->load('event_generator.yml');
+        $loader->load('twig.yml');
     }
 }

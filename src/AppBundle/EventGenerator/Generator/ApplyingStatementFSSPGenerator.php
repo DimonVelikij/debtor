@@ -126,4 +126,9 @@ class ApplyingStatementFSSPGenerator extends BaseGenerator implements GeneratorI
 
         return true;
     }
+
+    public function getNextEvent(FlatEvent $flatEvent)
+    {
+        // TODO: Implement getNextEvent() method.
+    }
 }

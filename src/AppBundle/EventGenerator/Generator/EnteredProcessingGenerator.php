@@ -2,7 +2,6 @@
 
 namespace AppBundle\EventGenerator\Generator;
 
-use AppBundle\Entity\Flat;
 use AppBundle\Entity\FlatEvent;
 use AppBundle\Service\FlatLogger;
 use AppBundle\Service\TemplateGenerator;
@@ -66,5 +65,14 @@ class EnteredProcessingGenerator extends BaseGenerator implements GeneratorInter
         //у первого события ничего не делаем
         //оно выполнилось при добавлении помещения
         return true;
+    }
+
+    /**
+     * @param FlatEvent $flatEvent
+     * @return \AppBundle\Entity\Event|null|object
+     */
+    public function getNextEvent(FlatEvent $flatEvent)
+    {
+        return $this->em->getRepository('AppBundle:Event')->findOneBy(['alias' => 'pretense1']);
     }
 }

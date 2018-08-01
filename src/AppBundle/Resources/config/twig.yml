@@ -1,0 +1,9 @@
+services:
+
+    # расширение для работы с событиями
+    app.twig.event:
+        class: AppBundle\Twig\EventExtension
+        arguments:
+            - "@app.generator.aggregate"
+        tags:
+            - { name: twig.extension }

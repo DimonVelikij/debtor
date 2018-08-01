@@ -3,6 +3,7 @@
 namespace AppBundle\Admin;
 
 use AppBundle\Admin\traits\UserTrait;
+use AppBundle\Entity\Event;
 use AppBundle\Entity\Flat;
 use AppBundle\Entity\FlatEvent;
 use AppBundle\Entity\User;
@@ -65,6 +66,8 @@ class FlatAdmin extends AbstractAdmin
             ->add('logs', 'logs/{flat_id}')
             ->add('read_logs', 'read_logs/{flat_id}')
             ->add('process_user', 'process_user/{event}')
+            ->add('perform', 'perform/{event}')
+            ->add('miss', 'miss/{event}')
             ->remove('batch')
             ->remove('export')
             ->remove('delete');
@@ -318,11 +321,13 @@ class FlatAdmin extends AbstractAdmin
             $flat->setIsGenerateErrors(false);
 
             if (!$flat->getId()) {//если помещение новое
+                /** @var Event $event */
+                $event = $em->getRepository('AppBundle:Event')->findOneBy(['alias' => 'entered_processing']);
                 //создаем событие "поступил в работу"
                 $flatEvent = new FlatEvent();
                 $flatEvent
                     ->setFlat($flat)
-                    ->setEvent($em->getRepository('AppBundle:Event')->findOneBy(['alias' => 'entered_processing']))
+                    ->setEvent($event)
                     ->setDateGenerate(new \DateTime())
                     ->setData(['show' => '']);
 
@@ -330,7 +335,7 @@ class FlatAdmin extends AbstractAdmin
 
                 //пишем лог
                 //если добавлять через метод log - будет ошибка вставки лога, т.к. помещения еще не существует
-                $flat->addLog($flatLogger->createLog($flat, "<b>Должник поступил в работу</b>"));
+                $flat->addLog($flatLogger->createLog($flat, "<b>{$event->getName()}</b>"));
             }
         });
     }

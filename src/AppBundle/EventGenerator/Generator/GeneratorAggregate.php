@@ -33,6 +33,15 @@ class GeneratorAggregate
     }
 
     /**
+     * @param $eventAlias
+     * @return GeneratorInterface|null
+     */
+    public function getEventGenerator($eventAlias)
+    {
+        return $this->eventGenerators[$eventAlias] ?? null;
+    }
+
+    /**
      * @param GeneratorInterface $generator
      * @param $generatorAlias
      */
@@ -57,14 +66,14 @@ class GeneratorAggregate
                 continue;
             }*/
 
-            $this->eventGenerate($flatEvent);
+            $this->generateEvent($flatEvent);
         }
     }
 
     /**
      * @param FlatEvent $flatEvent
      */
-    public function eventGenerate(FlatEvent $flatEvent)
+    public function generateEvent(FlatEvent $flatEvent)
     {
         /** @var Flat $flat */
         $flat = $flatEvent->getFlat();

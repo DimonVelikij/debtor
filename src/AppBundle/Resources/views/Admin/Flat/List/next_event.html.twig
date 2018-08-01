@@ -1,21 +1,19 @@
 {% extends admin.getTemplate('base_list_field') %}
 
 {% block field %}
-    {% if not object.archive %}
+    {% if object.archive %}
+        <span class="label label-success">в архиве</span>
+    {% else %}
         {% if object.flatsEvents | length %}
             {% for flatEvent in object.flatsEvents %}
-                {#если переход между неюридическими и юридическими#}
-                {#{% if flatEvent.event.parent and not flatEvent.event.isJudicial and flatEvent.event.parent.isJudicial %}
-                    <span>{{ flatEvent.event.name ~ '(' ~ flatEvent.dateGenerate | date_modify('+' ~ flatEvent.getParameter('time_perform_action') ~ ' day') | date('d.m.Y') ~ ')' }}</span>
-                    <a href="">Пропустить</a>
-                    <br>
+                {% set next_event = get_next_event(flatEvent) %}
+                {% if next_event %}
+                    <span><b>{{ next_event.event.name }}({{ next_event.dateGenerate.format('d.m.Y') }})</b></span>
+                    <a href="{{ path('admin_app_flat_perform', {flat_id: flatEvent.flat.id, event: flatEvent.event.alias}) }}">Выполнить</a>
+                    <a href="{{ path('admin_app_flat_miss', {flat_id: flatEvent.flat.id, event: flatEvent.event.alias}) }}">Пропустить</a>
+                {% else %}
+                    <span class="label label-success">ожидает действий пользователя</span>
                 {% endif %}
-                #}{#если у текущего события есть родительское#}{#
-                {% if flatEvent.event.parent %}
-                    <span>{{ flatEvent.event.parent.name ~ ' (' ~ flatEvent.dateGenerate | date_modify('+' ~ flatEvent.event.timePerformAction ~ ' day') | date('d.m.Y') ~ ')' }}</span>
-                    <a href="">Пропустить</a>
-                    <br>
-                {% endif %}#}
             {% endfor %}
         {% else %}
             <span class="label label-success">отсутствует</span>

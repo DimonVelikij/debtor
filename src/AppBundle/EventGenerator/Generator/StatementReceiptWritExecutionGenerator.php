@@ -260,4 +260,9 @@ class StatementReceiptWritExecutionGenerator extends BaseGenerator implements Ge
 
         return true;
     }
+
+    public function getNextEvent(FlatEvent $flatEvent)
+    {
+        // TODO: Implement getNextEvent() method.
+    }
 }

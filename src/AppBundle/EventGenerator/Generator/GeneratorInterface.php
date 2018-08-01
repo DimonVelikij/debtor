@@ -2,7 +2,7 @@
 
 namespace AppBundle\EventGenerator\Generator;
 
-use AppBundle\Entity\Flat;
+use AppBundle\Entity\Event;
 use AppBundle\Entity\FlatEvent;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -47,4 +47,25 @@ interface GeneratorInterface
      * @return bool
      */
     public function processUserAction(Request $request);
+
+    /**
+     * получение следующего события
+     * @param FlatEvent $flatEvent
+     * @return Event|null
+     */
+    public function getNextEvent(FlatEvent $flatEvent);
+
+    /**
+     * пропустить событие
+     * @param Request $request
+     * @return bool
+     */
+    public function miss(Request $request);
+
+    /**
+     * выполнить событие не дожидаясь времени выполнения
+     * @param Request $request
+     * @return bool
+     */
+    public function perform(Request $request);
 }

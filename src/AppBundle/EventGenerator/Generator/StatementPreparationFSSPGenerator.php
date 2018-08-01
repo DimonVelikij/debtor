@@ -99,4 +99,9 @@ class StatementPreparationFSSPGenerator extends BaseGenerator implements Generat
 
         return true;
     }
+
+    public function getNextEvent(FlatEvent $flatEvent)
+    {
+        // TODO: Implement getNextEvent() method.
+    }
 }

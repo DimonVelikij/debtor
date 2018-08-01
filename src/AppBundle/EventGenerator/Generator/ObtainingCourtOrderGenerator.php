@@ -198,4 +198,9 @@ class ObtainingCourtOrderGenerator extends BaseGenerator implements GeneratorInt
 
         return true;
     }
+
+    public function getNextEvent(FlatEvent $flatEvent)
+    {
+        // TODO: Implement getNextEvent() method.
+    }
 }

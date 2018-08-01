@@ -139,4 +139,9 @@ class ApplyingStatementClaimGenerator extends BaseGenerator implements Generator
 
         return true;
     }
+
+    public function getNextEvent(FlatEvent $flatEvent)
+    {
+        // TODO: Implement getNextEvent() method.
+    }
 }

@@ -261,4 +261,9 @@ class StatementCommencementEnforcementProceedingsGenerator extends BaseGenerator
 
         return true;
     }
+
+    public function getNextEvent(FlatEvent $flatEvent)
+    {
+        // TODO: Implement getNextEvent() method.
+    }
 }
