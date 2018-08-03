@@ -44,10 +44,10 @@ class ControlEnforcementProceedingsGenerator extends BaseGenerator implements Ge
      */
     public function getTimePerformAction(FlatEvent $flatEvent)
     {
-        if ($flatEvent->getParameter('process', false)) {
+        if ($flatEvent->getParameter('process')) {
             //если в процессе - через 1 день
             return 1;
-        } elseif ($flatEvent->getParameter('inactivity', false)) {
+        } elseif ($flatEvent->getParameter('inactivity')) {
             //если бездействие ФССП - через 1 день
             return 1;
         } else {
@@ -62,7 +62,7 @@ class ControlEnforcementProceedingsGenerator extends BaseGenerator implements Ge
      */
     public function getNextEventGenerators(FlatEvent $flatEvent)
     {
-        if ($flatEvent->getParameter('process', false)) {
+        if ($flatEvent->getParameter('process')) {
             return [$this];
         } elseif ($flatEvent->getParameter('inactivity')) {
             $generatorAlias = 'statement_preparation_fssp';
@@ -90,24 +90,13 @@ class ControlEnforcementProceedingsGenerator extends BaseGenerator implements Ge
      */
     public function processUserAction(Request $request)
     {
-        /** @var Flat $flat */
-        $flat = $this->em->getRepository('AppBundle:Flat')->find((int)$request->get('flat_id'));
-
-        //находим текущее событие
-        $currentFlatEvent = null;
-
-        /** @var FlatEvent $flatEvent */
-        foreach ($flat->getFlatsEvents() as $flatEvent) {
-            if ($flatEvent->getEvent()->getAlias() == $this->getEventAlias()) {
-                $currentFlatEvent = $flatEvent;
-                break;
-            }
-        }
+        /** @var FlatEvent|null $currentFlatEvent */
+        $currentFlatEvent = $this->getFlatEvent((int)$request->get('flat_id'));
 
         if (
             !$currentFlatEvent ||
-            $currentFlatEvent->getParameter('inactivity', false) ||
-            $currentFlatEvent->getParameter('finish', false)
+            $currentFlatEvent->getParameter('inactivity') ||
+            $currentFlatEvent->getParameter('finish')
         ) {
             //действие уже выполнено
             return true;
@@ -147,7 +136,7 @@ class ControlEnforcementProceedingsGenerator extends BaseGenerator implements Ge
                 break;
             case 'finish':
                 //работа с должником прекращается
-                foreach ($flat->getFlatsEvents() as $flatEvent) {
+                foreach ($currentFlatEvent->getFlat()->getFlatsEvents() as $flatEvent) {
                     $this->em->remove($flatEvent);
                 }
                 $this->em->flush();
@@ -155,7 +144,7 @@ class ControlEnforcementProceedingsGenerator extends BaseGenerator implements Ge
         }
 
         //добавляем лог - либо проводится, либо бездействие, либо окончено
-        $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}");
+        $this->flatLogger->log($currentFlatEvent->getFlat(), "<b>{$this->event->getName()}</b><br>{$showData}");
 
         return true;
     }
@@ -198,8 +187,18 @@ class ControlEnforcementProceedingsGenerator extends BaseGenerator implements Ge
         return true;
     }
 
+    /**
+     * @param FlatEvent $flatEvent
+     * @return \AppBundle\Entity\Event|null|object
+     */
     public function getNextEvent(FlatEvent $flatEvent)
     {
-        // TODO: Implement getNextEvent() method.
+        if ($flatEvent->getParameter('process')) {
+            return $this->event;
+        } elseif ($flatEvent->getParameter('inactivity')) {
+            return $this->em->getRepository('AppBundle:Event')->findOneBy(['alias' => 'statement_preparation_fssp']);
+        } else {
+            return null;
+        }
     }
 }

@@ -45,7 +45,7 @@ class ApplyingStatementClaimGenerator extends BaseGenerator implements Generator
     public function getTimePerformAction(FlatEvent $flatEvent)
     {
         //если подача искового заявления подтверждена, то можно приступать к следующему событию, иначе нельзя
-        return $flatEvent->getParameter('confirm', false) ? 7 : INF;
+        return $flatEvent->getParameter('confirm') ? 7 : INF;
     }
 
     /**
@@ -54,7 +54,7 @@ class ApplyingStatementClaimGenerator extends BaseGenerator implements Generator
      */
     public function getNextEventGenerators(FlatEvent $flatEvent)
     {
-        return $flatEvent->getParameter('confirm', false) ?
+        return $flatEvent->getParameter('confirm') ?
             $this->nextEventGenerators :
             [];
     }
@@ -65,23 +65,12 @@ class ApplyingStatementClaimGenerator extends BaseGenerator implements Generator
      */
     public function processUserAction(Request $request)
     {
-        /** @var Flat $flat */
-        $flat = $this->em->getRepository('AppBundle:Flat')->find((int)$request->get('flat_id'));
-
-        //находим текущее событие
-        $currentFlatEvent = null;
-
-        /** @var FlatEvent $flatEvent */
-        foreach ($flat->getFlatsEvents() as $flatEvent) {
-            if ($flatEvent->getEvent()->getAlias() == $this->getEventAlias()) {
-                $currentFlatEvent = $flatEvent;
-                break;
-            }
-        }
+        /** @var FlatEvent|null $currentFlatEvent */
+        $currentFlatEvent = $this->getFlatEvent((int)$request->get('flat_id'));
 
         if (
             !$currentFlatEvent ||
-            $currentFlatEvent->getParameter('confirm', false)
+            $currentFlatEvent->getParameter('confirm')
         ) {
             //уже подтверждено
             return true;
@@ -101,7 +90,7 @@ class ApplyingStatementClaimGenerator extends BaseGenerator implements Generator
         $this->em->flush();
 
         //добавляем лог - что все подтверждения подача заявления на СП в суд
-        $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}");
+        $this->flatLogger->log($currentFlatEvent->getFlat(), "<b>{$this->event->getName()}</b><br>{$showData}");
 
         return true;
     }
@@ -127,8 +116,7 @@ class ApplyingStatementClaimGenerator extends BaseGenerator implements Generator
             ->setDateGenerate(new \DateTime())
             ->setEvent($this->event)
             ->setData([
-                'show'      =>  $showData,
-                'confirm'   =>  false//не подтверждено
+                'show'      =>  $showData
             ]);
 
         $this->em->persist($executeFlatEvent);
@@ -140,8 +128,14 @@ class ApplyingStatementClaimGenerator extends BaseGenerator implements Generator
         return true;
     }
 
+    /**
+     * @param FlatEvent $flatEvent
+     * @return \AppBundle\Entity\Event|null|object
+     */
     public function getNextEvent(FlatEvent $flatEvent)
     {
-        // TODO: Implement getNextEvent() method.
+        return $flatEvent->getParameter('confirm') ?
+            $this->em->getRepository('AppBundle:Event')->findOneBy(['alias' => 'verification_case']) :
+            null;
     }
 }

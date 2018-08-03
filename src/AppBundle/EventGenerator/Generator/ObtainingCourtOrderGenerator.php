@@ -44,10 +44,10 @@ class ObtainingCourtOrderGenerator extends BaseGenerator implements GeneratorInt
      */
     public function getTimePerformAction(FlatEvent $flatEvent)
     {
-        if ($flatEvent->getParameter('confirm', false) || $flatEvent->getParameter('cancel', false)) {
+        if ($flatEvent->getParameter('confirm') || $flatEvent->getParameter('cancel')) {
             //если пользователь подтвердил или отменил получение приказа - выполняем следующее событие через 1 день
             return 1;
-        } elseif ($flatEvent->getParameter('failure', false)) {
+        } elseif ($flatEvent->getParameter('failure')) {
             //если пользователю отказано - выполняем следующее событие сразу при следующей генерации
             return 0;
         } else {
@@ -62,13 +62,13 @@ class ObtainingCourtOrderGenerator extends BaseGenerator implements GeneratorInt
      */
     public function getNextEventGenerators(FlatEvent $flatEvent)
     {
-        if ($flatEvent->getParameter('confirm', false)) {
+        if ($flatEvent->getParameter('confirm')) {
             //если подтверждено получение приказа - следующее событие "Заявление на возбуждение исполнительного производства"
             $generatorAlias = 'statement_commencement_enforcement_proceedings';
-        } elseif ($flatEvent->getParameter('failure', false)) {
+        } elseif ($flatEvent->getParameter('failure')) {
             //если отказано получение приказа - следующее событие "Формирование заявления на выдачу судебного приказа"
             $generatorAlias = 'formation_court_order';
-        } elseif ($flatEvent->getParameter('cancel', false)) {
+        } elseif ($flatEvent->getParameter('cancel')) {
             //если отменено получение приказа - следующее событие "Формирование искового заявления"
             $generatorAlias = 'formation_statement_claim';
         } else {
@@ -96,25 +96,14 @@ class ObtainingCourtOrderGenerator extends BaseGenerator implements GeneratorInt
      */
     public function processUserAction(Request $request)
     {
-        /** @var Flat $flat */
-        $flat = $this->em->getRepository('AppBundle:Flat')->find((int)$request->get('flat_id'));
-
-        //находим текущее событие
-        $currentFlatEvent = null;
-
-        /** @var FlatEvent $flatEvent */
-        foreach ($flat->getFlatsEvents() as $flatEvent) {
-            if ($flatEvent->getEvent()->getAlias() == $this->getEventAlias()) {
-                $currentFlatEvent = $flatEvent;
-                break;
-            }
-        }
+        /** @var FlatEvent|null $currentFlatEvent */
+        $currentFlatEvent = $this->getFlatEvent((int)$request->get('flat_id'));
 
         if(
             !$currentFlatEvent ||
-            $currentFlatEvent->getParameter('confirm', false) ||
-            $currentFlatEvent->getParameter('failure', false) ||
-            $currentFlatEvent->getParameter('cancel', false)
+            $currentFlatEvent->getParameter('confirm') ||
+            $currentFlatEvent->getParameter('failure') ||
+            $currentFlatEvent->getParameter('cancel')
         ) {
             //действие уже выполнено
             return true;
@@ -154,7 +143,7 @@ class ObtainingCourtOrderGenerator extends BaseGenerator implements GeneratorInt
         $this->em->flush();
 
         //добавляем лог - либо подтверждение, либо отказ, либо отмена судебного приказа
-        $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}");
+        $this->flatLogger->log($currentFlatEvent->getFlat(), "<b>{$this->event->getName()}</b><br>{$showData}");
 
         return true;
     }
@@ -184,10 +173,7 @@ class ObtainingCourtOrderGenerator extends BaseGenerator implements GeneratorInt
             ->setDateGenerate(new \DateTime())
             ->setEvent($this->event)
             ->setData([
-                'show'      =>  $showData,
-                'confirm'   =>  false,//не подтверждено
-                'failure'   =>  false,//не отказано
-                'cancel'    =>  false//не отменено
+                'show'      =>  $showData
             ]);
 
         $this->em->persist($executeFlatEvent);
@@ -199,8 +185,21 @@ class ObtainingCourtOrderGenerator extends BaseGenerator implements GeneratorInt
         return true;
     }
 
+    /**
+     * @param FlatEvent $flatEvent
+     * @return \AppBundle\Entity\Event|null|object
+     */
     public function getNextEvent(FlatEvent $flatEvent)
     {
-        // TODO: Implement getNextEvent() method.
+        $eventRepository = $this->em->getRepository('AppBundle:Event');
+        if ($flatEvent->getParameter('failure')) {
+            return $eventRepository->findOneBy(['alias' => 'formation_court_order']);
+        } elseif ($flatEvent->getParameter('cancel')) {
+            return $eventRepository->findOneBy(['alias' =>  'formation_statement_claim']);
+        } elseif ($flatEvent->getParameter('confirm')) {
+            return $eventRepository->findOneBy(['alias'  =>  'statement_commencement_enforcement_proceedings']);
+        } else {
+            return null;
+        }
     }
 }

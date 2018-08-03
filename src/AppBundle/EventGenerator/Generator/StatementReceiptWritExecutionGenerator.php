@@ -46,13 +46,13 @@ class StatementReceiptWritExecutionGenerator extends BaseGenerator implements Ge
      */
     public function getTimePerformAction(FlatEvent $flatEvent)
     {
-        if ($flatEvent->getParameter('appealed', false)) {
+        if ($flatEvent->getParameter('appealed')) {
             //если обжаловано получение исполнительного листа - вычисляем разницу между текущим временем и датой заседания
             /** @var \DateTime $dateMeeting */
             $dateMeeting = $flatEvent->getParameter('dateMeeting');
 
             return $dateMeeting->diff(new \DateTime())->days;
-        } elseif ($flatEvent->getParameter('not_appealed', false)) {
+        } elseif ($flatEvent->getParameter('not_appealed')) {
             //если не обжаловано получение исполнительного листа - через 7 дней переходим к следующему событию
             return 7;
         } else {
@@ -67,7 +67,7 @@ class StatementReceiptWritExecutionGenerator extends BaseGenerator implements Ge
      */
     public function getNextEventGenerators(FlatEvent $flatEvent)
     {
-        if ($flatEvent->getParameter('appealed', false)) {
+        if ($flatEvent->getParameter('appealed')) {
             //если обжаловано заявление на получение исполнительного листа - снова генерим текущее событие
             return [$this];
         } elseif ($flatEvent->getParameter('not_appealed')) {
@@ -97,23 +97,12 @@ class StatementReceiptWritExecutionGenerator extends BaseGenerator implements Ge
      */
     public function processUserAction(Request $request)
     {
-        /** @var Flat $flat */
-        $flat = $this->em->getRepository('AppBundle:Flat')->find((int)$request->get('flat_id'));
-
-        //находим текущее событие
-        $currentFlatEvent = null;
-
-        /** @var FlatEvent $flatEvent */
-        foreach ($flat->getFlatsEvents() as $flatEvent) {
-            if ($flatEvent->getEvent()->getAlias() == $this->getEventAlias()) {
-                $currentFlatEvent = $flatEvent;
-                break;
-            }
-        }
+        /** @var FlatEvent|null $currentFlatEvent */
+        $currentFlatEvent = $this->getFlatEvent((int)$request->get('flat_id'));
 
         if (
             !$currentFlatEvent ||
-            $flatEvent->getParameter('not_appealed', false)
+            $currentFlatEvent->getParameter('not_appealed')
             //если заявление на получение исполнительного листа обжаловано - пользователь может снова указать дату след заседания
         ) {
             //действие уже выполнено
@@ -133,7 +122,7 @@ class StatementReceiptWritExecutionGenerator extends BaseGenerator implements Ge
             $this->em->flush();
 
             //добавляем лог - не обжаловано заявление на получение исполнительного листа
-            $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}");
+            $this->flatLogger->log($currentFlatEvent->getFlat(), "<b>{$this->event->getName()}</b><br>{$showData}");
 
             return true;
         } else {//если обжаловано - заседаные переносится
@@ -190,7 +179,7 @@ class StatementReceiptWritExecutionGenerator extends BaseGenerator implements Ge
             $this->em->flush();
 
             //добавляем лог - обжаловано заявление на получение исполнительного листа
-            $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}");
+            $this->flatLogger->log($currentFlatEvent->getFlat(), "<b>{$this->event->getName()}</b><br>{$showData}");
 
             return [
                 'success'   =>  true,
@@ -212,8 +201,8 @@ class StatementReceiptWritExecutionGenerator extends BaseGenerator implements Ge
 
         //если не было никаких действий по этому событию - генерируем документ
         if (
-            !$flatEvent->getParameter('appealed', false) &&
-            !$flatEvent->getParameter('not_appealed', false)
+            !$flatEvent->getParameter('appealed') &&
+            !$flatEvent->getParameter('not_appealed')
         ) {
             /** @var array $documentLinks */
             $documentLinks = $this->templateGenerator->generateTemplate($flat, $this->event);
@@ -261,8 +250,18 @@ class StatementReceiptWritExecutionGenerator extends BaseGenerator implements Ge
         return true;
     }
 
+    /**
+     * @param FlatEvent $flatEvent
+     * @return \AppBundle\Entity\Event|null|object
+     */
     public function getNextEvent(FlatEvent $flatEvent)
     {
-        // TODO: Implement getNextEvent() method.
+        if ($flatEvent->getParameter('appealed')) {
+            return $this->event;
+        } elseif ($flatEvent->getParameter('not_appealed')) {
+            return $this->em->getRepository('AppBundle:Event')->findOneBy(['alias' => 'obtaining_writ_execution']);
+        } else {
+            return null;
+        }
     }
 }

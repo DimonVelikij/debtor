@@ -46,13 +46,13 @@ class StatementCommencementEnforcementProceedingsGenerator extends BaseGenerator
      */
     public function getTimePerformAction(FlatEvent $flatEvent)
     {
-        if ($flatEvent->getParameter('deferred', false)) {
+        if ($flatEvent->getParameter('deferred')) {
             //если обращение в ФССП отложено - вычисляем разницу между текущим временем и датой выполнения
             /** @var \DateTime $deadline */
             $deadline = $flatEvent->getParameter('deadline');
 
             return $deadline->diff(new \DateTime())->days;
-        } elseif ($flatEvent->getParameter('perform', false)) {
+        } elseif ($flatEvent->getParameter('perform')) {
             //если успешное обращение - через 3 дня выполняем следующее событие
             return 3;
         } else {
@@ -67,10 +67,10 @@ class StatementCommencementEnforcementProceedingsGenerator extends BaseGenerator
      */
     public function getNextEventGenerators(FlatEvent $flatEvent)
     {
-        if ($flatEvent->getParameter('deferred', false)) {
+        if ($flatEvent->getParameter('deferred')) {
             //если обращение в ФССП отложено - снова выполняем текущее событие
             return [$this];
-        } elseif ($flatEvent->getParameter('perform', false)) {
+        } elseif ($flatEvent->getParameter('perform')) {
             //если обращение в ФССП успешное - выполняем следующее событие
             $generatorAlias = 'submission_commencement_enforcement_proceedings';
         } else {
@@ -97,23 +97,12 @@ class StatementCommencementEnforcementProceedingsGenerator extends BaseGenerator
      */
     public function processUserAction(Request $request)
     {
-        /** @var Flat $flat */
-        $flat = $this->em->getRepository('AppBundle:Flat')->find((int)$request->get('flat_id'));
-
-        //находим текущее событие
-        $currentFlatEvent = null;
-
-        /** @var FlatEvent $flatEvent */
-        foreach ($flat->getFlatsEvents() as $flatEvent) {
-            if ($flatEvent->getEvent()->getAlias() == $this->getEventAlias()) {
-                $currentFlatEvent = $flatEvent;
-                break;
-            }
-        }
+        /** @var FlatEvent|null $currentFlatEvent */
+        $currentFlatEvent = $this->getFlatEvent((int)$request->get('flat_id'));
 
         if (
             !$currentFlatEvent ||
-            $currentFlatEvent->getParameter('perform', false)
+            $currentFlatEvent->getParameter('perform')
             //если обращение в ФССП отложено - пользователь снова может указать вид работ с дату выполнения
         ) {
             //действие уже выполнено
@@ -134,7 +123,7 @@ class StatementCommencementEnforcementProceedingsGenerator extends BaseGenerator
             $this->em->flush();
 
             //добавляем лог - выполнено формирование заявления на возбеждение исполнительного производства
-            $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}");
+            $this->flatLogger->log($currentFlatEvent->getFlat(), "<b>{$this->event->getName()}</b><br>{$showData}");
 
             return true;
         } else {//если отложено обращение в ФССП - обращение переносится
@@ -191,7 +180,7 @@ class StatementCommencementEnforcementProceedingsGenerator extends BaseGenerator
             $this->em->flush();
 
             //добавляем лог - отложено обращение в ФССП
-            $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}");
+            $this->flatLogger->log($currentFlatEvent->getFlat(), "<b>{$this->event->getName()}</b><br>{$showData}");
 
             return [
                 'success'   =>  true,
@@ -262,8 +251,18 @@ class StatementCommencementEnforcementProceedingsGenerator extends BaseGenerator
         return true;
     }
 
+    /**
+     * @param FlatEvent $flatEvent
+     * @return \AppBundle\Entity\Event|null|object
+     */
     public function getNextEvent(FlatEvent $flatEvent)
     {
-        // TODO: Implement getNextEvent() method.
+        if ($flatEvent->getParameter('deferred')) {
+            return $this->event;
+        } elseif ($flatEvent->getParameter('perform')) {
+            return $this->em->getRepository('AppBundle:Event')->findOneBy(['alias' => 'submission_commencement_enforcement_proceedings']);
+        } else {
+            return null;
+        }
     }
 }

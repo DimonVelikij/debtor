@@ -46,13 +46,13 @@ class LegalProceedingsGenerator extends BaseGenerator implements GeneratorInterf
      */
     public function getTimePerformAction(FlatEvent $flatEvent)
     {
-        if ($flatEvent->getParameter('deferred', false)) {
+        if ($flatEvent->getParameter('deferred')) {
             //если заседаные было отложено - выполняем текущее событие в дату на которое отложено заседание
             /** @var \DateTime $dateMeeting */
-            $dateMeeting = $flatEvent->getParameter('dateMeeting', false);
+            $dateMeeting = $flatEvent->getParameter('dateMeeting');
 
             return $dateMeeting->diff(new \DateTime())->d;
-        } elseif ($flatEvent->getParameter('confirm', false)) {
+        } elseif ($flatEvent->getParameter('confirm')) {
             //если решение принято - через 30 дней заявление на получение исполнительного листа
             return 30;
         } else {
@@ -67,10 +67,10 @@ class LegalProceedingsGenerator extends BaseGenerator implements GeneratorInterf
      */
     public function getNextEventGenerators(FlatEvent $flatEvent)
     {
-        if ($flatEvent->getParameter('deferred', false)) {
+        if ($flatEvent->getParameter('deferred')) {
             //если заседание было отложено - возвращаем текущий генератор
             return [$this];
-        } elseif ($flatEvent->getParameter('confirm', false)) {
+        } elseif ($flatEvent->getParameter('confirm')) {
             //если принято решение - возвращаем генератор "заявление на получение исполнительного листа"
             $generatorAlias = 'statement_receipt_writ_execution';
         } else {
@@ -98,24 +98,13 @@ class LegalProceedingsGenerator extends BaseGenerator implements GeneratorInterf
      */
     public function processUserAction(Request $request)
     {
-        /** @var Flat $flat */
-        $flat = $this->em->getRepository('AppBundle:Flat')->find((int)$request->get('flat_id'));
-
-        //находим текущее событие
-        $currentFlatEvent = null;
-
-        /** @var FlatEvent $flatEvent */
-        foreach ($flat->getFlatsEvents() as $flatEvent) {
-            if ($flatEvent->getEvent()->getAlias() == $this->getEventAlias()) {
-                $currentFlatEvent = $flatEvent;
-                break;
-            }
-        }
+        /** @var FlatEvent|null $currentFlatEvent */
+        $currentFlatEvent = $this->getFlatEvent((int)$request->get('flat_id'));
 
         if (
             !$currentFlatEvent ||
-            $flatEvent->getParameter('deferred') ||
-            $flatEvent->getParameter('confirm')
+            $currentFlatEvent->getParameter('deferred') ||
+            $currentFlatEvent->getParameter('confirm')
         ) {
             //действие выполнено
             return true;
@@ -123,17 +112,17 @@ class LegalProceedingsGenerator extends BaseGenerator implements GeneratorInterf
 
         if ($request->get('action') == 'confirm') {
             $showData = "Принято решение";
-            $flatEvent
+            $currentFlatEvent
                 ->setData([
                     'show'      =>  $showData,
                     'confirm'   =>  true
                 ]);
 
-            $this->em->persist($flatEvent);
+            $this->em->persist($currentFlatEvent);
             $this->em->flush();
 
             //добавляем лог - принято решение
-            $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}");
+            $this->flatLogger->log($currentFlatEvent->getFlat(), "<b>{$this->event->getName()}</b><br>{$showData}");
 
             return true;
         } else {
@@ -191,7 +180,7 @@ class LegalProceedingsGenerator extends BaseGenerator implements GeneratorInterf
             $this->em->flush();
 
             //добавляем лог - заседание отложено
-            $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}");
+            $this->flatLogger->log($currentFlatEvent->getFlat(), "<b>{$this->event->getName()}</b><br>{$showData}");
 
             return [
                 'success'   =>  true,
@@ -236,8 +225,18 @@ class LegalProceedingsGenerator extends BaseGenerator implements GeneratorInterf
         return true;
     }
 
+    /**
+     * @param FlatEvent $flatEvent
+     * @return \AppBundle\Entity\Event|null|object
+     */
     public function getNextEvent(FlatEvent $flatEvent)
     {
-        // TODO: Implement getNextEvent() method.
+        if ($flatEvent->getParameter('deferred')) {
+            return $this->event;
+        } elseif ($flatEvent->getParameter('confirm')) {
+            return $this->em->getRepository('AppBundle:Event')->findOneBy(['alias' => 'statement_receipt_writ_execution']);
+        } else {
+            return null;
+        }
     }
 }

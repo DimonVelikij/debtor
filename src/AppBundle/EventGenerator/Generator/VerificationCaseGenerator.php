@@ -46,10 +46,10 @@ class VerificationCaseGenerator extends BaseGenerator implements GeneratorInterf
      */
     public function getTimePerformAction(FlatEvent $flatEvent)
     {
-        if ($flatEvent->getParameter('failure', false)) {
+        if ($flatEvent->getParameter('failure')) {
             //если пользователь выбрал отказ - генерируем следующее событие при следующем выполнении таски
             return 0;
-        } elseif ($flatEvent->getParameter('confirm', false)) {
+        } elseif ($flatEvent->getParameter('confirm')) {
             //если пользователь выбрал принятие - вычисляем разницу между текущим временем и датой заседания
             /** @var \DateTime $dateMeeting */
             $dateMeeting = $flatEvent->getParameter('dateMeeting');
@@ -67,9 +67,9 @@ class VerificationCaseGenerator extends BaseGenerator implements GeneratorInterf
      */
     public function getNextEventGenerators(FlatEvent $flatEvent)
     {
-        if ($flatEvent->getParameter('failure', false)) {
+        if ($flatEvent->getParameter('failure')) {
             $generatorAlias = 'formation_statement_claim';
-        } elseif ($flatEvent->getParameter('confirm', false)) {
+        } elseif ($flatEvent->getParameter('confirm')) {
             $generatorAlias = 'legal_proceedings';
         } else {
             $generatorAlias = false;
@@ -95,24 +95,13 @@ class VerificationCaseGenerator extends BaseGenerator implements GeneratorInterf
      */
     public function processUserAction(Request $request)
     {
-        /** @var Flat $flat */
-        $flat = $this->em->getRepository('AppBundle:Flat')->find((int)$request->get('flat_id'));
-
-        //находим текущее событие
-        $currentFlatEvent = null;
-
-        /** @var FlatEvent $flatEvent */
-        foreach ($flat->getFlatsEvents() as $flatEvent) {
-            if ($flatEvent->getEvent()->getAlias() == $this->getEventAlias()) {
-                $currentFlatEvent = $flatEvent;
-                break;
-            }
-        }
+        /** @var FlatEvent|null $currentFlatEvent */
+        $currentFlatEvent = $this->getFlatEvent((int)$request->get('flat_id'));
 
         if (
             !$currentFlatEvent ||
-            $flatEvent->getParameter('confirm', false) ||
-            $flatEvent->getParameter('failure', false)
+            $currentFlatEvent->getParameter('confirm') ||
+            $currentFlatEvent->getParameter('failure')
         ) {
             //действие выполнено
             return true;
@@ -131,7 +120,7 @@ class VerificationCaseGenerator extends BaseGenerator implements GeneratorInterf
             $this->em->flush();
 
             //добавляем лог - отказ принятия искового заявления
-            $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}");
+            $this->flatLogger->log($currentFlatEvent->getFlat(), "<b>{$this->event->getName()}</b><br>{$showData}");
 
             return true;
         } else {//если принятие
@@ -200,7 +189,7 @@ class VerificationCaseGenerator extends BaseGenerator implements GeneratorInterf
             $this->em->flush();
 
             //добавляем лог - подтверждено принятие искового заявления
-            $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}");
+            $this->flatLogger->log($currentFlatEvent->getFlat(), "<b>{$this->event->getName()}</b><br>{$showData}");
 
             return [
                 'success'   =>  true,
@@ -245,8 +234,19 @@ class VerificationCaseGenerator extends BaseGenerator implements GeneratorInterf
         return true;
     }
 
+    /**
+     * @param FlatEvent $flatEvent
+     * @return \AppBundle\Entity\Event|null|object
+     */
     public function getNextEvent(FlatEvent $flatEvent)
     {
-        // TODO: Implement getNextEvent() method.
+        $eventRepository = $this->em->getRepository('AppBundle:Event');
+        if ($flatEvent->getParameter('failure')) {
+            return $eventRepository->findOneBy(['alias' => 'formation_statement_claim']);
+        } elseif ($flatEvent->getParameter('confirm')) {
+            return $eventRepository->findOneBy(['alias' =>  'legal_proceedings']);
+        } else {
+            return null;
+        }
     }
 }

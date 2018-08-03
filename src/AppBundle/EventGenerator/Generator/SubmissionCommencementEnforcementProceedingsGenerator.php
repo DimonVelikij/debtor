@@ -55,23 +55,12 @@ class SubmissionCommencementEnforcementProceedingsGenerator extends BaseGenerato
      */
     public function processUserAction(Request $request)
     {
-        /** @var Flat $flat */
-        $flat = $this->em->getRepository('AppBundle:Flat')->find((int)$request->get('flat_id'));
-
-        //находим текущее событие
-        $currentFlatEvent = null;
-
-        /** @var FlatEvent $flatEvent */
-        foreach ($flat->getFlatsEvents() as $flatEvent) {
-            if ($flatEvent->getEvent()->getAlias() == $this->getEventAlias()) {
-                $currentFlatEvent = $flatEvent;
-                break;
-            }
-        }
+        /** @var FlatEvent $currentFlatEvent */
+        $currentFlatEvent = $this->getFlatEvent((int)$request->get('flat_id'));
 
         if (
             !$currentFlatEvent ||
-            $currentFlatEvent->getParameter('confirm', false)
+            $currentFlatEvent->getParameter('confirm')
         ) {
             //действие уже выполнено
             return true;
@@ -143,7 +132,7 @@ class SubmissionCommencementEnforcementProceedingsGenerator extends BaseGenerato
         $this->em->flush();
 
         //добавляем лог - подтверждено получение исполнительного листа
-        $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}");
+        $this->flatLogger->log($currentFlatEvent->getFlat(), "<b>{$this->event->getName()}</b><br>{$showData}");
 
         return [
             'success'   =>  true,
@@ -187,8 +176,14 @@ class SubmissionCommencementEnforcementProceedingsGenerator extends BaseGenerato
         return true;
     }
 
+    /**
+     * @param FlatEvent $flatEvent
+     * @return \AppBundle\Entity\Event|null|object
+     */
     public function getNextEvent(FlatEvent $flatEvent)
     {
-        // TODO: Implement getNextEvent() method.
+        return $flatEvent->getParameter('confirm') ?
+            $this->em->getRepository('AppBundle:Event')->findOneBy(['alias' => 'control_enforcement_proceedings']) :
+            null;
     }
 }

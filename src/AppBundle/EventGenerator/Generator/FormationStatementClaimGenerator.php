@@ -100,8 +100,12 @@ class FormationStatementClaimGenerator extends BaseGenerator implements Generato
         return true;
     }
 
+    /**
+     * @param FlatEvent $flatEvent
+     * @return \AppBundle\Entity\Event|null|object
+     */
     public function getNextEvent(FlatEvent $flatEvent)
     {
-        // TODO: Implement getNextEvent() method.
+        return $this->em->getRepository('AppBundle:Event')->findOneBy(['alias' => 'applying_statement_claim']);
     }
 }

@@ -5,16 +5,20 @@
         <span class="label label-success">в архиве</span>
     {% else %}
         {% if object.flatsEvents | length %}
+            {% set is_next_events = false %}
             {% for flatEvent in object.flatsEvents %}
                 {% set next_event = get_next_event(flatEvent) %}
                 {% if next_event %}
                     <span><b>{{ next_event.event.name }}({{ next_event.dateGenerate.format('d.m.Y') }})</b></span>
                     <a href="{{ path('admin_app_flat_perform', {flat_id: flatEvent.flat.id, event: flatEvent.event.alias}) }}">Выполнить</a>
                     <a href="{{ path('admin_app_flat_miss', {flat_id: flatEvent.flat.id, event: flatEvent.event.alias}) }}">Пропустить</a>
-                {% else %}
-                    <span class="label label-success">ожидает действий пользователя</span>
+                    <br>
+                    {% set is_next_events = true %}
                 {% endif %}
             {% endfor %}
+            {% if not is_next_events %}
+                <span class="label label-success">ожидает действий пользователя</span>
+            {% endif %}
         {% else %}
             <span class="label label-success">отсутствует</span>
         {% endif %}

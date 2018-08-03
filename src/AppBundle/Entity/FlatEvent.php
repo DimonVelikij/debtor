@@ -42,7 +42,7 @@ class FlatEvent
      * @param null $default
      * @return null
      */
-    public function getParameter($parameter, $default = null)
+    public function getParameter($parameter, $default = false)
     {
         return $this->data[$parameter] ?? $default;
     }

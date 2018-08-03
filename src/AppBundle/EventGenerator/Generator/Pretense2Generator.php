@@ -125,8 +125,18 @@ class Pretense2Generator extends BaseGenerator implements GeneratorInterface
         return true;
     }
 
+    /**
+     * @param FlatEvent $flatEvent
+     * @return \AppBundle\Entity\Event|null|object
+     */
     public function getNextEvent(FlatEvent $flatEvent)
     {
-        // TODO: Implement getNextEvent() method.
+        if ($flatEvent->getFlat()->getFlatsEvents()->count() > 1) {
+            //если "Претензия2" и еще другое событие уже были сформированы, то следующее событие "Претензия2"
+            return $this->event;
+        } else {
+            //если была сформирована только "Претензия2" - следующее событие "Формирование заявления на выдачу судебного приказа"
+            return $this->em->getRepository('AppBundle:Event')->findOneBy(['alias' => 'formation_court_order']);
+        }
     }
 }

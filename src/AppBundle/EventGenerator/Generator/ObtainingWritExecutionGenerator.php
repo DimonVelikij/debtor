@@ -53,23 +53,12 @@ class ObtainingWritExecutionGenerator extends BaseGenerator implements Generator
      */
     public function processUserAction(Request $request)
     {
-        /** @var Flat $flat */
-        $flat = $this->em->getRepository('AppBundle:Flat')->find((int)$request->get('flat_id'));
-
-        //находим текущее событие
-        $currentFlatEvent = null;
-
-        /** @var FlatEvent $flatEvent */
-        foreach ($flat->getFlatsEvents() as $flatEvent) {
-            if ($flatEvent->getEvent()->getAlias() == $this->getEventAlias()) {
-                $currentFlatEvent = $flatEvent;
-                break;
-            }
-        }
+        /** @var FlatEvent|null $currentFlatEvent */
+        $currentFlatEvent = $this->getFlatEvent((int)$request->get('flat_id'));
 
         if (
             !$currentFlatEvent ||
-            $currentFlatEvent->getParameter('confirm', false)
+            $currentFlatEvent->getParameter('confirm')
         ) {
             //действие уже выполнено
             return true;
@@ -89,7 +78,7 @@ class ObtainingWritExecutionGenerator extends BaseGenerator implements Generator
         $this->em->flush();
 
         //добавляем лог - подтверждено получение исполнительного листа
-        $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}");
+        $this->flatLogger->log($currentFlatEvent->getFlat(), "<b>{$this->event->getName()}</b><br>{$showData}");
 
         return true;
     }
@@ -127,8 +116,14 @@ class ObtainingWritExecutionGenerator extends BaseGenerator implements Generator
         return true;
     }
 
+    /**
+     * @param FlatEvent $flatEvent
+     * @return \AppBundle\Entity\Event|null|object
+     */
     public function getNextEvent(FlatEvent $flatEvent)
     {
-        // TODO: Implement getNextEvent() method.
+        return $flatEvent->getParameter('confirm') ?
+            $this->em->getRepository('AppBundle:Event')->findOneBy(['alias' => 'statement_commencement_enforcement_proceedings']) :
+            null;
     }
 }
