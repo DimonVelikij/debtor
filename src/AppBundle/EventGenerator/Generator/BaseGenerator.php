@@ -9,6 +9,7 @@ use AppBundle\Exception\NoDebtorsException;
 use AppBundle\Exception\NoSubscribersException;
 use AppBundle\Exception\NoTemplateEventException;
 use AppBundle\Exception\NoTemplateFieldsEventException;
+use AppBundle\Service\DateDiffer;
 use AppBundle\Service\FlatLogger;
 use AppBundle\Service\TemplateGenerator;
 use Doctrine\ORM\EntityManager;
@@ -32,6 +33,9 @@ abstract class BaseGenerator
     /** @var TemplateGenerator  */
     protected $templateGenerator;
 
+    /** @var DateDiffer  */
+    protected $dateDiffer;
+
     /** @var TwigEngine  */
     protected $twig;
 
@@ -53,16 +57,18 @@ abstract class BaseGenerator
      * @param FlatLogger $flatLogger
      * @param Router $router
      * @param TemplateGenerator $templateGenerator
+     * @param DateDiffer $dateDiffer
      * @param TwigEngine $twig
      * @param ValidatorInterface $validator
      * @param DataCollectorTranslator $translator
      */
-    public function __construct(EntityManager $em, FlatLogger $flatLogger, Router $router, TemplateGenerator $templateGenerator, TwigEngine $twig, ValidatorInterface $validator, DataCollectorTranslator $translator)
+    public function __construct(EntityManager $em, FlatLogger $flatLogger, Router $router, TemplateGenerator $templateGenerator, DateDiffer $dateDiffer, TwigEngine $twig, ValidatorInterface $validator, DataCollectorTranslator $translator)
     {
         $this->em = $em;
         $this->flatLogger = $flatLogger;
         $this->router = $router;
         $this->templateGenerator = $templateGenerator;
+        $this->dateDiffer = $dateDiffer;
         $this->twig = $twig;
         $this->validator = $validator;
         $this->translator = $translator;

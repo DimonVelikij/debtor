@@ -3,6 +3,7 @@
 namespace AppBundle\EventGenerator\Generator;
 
 use AppBundle\Entity\FlatEvent;
+use AppBundle\Service\DateDiffer;
 use AppBundle\Service\FlatLogger;
 use AppBundle\Service\TemplateGenerator;
 use Doctrine\ORM\EntityManager;
@@ -20,13 +21,14 @@ class EnteredProcessingGenerator extends BaseGenerator implements GeneratorInter
      * @param FlatLogger $flatLogger
      * @param Router $router
      * @param TemplateGenerator $templateGenerator
+     * @param DateDiffer $dateDiffer
      * @param TwigEngine $twig
      * @param ValidatorInterface $validator
      * @param DataCollectorTranslator $translator
      */
-    public function __construct(EntityManager $em, FlatLogger $flatLogger, Router $router, TemplateGenerator $templateGenerator, TwigEngine $twig, ValidatorInterface $validator, DataCollectorTranslator $translator)
+    public function __construct(EntityManager $em, FlatLogger $flatLogger, Router $router, TemplateGenerator $templateGenerator, DateDiffer $dateDiffer, TwigEngine $twig, ValidatorInterface $validator, DataCollectorTranslator $translator)
     {
-        parent::__construct($em, $flatLogger, $router, $templateGenerator, $twig, $validator, $translator);
+        parent::__construct($em, $flatLogger, $router, $templateGenerator, $dateDiffer, $twig, $validator, $translator);
     }
 
     /**
