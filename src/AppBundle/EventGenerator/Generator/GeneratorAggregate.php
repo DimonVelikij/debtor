@@ -8,6 +8,7 @@ use AppBundle\Exception\NoDebtorsException;
 use AppBundle\Exception\NoSubscribersException;
 use AppBundle\Exception\NoTemplateEventException;
 use AppBundle\Exception\NoTemplateFieldsEventException;
+use AppBundle\Service\DateDiffer;
 use AppBundle\Service\FlatLogger;
 use Doctrine\ORM\EntityManager;
 
@@ -21,15 +22,20 @@ class GeneratorAggregate
     /** @var FlatLogger  */
     private $flatLogger;
 
+    /** @var DateDiffer  */
+    private $dateDiffer;
+
     /**
      * GeneratorAggregate constructor.
      * @param EntityManager $em
      * @param FlatLogger $flatLogger
+     * @param DateDiffer $dateDiffer
      */
-    public function __construct(EntityManager $em, FlatLogger $flatLogger)
+    public function __construct(EntityManager $em, FlatLogger $flatLogger, DateDiffer $dateDiffer)
     {
         $this->em = $em;
         $this->flatLogger = $flatLogger;
+        $this->dateDiffer = $dateDiffer;
     }
 
     /**
@@ -62,9 +68,9 @@ class GeneratorAggregate
             $currentEventGenerator = $this->eventGenerators[$flatEvent->getEvent()->getAlias()];
 
             //если время не пришло
-            /*if ((new \DateTime())->diff($flatEvent->getDateGenerate())->d < $currentEventGenerator->getTimePerformAction($flatEvent)) {
+            if ($this->dateDiffer->getDays($flatEvent->getDateGenerate(), new \DateTime()) < $currentEventGenerator->getTimePerformAction($flatEvent)) {
                 continue;
-            }*/
+            }
 
             $this->generateEvent($flatEvent);
         }

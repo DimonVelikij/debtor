@@ -11,3 +11,6 @@ services:
         class: AppBundle\Service\FlatLogger
         arguments:
             - "@doctrine.orm.doctrine_entity_manager"
+
+    app.service.date_differ:
+        class: AppBundle\Service\DateDiffer

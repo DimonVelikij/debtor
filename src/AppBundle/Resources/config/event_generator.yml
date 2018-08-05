@@ -19,6 +19,7 @@ services:
         arguments:
             - "@doctrine.orm.doctrine_entity_manager"
             - "@app.service.flat_logger"
+            - "@app.service.date_differ"
         calls:
             - [ addEventGenerator, ["@app.generator.entered_processing", "entered_processing"] ]
             - [ addEventGenerator, ["@app.generator.pretense1", "pretense1"] ]
