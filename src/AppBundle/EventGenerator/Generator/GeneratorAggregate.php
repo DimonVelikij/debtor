@@ -14,6 +14,9 @@ use Doctrine\ORM\EntityManager;
 
 class GeneratorAggregate
 {
+    /** сумма долга, после которой на должника оформляются документы */
+    const TOTAL_DEBT = 5000;
+
     private $eventGenerators = [];
 
     /** @var EntityManager  */
@@ -61,6 +64,11 @@ class GeneratorAggregate
      */
     public function processFlat(Flat $flat)
     {
+        //если сумма долга меньше 5000 - не формируем документы на должника
+        if ($flat->getSumDebt() + $flat->getSumFine() < self::TOTAL_DEBT) {
+            return;
+        }
+
         //проверка на долг
         /** @var FlatEvent $flatEvent */
         foreach ($flat->getFlatsEvents() as $flatEvent) {

@@ -8,6 +8,7 @@ use AppBundle\Entity\Log;
 use AppBundle\Entity\PersonalAccount;
 use AppBundle\Entity\Subscriber;
 use AppBundle\Entity\User;
+use AppBundle\EventGenerator\Generator\GeneratorAggregate;
 use AppBundle\EventGenerator\Generator\GeneratorInterface;
 use AppBundle\Validator\Constraints\OwnershipStatus;
 use Doctrine\ORM\EntityManager;
@@ -554,6 +555,14 @@ class FlatAdminController extends CRUDController
      */
     public function performAction(Request $request, $event)
     {
+        /** @var Flat $flat */
+        $flat = $this->getDoctrine()->getRepository('AppBundle:Flat')->find((int)$request->get('flat_id'));
+
+        //если сумма долга меньше 5000 - редиректим обратно
+        if ($flat->getSumDebt() + $flat->getSumFine() < GeneratorAggregate::TOTAL_DEBT) {
+            return $this->redirect($request->headers->get('referer') ?: $this->generateUrl('admin_app_flat_list'));
+        }
+
         $this->get('app.generator.' . $event)->perform($request);
 
         return $this->redirect($request->headers->get('referer') ?: $this->generateUrl('admin_app_flat_list'));
@@ -567,6 +576,14 @@ class FlatAdminController extends CRUDController
      */
     public function missAction(Request $request, $event)
     {
+        /** @var Flat $flat */
+        $flat = $this->getDoctrine()->getRepository('AppBundle:Flat')->find((int)$request->get('flat_id'));
+
+        //если сумма долга меньше 5000 - редиректим обратно
+        if ($flat->getSumDebt() + $flat->getSumFine() < GeneratorAggregate::TOTAL_DEBT) {
+            return $this->redirect($request->headers->get('referer') ?: $this->generateUrl('admin_app_flat_list'));
+        }
+
         $this->get('app.generator.' . $event)->miss($request);
 
         return $this->redirect($request->headers->get('referer') ?: $this->generateUrl('admin_app_flat_list'));
