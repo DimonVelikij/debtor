@@ -121,18 +121,21 @@ class ObtainingCourtOrderGenerator extends BaseGenerator implements GeneratorInt
         switch ($request->get('action')) {
             case 'confirm':
                 $currentFlatEvent
+                    ->setDateGenerate($currentDate)
                     ->setParameter('show', $showData)
                     ->setParameter('confirm', true);
 
                 break;
             case 'failure':
                 $currentFlatEvent
+                    ->setDateGenerate($currentDate)
                     ->setParameter('show', $showData)
                     ->setParameter('failure', true);
 
                 break;
             case 'cancel':
                 $currentFlatEvent
+                    ->setDateGenerate($currentDate)
                     ->setParameter('show', $showData)
                     ->setParameter('cancel', true);
 

@@ -113,6 +113,7 @@ class LegalProceedingsGenerator extends BaseGenerator implements GeneratorInterf
         if ($request->get('action') == 'confirm') {
             $showData = "Принято решение";
             $currentFlatEvent
+                ->setDateGenerate(new \DateTime())
                 ->setData([
                     'show'      =>  $showData,
                     'confirm'   =>  true
@@ -169,6 +170,7 @@ class LegalProceedingsGenerator extends BaseGenerator implements GeneratorInterf
                 Время заседания: " . substr($input['timeMeeting'], 0, 2) . ":" . substr($input['timeMeeting'], 2, 2);
 
             $currentFlatEvent
+                ->setDateGenerate(new \DateTime())
                 ->setData([
                     'deferred'      =>  true,
                     'dateMeeting'   =>  \DateTime::createFromFormat('dmY', $input['dateMeeting']),

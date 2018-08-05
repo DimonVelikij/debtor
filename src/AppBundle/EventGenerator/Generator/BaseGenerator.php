@@ -180,7 +180,7 @@ abstract class BaseGenerator
 
         /** @var Event|null $nextEvent */
         $nextEvent = $this->getNextEvent($flatEvent);
-//        dump($this->getMissData(), $this->event, $nextEvent);die;
+
         if (!$nextEvent) {
             return false;
         }

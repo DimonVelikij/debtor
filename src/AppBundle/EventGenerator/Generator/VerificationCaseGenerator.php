@@ -111,6 +111,7 @@ class VerificationCaseGenerator extends BaseGenerator implements GeneratorInterf
         if ($request->get('action') == 'failure') {
             $showData = "Отказ в принятии искового заявления к производству";
             $currentFlatEvent
+                ->setDateGenerate(new \DateTime())
                 ->setData([
                     'show'      =>  $showData,
                     'failure'   =>  true
@@ -176,6 +177,7 @@ class VerificationCaseGenerator extends BaseGenerator implements GeneratorInterf
                     Время заседания: " . substr($input['timeMeeting'], 0, 2) . ":" . substr($input['timeMeeting'], 2, 2);
 
             $currentFlatEvent
+                ->setDateGenerate(new \DateTime())
                 ->setData([
                     'confirm'           =>  true,
                     'courtCaseNumber'   =>  $input['courtCaseNumber'],

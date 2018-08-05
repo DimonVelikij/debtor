@@ -113,6 +113,7 @@ class StatementReceiptWritExecutionGenerator extends BaseGenerator implements Ge
         if ($request->get('action') == 'not_appealed') {
             $showData = "Решение вступилов в силу (не обжаловано)";
             $currentFlatEvent
+                ->setDateGenerate(new \DateTime())
                 ->setData([
                     'show'          =>  $showData,
                     'not_appealed'  =>  true
@@ -168,6 +169,7 @@ class StatementReceiptWritExecutionGenerator extends BaseGenerator implements Ge
                 Время заседания: " . substr($input['timeMeeting'], 0, 2) . ":" . substr($input['timeMeeting'], 2, 2);
 
             $currentFlatEvent
+                ->setDateGenerate(new \DateTime())
                 ->setData([
                     'appealed'          =>  true,
                     'dateMeeting'       =>  \DateTime::createFromFormat('dmY', $input['dateMeeting']),

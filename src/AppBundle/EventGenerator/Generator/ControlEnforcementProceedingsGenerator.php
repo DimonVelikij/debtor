@@ -114,7 +114,7 @@ class ControlEnforcementProceedingsGenerator extends BaseGenerator implements Ge
         switch ($request->get('action')) {
             case 'process':
                 $currentFlatEvent
-                    ->setDateGenerate(new \DateTime())
+                    ->setDateGenerate($currentDate)
                     ->setData([
                         'show'      =>  $showData,
                         'process'   =>  true
@@ -125,7 +125,7 @@ class ControlEnforcementProceedingsGenerator extends BaseGenerator implements Ge
                 break;
             case 'inactivity':
                 $currentFlatEvent
-                    ->setDateGenerate(new \DateTime())
+                    ->setDateGenerate($currentDate)
                     ->setData([
                         'show'          =>  $showData,
                         'inactivity'    =>  true
