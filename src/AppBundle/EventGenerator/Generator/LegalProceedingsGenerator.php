@@ -53,7 +53,7 @@ class LegalProceedingsGenerator extends BaseGenerator implements GeneratorInterf
             /** @var \DateTime $dateMeeting */
             $dateMeeting = $flatEvent->getParameter('dateMeeting');
 
-            return $dateMeeting->diff(new \DateTime())->d;
+            return $this->dateDiffer->getDays(new \DateTime(), $dateMeeting);
         } elseif ($flatEvent->getParameter('confirm')) {
             //если решение принято - через 30 дней заявление на получение исполнительного листа
             return 30;

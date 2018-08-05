@@ -53,7 +53,7 @@ class StatementCommencementEnforcementProceedingsGenerator extends BaseGenerator
             /** @var \DateTime $deadline */
             $deadline = $flatEvent->getParameter('deadline');
 
-            return $deadline->diff(new \DateTime())->days;
+            return $this->dateDiffer->getDays(new \DateTime(), $deadline);
         } elseif ($flatEvent->getParameter('perform')) {
             //если успешное обращение - через 3 дня выполняем следующее событие
             return 3;

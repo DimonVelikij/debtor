@@ -53,7 +53,7 @@ class StatementReceiptWritExecutionGenerator extends BaseGenerator implements Ge
             /** @var \DateTime $dateMeeting */
             $dateMeeting = $flatEvent->getParameter('dateMeeting');
 
-            return $dateMeeting->diff(new \DateTime())->days;
+            return $this->dateDiffer->getDays(new \DateTime(), $dateMeeting);
         } elseif ($flatEvent->getParameter('not_appealed')) {
             //если не обжаловано получение исполнительного листа - через 7 дней переходим к следующему событию
             return 7;

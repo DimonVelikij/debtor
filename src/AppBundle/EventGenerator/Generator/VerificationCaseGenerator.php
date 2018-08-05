@@ -56,7 +56,7 @@ class VerificationCaseGenerator extends BaseGenerator implements GeneratorInterf
             /** @var \DateTime $dateMeeting */
             $dateMeeting = $flatEvent->getParameter('dateMeeting');
 
-            return $dateMeeting->diff((new \DateTime()))->d;
+            return $this->dateDiffer->getDays(new \DateTime(), $dateMeeting);
         } else {
             //если пользователь ничего не выбрал - ничего не делаем
             return INF;
