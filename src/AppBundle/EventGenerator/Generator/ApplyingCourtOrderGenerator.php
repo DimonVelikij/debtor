@@ -139,4 +139,14 @@ class ApplyingCourtOrderGenerator extends BaseGenerator implements GeneratorInte
             $this->em->getRepository('AppBundle:Event')->findOneBy(['alias' => 'obtaining_court_order']) :
             null;
     }
+
+    /**
+     * @return array
+     */
+    protected function getMissData()
+    {
+        //при отмене "Подача заявления на выдачу судебного приказа" ставим метку на событие
+        //"Получение судебного приказа" что оно отмененно, чтобы вывелось следующее событие
+        return array_merge(parent::getMissData(), ['cancel' => true]);
+    }
 }

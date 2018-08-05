@@ -239,4 +239,13 @@ class LegalProceedingsGenerator extends BaseGenerator implements GeneratorInterf
             return null;
         }
     }
+
+    /**
+     * @return array
+     */
+    protected function getMissData()
+    {
+        //при пропуске "Заявление на получение исполнительного листа" - ставим метку что оно не обжаловано, что вывелось следующее событие
+        return array_merge(parent::getMissData(), ['not_appealed' => true]);
+    }
 }

@@ -265,4 +265,13 @@ class StatementCommencementEnforcementProceedingsGenerator extends BaseGenerator
             return null;
         }
     }
+
+    /**
+     * @return array
+     */
+    protected function getMissData()
+    {
+        //при пропуске "Подача заявления на возбуждение исполнительного производства" - ставим метку подстверждения, чтобы вывелось следующее событие
+        return array_merge(parent::getMissData(), ['confirm' => true]);
+    }
 }

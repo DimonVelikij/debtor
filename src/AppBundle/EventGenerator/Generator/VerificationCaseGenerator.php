@@ -249,4 +249,13 @@ class VerificationCaseGenerator extends BaseGenerator implements GeneratorInterf
             return null;
         }
     }
+
+    /**
+     * @return array
+     */
+    protected function getMissData()
+    {
+        //при пропуске "Судебное делопроизводство" - ставим метку что оно выполнено, чтобы вывелось следующее событие
+        return array_merge(parent::getMissData(), ['confirm' => true]);
+    }
 }

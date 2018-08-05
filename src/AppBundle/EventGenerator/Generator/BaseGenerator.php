@@ -178,27 +178,10 @@ abstract class BaseGenerator
             return false;
         }
 
-        /** @var Flat $flat */
-        $flat = $flatEvent->getFlat();
-
         /** @var Event|null $nextEvent */
         $nextEvent = $this->getNextEvent($flatEvent);
-
+//        dump($this->getMissData(), $this->event, $nextEvent);die;
         if (!$nextEvent) {
-            return false;
-        }
-
-        $nextEventGenerator = null;
-
-        /** @var GeneratorInterface $eventGenerator */
-        foreach ($this->getNextEventGenerators($flatEvent) as $eventGenerator) {
-            if ($eventGenerator->getEventAlias() === $nextEvent->getAlias()) {
-                $nextEventGenerator = $eventGenerator;
-                break;
-            }
-        }
-
-        if (!$nextEventGenerator) {
             return false;
         }
 
@@ -209,24 +192,22 @@ abstract class BaseGenerator
         //добавляем следующее событие
         $currentFlatEvent = new FlatEvent();
         $currentFlatEvent
-            ->setFlat($flat)
+            ->setFlat($flatEvent->getFlat())
             ->setDateGenerate(new \DateTime())
             ->setEvent($nextEvent)
-            ->setData([
-                'show'  =>  'Пропущено'
-            ]);
+            ->setData($this->getMissData());
 
         $this->em->persist($currentFlatEvent);
         $this->em->flush();
 
         //добавляем лог - пропущено событие
-        $this->flatLogger->log($flat, "<b>{$nextEvent->getName()}</b><br>Пропущено");
+        $this->flatLogger->log($flatEvent->getFlat(), "<b>{$nextEvent->getName()}</b><br>Пропущено");
 
         return true;
     }
 
     /**
-     * получение объъекта flatEvent
+     * получение объъекта flatEvent по id помещения
      * @param $flatId
      * @return FlatEvent|null
      */
@@ -243,6 +224,17 @@ abstract class BaseGenerator
         }
 
         return null;
+    }
+
+    /**
+     * даные для поля data flatEvent'а
+     * @return array
+     */
+    protected function getMissData()
+    {
+        return [
+            'show'  =>  'Пропущено'
+        ];
     }
 
     /**

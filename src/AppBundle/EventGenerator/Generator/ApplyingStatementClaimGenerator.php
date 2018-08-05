@@ -138,4 +138,17 @@ class ApplyingStatementClaimGenerator extends BaseGenerator implements Generator
             $this->em->getRepository('AppBundle:Event')->findOneBy(['alias' => 'verification_case']) :
             null;
     }
+
+    /**
+     * @return array
+     */
+    protected function getMissData()
+    {
+        //при пропуске "Проверка принятия дела к производству" ставим метку подстверждения, чтобы вывелось следующее событие
+        return array_merge(
+            parent::getMissData(), [
+                'confirm'       =>  true,
+                'dateMeeting'   =>  (new \DateTime())->modify('+30 day')
+            ]);
+    }
 }

@@ -264,4 +264,13 @@ class StatementReceiptWritExecutionGenerator extends BaseGenerator implements Ge
             return null;
         }
     }
+
+    /**
+     * @return array
+     */
+    protected function getMissData()
+    {
+        //при пропуске "Получение исполнительного листа" - ставим метку подстверждения, чтобы вывелось следующее событие
+        return array_merge(parent::getMissData(), ['confirm' => true]);
+    }
 }

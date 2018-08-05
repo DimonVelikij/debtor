@@ -8,6 +8,7 @@
             {% for flatEvent in object.flatsEvents %}
                 <span><b>{{ flatEvent.event.name }}({{ flatEvent.dateGenerate.format('d.m.Y') }})</b></span>
                 <span>{{ flatEvent.data.show | raw }}</span>
+                <br>
             {% endfor %}
         {% else %}
             <span class="label label-success">отсутствует</span>

@@ -186,4 +186,13 @@ class SubmissionCommencementEnforcementProceedingsGenerator extends BaseGenerato
             $this->em->getRepository('AppBundle:Event')->findOneBy(['alias' => 'control_enforcement_proceedings']) :
             null;
     }
+
+    /**
+     * @return array
+     */
+    protected function getMissData()
+    {
+        //при пропуске "Контроль исполнительного производства" - ставим метку бездействие ФССП, чтобы вывелось следующее событие
+        return array_merge(parent::getMissData(), ['inactivity' => true]);
+    }
 }

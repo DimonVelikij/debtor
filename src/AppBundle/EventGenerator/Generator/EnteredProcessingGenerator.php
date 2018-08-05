@@ -63,7 +63,7 @@ class EnteredProcessingGenerator extends BaseGenerator implements GeneratorInter
     public function generateEvent(FlatEvent $flatEvent)
     {
         //у первого события ничего не делаем
-        //оно выполнилось при добавлении помещения
+        //оно выполнилось при добавлении помещения или при повторном появлении долга
         return true;
     }
 

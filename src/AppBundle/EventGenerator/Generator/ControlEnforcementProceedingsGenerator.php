@@ -104,7 +104,7 @@ class ControlEnforcementProceedingsGenerator extends BaseGenerator implements Ge
 
         $currentDate = new \DateTime();
         $action = [
-            'process'   =>  'Исполнительное производство проводится',
+            'process'       =>  'Исполнительное производство проводится',
             'inactivity'    =>  'Бездействие ФССП',
             'finish'        =>  'Исполнительное производство окончено'
         ];

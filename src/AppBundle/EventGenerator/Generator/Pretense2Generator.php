@@ -2,6 +2,7 @@
 
 namespace AppBundle\EventGenerator\Generator;
 
+use AppBundle\Entity\Event;
 use AppBundle\Entity\Flat;
 use AppBundle\Entity\FlatEvent;
 use AppBundle\Service\FlatLogger;
@@ -138,5 +139,48 @@ class Pretense2Generator extends BaseGenerator implements GeneratorInterface
             //если была сформирована только "Претензия2" - следующее событие "Формирование заявления на выдачу судебного приказа"
             return $this->em->getRepository('AppBundle:Event')->findOneBy(['alias' => 'formation_court_order']);
         }
+    }
+
+    public function miss(Request $request)
+    {
+        /** @var FlatEvent|null $flatEvent */
+        $flatEvent = $this->getFlatEvent($request->get('flat_id'));
+
+        if (!$flatEvent) {
+            return false;
+        }
+
+        /** @var Event|null $nextEvent */
+        $nextEvent = $this->getNextEvent($flatEvent);
+
+        if (!$nextEvent) {
+            return false;
+        }
+
+        if ($flatEvent->getFlat()->getFlatsEvents()->count() > 1) {
+            //если "Претензия2" уже формировалась - делаем пропуск у события "Претензия2" ничего не добавляя
+            $flatEvent
+                ->setDateGenerate(new \DateTime())
+                ->setData($this->getMissData());
+
+            $this->em->persist($flatEvent);
+        } else {
+            //если "Претензия2" еще не формировалась
+            $missFlatEvent = new FlatEvent();
+            $missFlatEvent
+                ->setFlat($flatEvent->getFlat())
+                ->setDateGenerate(new \DateTime())
+                ->setEvent($nextEvent)
+                ->setData($this->getMissData());
+
+            $this->em->persist($missFlatEvent);
+        }
+
+        $this->em->flush();
+
+        //добавляем лог - пропущено событие
+        $this->flatLogger->log($flatEvent->getFlat(), "<b>{$nextEvent->getName()}</b><br>Пропущено");
+
+        return true;
     }
 }
