@@ -121,6 +121,11 @@ class Flat
     private $isGenerateErrors;
 
     /**
+     * @ORM\Column(name="event_data", type="object", nullable=true)
+     */
+    private $eventData;
+
+    /**
      * @ORM\ManyToOne(targetEntity="House", inversedBy="flats")
      * @ORM\JoinColumn(name="house_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      */
@@ -171,6 +176,28 @@ class Flat
         }
 
         return false;
+    }
+
+    /**
+     * @param $parameter
+     * @param bool $default
+     * @return bool
+     */
+    public function getEventDataParameter($parameter, $default = false)
+    {
+        return $this->eventData[$parameter] ?? $default;
+    }
+
+    /**
+     * @param $parameter
+     * @param $value
+     * @return Flat
+     */
+    public function setEventDataParameter($parameter, $value)
+    {
+        $this->eventData[$parameter] = $value;
+
+        return $this;
     }
 
     /**
@@ -528,6 +555,30 @@ class Flat
     public function getIsGenerateErrors()
     {
         return $this->isGenerateErrors;
+    }
+
+    /**
+     * Set eventData
+     *
+     * @param \stdClass $eventData
+     *
+     * @return Flat
+     */
+    public function setEventData($eventData)
+    {
+        $this->eventData = $eventData;
+
+        return $this;
+    }
+
+    /**
+     * Get eventData
+     *
+     * @return \stdClass
+     */
+    public function getEventData()
+    {
+        return $this->eventData;
     }
 
     /**

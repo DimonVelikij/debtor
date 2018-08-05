@@ -137,6 +137,13 @@ class ControlEnforcementProceedingsGenerator extends BaseGenerator implements Ge
                 $this->em->flush();
                 break;
             case 'finish':
+                /** @var Flat $flat */
+                $flat = $currentFlatEvent->getFlat();
+                $flat->setEventData(null);
+
+                $this->em->persist($flat);
+                $this->em->flush();
+
                 //работа с должником прекращается
                 foreach ($currentFlatEvent->getFlat()->getFlatsEvents() as $flatEvent) {
                     $this->em->remove($flatEvent);

@@ -130,6 +130,14 @@ class SubmissionCommencementEnforcementProceedingsGenerator extends BaseGenerato
                 'confirm'           =>  true
             ]);
 
+        $flat = $currentFlatEvent->getFlat();
+        $flat
+            ->setEventDataParameter('enforcementNumber', $input['enforcementNumber'])
+            ->setEventDataParameter('bailiffName', $input['bailiffName'])
+            ->setEventDataParameter('bailiffContacts', $input['bailiffContacts']);
+
+        $this->em->persist($flat);
+
         $this->em->persist($currentFlatEvent);
         $this->em->flush();
 

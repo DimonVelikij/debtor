@@ -189,6 +189,13 @@ class VerificationCaseGenerator extends BaseGenerator implements GeneratorInterf
                     'show'              =>  $showData
                 ]);
 
+            $flat = $currentFlatEvent->getFlat();
+            $flat
+                ->setEventDataParameter('courtCaseNumber', $input['courtCaseNumber'])
+                ->setEventDataParameter('judge', $input['judge']);
+
+            $this->em->persist($flat);
+
             $this->em->persist($currentFlatEvent);
             $this->em->flush();
 
