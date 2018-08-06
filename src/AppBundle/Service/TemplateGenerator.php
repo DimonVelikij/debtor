@@ -20,8 +20,44 @@ class TemplateGenerator
         'street',
         'house_number',
         'flat_number',
-        'company_name',
-        'company_address'
+        'subscriber',
+        'personal_account',
+        //статус лицевого счета
+        'debtor',
+        //субъект
+        //статус
+        //доля
+        //дата рожд ОГРН ОГРНИП
+        //место рождения ИНН КПП
+        //место жительства
+        'management_start_date',
+        'management_end_date',
+        'legal_document_name',
+        'start_debt_period',
+        'end_debt_period',
+        'period_accrued_debt',
+        'period_accrued_fine',
+        'period_pay_debt',
+        'period_pay_fine',
+        'sum_debt',
+        'sum_fine',
+        'judicial_sector_name',
+        'judicial_sector_address',
+        //пошлина (ИскП) ????
+        //пошлина (ПрикП) ????
+        //полшлина (ИскП) ????
+        //дата получения приказа
+        //номер судебного приказа
+        //дата судебного приказа
+        //взыскано (долг) ????
+        //взыскано (пени) ????
+        //взыскано (пошлина) ????
+        'fssp_department_name',
+        'fssp_department_address',
+        //дата подачи приказа в ФССП ????
+        //исполнительное производство ????
+        //итого задолженность ????
+        //итого пошлина ????
     ];
 
     /** @var array названия полей подстановки в шаблон */
@@ -30,8 +66,24 @@ class TemplateGenerator
         'Улица',
         'Номер дома',
         'Номер помещения',
-        'Название управляющей компании',
-        'Адрес управляющей компании'
+        'Лицевой счет',
+        'Абонент',
+        'Должник',
+        'Дата начала управления МКД',
+        'Дата окончанию управления МКД',
+        'Документ на право управления МКД',
+        'Начало периода взыскания',
+        'Конец периода взыскания',
+        'Начислено за период (долг)',
+        'Начислено за период (пени)',
+        'Оплачено за период (долг)',
+        'Оплачено за период (пени)',
+        'Размер долга',
+        'Размер пени',
+        'Суд',
+        'Адрес суда',
+        'Отделение ФССП',
+        'Адрес отделения ФССП'
     ];
 
     /** @var array какую сущность использовать для получения значения поля подстановки */
@@ -40,8 +92,24 @@ class TemplateGenerator
         'street'            => 'flat',
         'house_number'      => 'flat',
         'flat_number'       => 'flat',
-        'company_name'      => 'flat',
-        'company_address'   => 'flat'
+        'personal_account'  =>  false,
+        'subscriber'        =>  false,
+        'debtor'            =>  false,
+        'management_start_date' =>  'flat',
+        'management_end_date'   =>  'flat',
+        'legal_document_name'   =>  'flat',
+        'start_debt_period'     =>  'flat',
+        'end_debt_period'       =>  'flat',
+        'period_accrued_debt'   =>  'flat',
+        'period_accrued_fine'   =>  'flat',
+        'period_pay_debt'       =>  'flat',
+        'period_pay_fine'       =>  'flat',
+        'sum_debt'              =>  'flat',
+        'sum_fine'              =>  'flat',
+        'judicial_sector_name'  =>  'flat',
+        'judicial_sector_address'   =>  'flat',
+        'fssp_department_name'      =>  'flat',
+        'fssp_department_address'   =>  'flat'
     ];
 
     /** @var EntityManager  */
@@ -126,17 +194,17 @@ class TemplateGenerator
                     ),
                     $template
                 );
-
-                $pdfDir = '/pdf/' . $flat->getId() . '/' . $event->getAlias() . '_' . md5(uniqid()) . '.pdf';
-
-                //генерация pdf
-                /*$this->pdfGenerator->generateFromHtml(
-                    $this->wrapUpTemplate($template),
-                    $this->rootDir . $pdfDir
-                );*/
-
-                $pdfLinks[] = $pdfDir;
             }
+
+            $pdfDir = '/pdf/' . $flat->getId() . '/' . $event->getAlias() . '_' . md5(uniqid()) . '.pdf';
+
+            //генерация pdf
+            $this->pdfGenerator->generateFromHtml(
+                $this->wrapUpTemplate($template),
+                $this->rootDir . $pdfDir
+            );
+
+            $pdfLinks[] = $pdfDir;
         }
 
         return $pdfLinks;
@@ -188,7 +256,7 @@ class TemplateGenerator
     }
 
     /**
-     * получение названия города
+     * название города
      * @param Flat $flat
      * @return string
      */
@@ -198,7 +266,7 @@ class TemplateGenerator
     }
 
     /**
-     * получение названия улицы
+     * название улицы
      * @param Flat $flat
      * @return string
      */
@@ -208,7 +276,7 @@ class TemplateGenerator
     }
 
     /**
-     * получение номера дома
+     * номер дома
      * @param Flat $flat
      * @return string
      */
@@ -218,7 +286,7 @@ class TemplateGenerator
     }
 
     /**
-     * получение номера помещения
+     * номер помещения
      * @param Flat $flat
      * @return string
      */
@@ -228,22 +296,188 @@ class TemplateGenerator
     }
 
     /**
-     * получение названия управляющей компании
-     * @param Flat $flat
+     * лицевой счет
+     * @param $object
      * @return string
      */
-    private function getCompanyNameFieldValue(Flat $flat)
+    private function getPersonalAccountFieldValue($object)
     {
-        return $flat->getHouse()->getCompany()->getTitle();
+        return $object->getPersonalAccount()->getAccount();
     }
 
     /**
-     * получение адреса управляющей компании
+     * ФИО абонента
+     * @param Subscriber $object
+     * @return string
+     */
+    private function getSubscriberFieldValue(Subscriber $object)
+    {
+        return $object->getName();
+    }
+
+    /**
+     * ФИО должника
+     * @param Debtor $object
+     * @return string
+     */
+    private function getDebtorFieldValue(Debtor $object)
+    {
+        return $object->getName();
+    }
+
+    /**
+     * дата начала управления МКД
      * @param Flat $flat
      * @return string
      */
-    private function getCompanyAddressFieldValue(Flat $flat)
+    private function getManagementStartDateFieldValue(Flat $flat)
     {
-        return $flat->getHouse()->getCompany()->getAddress();
+        return $flat->getHouse()->getMkd()->getManagementStartDate()->format('d.m.Y');
+    }
+
+    /**
+     * дата окончания управления МКД
+     * @param Flat $flat
+     * @return string
+     */
+    private function getManagementEndDateFieldValue(Flat $flat)
+    {
+        return $flat->getHouse()->getMkd()->getManagementEndDate() ?
+            $flat->getHouse()->getMkd()->getManagementEndDate()->format('d.m.Y') :
+            '';
+    }
+
+    /**
+     * название документа на право управления МКД
+     * @param Flat $flat
+     * @return string
+     */
+    private function getLegalDocumentNameFieldValue(Flat $flat)
+    {
+        return $flat->getHouse()->getMkd()->getLegalDocumentName();
+    }
+
+    /**
+     * начало периода взыскания
+     * @param Flat $flat
+     * @return string
+     */
+    private function getStartDebtPeriodFieldValue(Flat $flat)
+    {
+        return $flat->getStartDebtPeriod() ?
+            $flat->getStartDebtPeriod()->format('d.m.Y') :
+            '';
+    }
+
+    /**
+     * конец периода взыскания
+     * @param Flat $flat
+     * @return string
+     */
+    private function getEndDebtPeriodFieldValue(Flat $flat)
+    {
+        return $flat->getEndDebtPeriod() ?
+            $flat->getEndDebtPeriod()->format('d.m.Y') :
+            '';
+    }
+
+    /**
+     * начислено за период (долг)
+     * @param Flat $flat
+     * @return float
+     */
+    private function getPeriodAccruedDebtFieldValue(Flat $flat)
+    {
+        return $flat->getPeriodAccruedDebt();
+    }
+
+    /**
+     * начислено за период (пени)
+     * @param Flat $flat
+     * @return float
+     */
+    private function getPeriodAccruedFineFieldValue(Flat $flat)
+    {
+        return $flat->getPeriodAccruedFine();
+    }
+
+    /**
+     * за период оплачено долга
+     * @param Flat $flat
+     * @return float
+     */
+    private function getPeriodPayDebtFieldValue(Flat $flat)
+    {
+        return $flat->getPeriodPayDebt();
+    }
+
+    /**
+     * за период оплачено пени
+     * @param Flat $flat
+     * @return float
+     */
+    private function getPeriodPayFineFieldValue(Flat $flat)
+    {
+        return $flat->getPeriodPayFine();
+    }
+
+    /**
+     * размер долга
+     * @param Flat $flat
+     * @return float
+     */
+    private function getSumDebtFieldValue(Flat $flat)
+    {
+        return $flat->getSumDebt();
+    }
+
+    /**
+     * размер пени
+     * @param Flat $flat
+     * @return float
+     */
+    private function getSumFineFieldValue(Flat $flat)
+    {
+        return $flat->getSumFine();
+    }
+
+    /**
+     * суд
+     * @param Flat $flat
+     * @return string
+     */
+    private function getJudicialSectorNameFieldValue(Flat $flat)
+    {
+        return $flat->getHouse()->getMkd()->getJudicialSector()->getName();
+    }
+
+    /**
+     * адрес суда
+     * @param Flat $flat
+     * @return string
+     */
+    private function getJudicialSectorAddressFieldValue(Flat $flat)
+    {
+        return $flat->getHouse()->getMkd()->getJudicialSector()->getAddress();
+    }
+
+    /**
+     * отделение ФССП
+     * @param Flat $flat
+     * @return string
+     */
+    private function getFsspDepartmentNameFieldValue(Flat $flat)
+    {
+        return $flat->getHouse()->getMkd()->getFsspDepartment()->getName();
+    }
+
+    /**
+     * адрес ФССП
+     * @param Flat $flat
+     * @return string
+     */
+    private function getFsspDepartmentAddressFieldValue(Flat $flat)
+    {
+        return $flat->getHouse()->getMkd()->getFsspDepartment()->getAddress();
     }
 }
