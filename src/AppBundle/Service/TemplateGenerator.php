@@ -24,7 +24,7 @@ class TemplateGenerator
         'personal_account',
         //статус лицевого счета
         'debtor',
-        //субъект
+        'ownership_status',
         //статус
         //доля
         //дата рожд ОГРН ОГРНИП
@@ -69,6 +69,7 @@ class TemplateGenerator
         'Лицевой счет',
         'Абонент',
         'Должник',
+        'Субъект',
         'Дата начала управления МКД',
         'Дата окончанию управления МКД',
         'Документ на право управления МКД',
@@ -88,25 +89,26 @@ class TemplateGenerator
 
     /** @var array какую сущность использовать для получения значения поля подстановки */
     private static $templateFieldValueEntity = [
-        'city'              => 'flat',
-        'street'            => 'flat',
-        'house_number'      => 'flat',
-        'flat_number'       => 'flat',
-        'personal_account'  =>  false,
-        'subscriber'        =>  false,
-        'debtor'            =>  false,
-        'management_start_date' =>  'flat',
-        'management_end_date'   =>  'flat',
-        'legal_document_name'   =>  'flat',
-        'start_debt_period'     =>  'flat',
-        'end_debt_period'       =>  'flat',
-        'period_accrued_debt'   =>  'flat',
-        'period_accrued_fine'   =>  'flat',
-        'period_pay_debt'       =>  'flat',
-        'period_pay_fine'       =>  'flat',
-        'sum_debt'              =>  'flat',
-        'sum_fine'              =>  'flat',
-        'judicial_sector_name'  =>  'flat',
+        'city'                      => 'flat',
+        'street'                    => 'flat',
+        'house_number'              => 'flat',
+        'flat_number'               => 'flat',
+        'personal_account'          =>  false,
+        'subscriber'                =>  false,
+        'debtor'                    =>  false,
+        'ownership_status'          =>  false,
+        'management_start_date'     =>  'flat',
+        'management_end_date'       =>  'flat',
+        'legal_document_name'       =>  'flat',
+        'start_debt_period'         =>  'flat',
+        'end_debt_period'           =>  'flat',
+        'period_accrued_debt'       =>  'flat',
+        'period_accrued_fine'       =>  'flat',
+        'period_pay_debt'           =>  'flat',
+        'period_pay_fine'           =>  'flat',
+        'sum_debt'                  =>  'flat',
+        'sum_fine'                  =>  'flat',
+        'judicial_sector_name'      =>  'flat',
         'judicial_sector_address'   =>  'flat',
         'fssp_department_name'      =>  'flat',
         'fssp_department_address'   =>  'flat'
@@ -323,6 +325,22 @@ class TemplateGenerator
     private function getDebtorFieldValue(Debtor $object)
     {
         return $object->getName();
+    }
+
+    /**
+     * статус собственности
+     * @param Debtor $debtor
+     * @return string
+     */
+    private function getOwnershipStatusFieldValue(Debtor $debtor)
+    {
+        $ownerShipStatus = $debtor->getOwnershipStatus()->getTitle();
+
+        while ($parent = $debtor->getOwnershipStatus()->getParent()) {
+            $ownerShipStatus = $parent->getTitle();
+        }
+
+        return $ownerShipStatus;
     }
 
     /**
