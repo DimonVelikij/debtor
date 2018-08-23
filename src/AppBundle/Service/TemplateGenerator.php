@@ -6,7 +6,6 @@ use AppBundle\Entity\Debtor;
 use AppBundle\Entity\Event;
 use AppBundle\Entity\Flat;
 use AppBundle\Entity\Subscriber;
-use AppBundle\EventGenerator\EventType;
 use AppBundle\Exception\NoDebtorsException;
 use AppBundle\Exception\NoSubscribersException;
 use Doctrine\ORM\EntityManager;
@@ -164,15 +163,15 @@ class TemplateGenerator
      */
     public function generateTemplate(Flat $flat, Event $event)
     {
-        $subjects = $event->getType() == EventType::PRETENSE_ALIAS ?
+        $subjects = $event->getType() == Event::PRETENSE_ALIAS ?
             $flat->getSubscribers() :
             $flat->getDebtors();
 
-        if ($event->getType() == EventType::PRETENSE_ALIAS && !count($subjects)) {
+        if ($event->getType() == Event::PRETENSE_ALIAS && !count($subjects)) {
             throw new NoSubscribersException("Список абонентов пуст, для генерации шаблона '{$event->getName()}' нужно добавить хотя бы одного абонента");
         }
 
-        if ($event->getType() != EventType::PRETENSE_ALIAS && !count($subjects)) {
+        if ($event->getType() != Event::PRETENSE_ALIAS && !count($subjects)) {
             throw new NoDebtorsException("Список должников пуст, для генерации шаблона '{$event->getName()}' необходимо добавить хотя бы одного должника");
         }
 

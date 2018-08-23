@@ -2,7 +2,7 @@
 
 namespace AppBundle\Admin;
 
-use AppBundle\EventGenerator\EventType;
+use AppBundle\Entity\Event;
 use Ivory\CKEditorBundle\Form\Type\CKEditorType;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -98,7 +98,7 @@ class EventAdmin extends AbstractAdmin
                 'constraints'   =>  [
                     new NotBlank(['message' => 'Укажите тип'])
                 ],
-                'choices'       =>  EventType::$sonataTypeChoice,
+                'choices'       =>  Event::$sonataTypeChoice,
                 'disabled'      =>  true
             ])
             ->add('templateFields', ChoiceType::class, [
