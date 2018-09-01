@@ -13,104 +13,129 @@ use Knp\Bundle\SnappyBundle\Snappy\LoggableGenerator;
 
 class TemplateGenerator
 {
+    //текст сообщения, если не указано
+    const UNDEFINED = 'Не указано';
+    //данные для полей подставновки извлекаем из
+    const FLAT          = 'flat';//помещения
+    const SUBSCRIBER    = 'subscriber';//абонента
+    const DEBTOR        = 'debtor';//должника
+    const MIXED         = 'mixed';//абонетна или должника
+
     /** @var array алиасы полей подстановки в шаблон */
-    private static $templateFieldAliases = [
-        'city',
-        'street',
-        'house_number',
-        'flat_number',
-        'subscriber',
-        'personal_account',
-        //статус лицевого счета
-        'debtor',
-        'ownership_status',
-        //статус
-        //доля
-        //дата рожд ОГРН ОГРНИП
-        //место рождения ИНН КПП
-        //место жительства
-        'management_start_date',
-        'management_end_date',
-        'legal_document_name',
-        'start_debt_period',
-        'end_debt_period',
-        'period_accrued_debt',
-        'period_accrued_fine',
-        'period_pay_debt',
-        'period_pay_fine',
-        'sum_debt',
-        'sum_fine',
-        'judicial_sector_name',
-        'judicial_sector_address',
+    private static $templateFields = [
+        'street'                    =>  [
+            'title' =>  'Улица',
+            'type'  =>  self::FLAT
+        ],
+        'house_number'              =>  [
+            'title' =>  'Номер дома',
+            'type'  =>  self::FLAT
+        ],
+        'flat_number'               =>  [
+            'title' =>  'Квартира (комната)',
+            'type'  =>  self::FLAT
+        ],
+        'subscriber'                =>  [
+            'title' =>  'Абонент',
+            'type'  =>  self::SUBSCRIBER
+        ],
+        'personal_account'          =>  [
+            'title' =>  'Лицевой счет',
+            'type'  =>  self::MIXED
+        ],
+        'personal_account_status'   =>  [
+            'title' =>  'Статус лицевого счета',
+            'type'  =>  self::MIXED
+        ],
+        'debtor'                    =>  [
+            'title' =>  'Должник',
+            'type'  =>  self::DEBTOR
+        ],
+        'debtor_type'               =>  [
+            'title' =>  'Субъект',
+            'type'  =>  self::DEBTOR
+        ],
+        'ownership_status'          =>  [
+            'title' =>  'Статус',
+            'type'  =>  self::DEBTOR
+        ],
+        'debtor_info'               =>  [
+            'title' =>  'Информация о должнике (ОГРН/ОГРНИП/ИНН/Место рожд/жит-ва/доля и пр)',
+            'type'  =>  self::DEBTOR
+        ],
+        'mkd_management_start_date' =>  [
+            'title' =>  'Дата начала управления МКД',
+            'type'  =>  self::FLAT
+        ],
+        'mkd_management_end_date'   =>  [
+            'title' =>  'Дата окончания управления МКД',
+            'type'  =>  self::FLAT
+        ],
+        'mkd_legal_document_name'   =>  [
+            'title' =>  'Документ на право управления МКД',
+            'type'  =>  self::FLAT
+        ],
+        'start_debt_period'         =>  [
+            'title' =>  'Начало периода взыскания',
+            'type'  =>  self::FLAT
+        ],
+        'end_debt_period'           =>  [
+            'title' =>  'Конец периода взыскания',
+            'type'  =>  self::FLAT
+        ],
+        'period_accrued_debt'       =>  [
+            'title' =>  'Начислено за период (долг)',
+            'type'  =>  self::DEBTOR
+        ],
+        'period_accrued_fine'       =>  [
+            'title' =>  'Начислено за период (пени)',
+            'type'  =>  self::DEBTOR
+        ],
+        'period_pay_debt'           =>  [
+            'title' =>  'Оплачено за период (долг)',
+            'type'  =>  self::DEBTOR
+        ],
+        'period_pay_fine'           =>  [
+            'title' =>  'Оплачено за период (пени)',
+            'type'  =>  self::DEBTOR
+        ],
+        'sum_debt'                  =>  [
+            'title' =>  'Размер долга',
+            'type'  =>  self::DEBTOR
+        ],
+        'sum_fine'                  =>  [
+            'title' =>  'Размер пени',
+            'type'  =>  self::DEBTOR
+        ],
+        'judicial_sector_name'      =>  [
+            'title' =>  'Суд',
+            'type'  =>  self::FLAT
+        ],
+        'judicial_sector_address'   =>  [
+            'title' =>  'Адрес суда',
+            'type'  =>  self::FLAT
+        ],
         //пошлина (ИскП) ????
         //пошлина (ПрикП) ????
         //полшлина (ИскП) ????
-        //дата получения приказа
-        //номер судебного приказа
-        //дата судебного приказа
+        //дата получения приказа ????
+        //номер судебного приказа ????
+        //дата судебного приказа ????
         //взыскано (долг) ????
         //взыскано (пени) ????
         //взыскано (пошлина) ????
-        'fssp_department_name',
-        'fssp_department_address',
+        'fssp_department_name'      =>  [
+            'title' =>  'Отделение ФССП',
+            'type'  =>  self::FLAT
+        ],
+        'fssp_department_address'   =>  [
+            'title' =>  'Адрес отделения ФССП',
+            'type'  =>  self::FLAT
+        ]
         //дата подачи приказа в ФССП ????
         //исполнительное производство ????
         //итого задолженность ????
         //итого пошлина ????
-    ];
-
-    /** @var array названия полей подстановки в шаблон */
-    private static $templateFieldTitles = [
-        'Город',
-        'Улица',
-        'Номер дома',
-        'Номер помещения',
-        'Лицевой счет',
-        'Абонент',
-        'Должник',
-        'Субъект',
-        'Дата начала управления МКД',
-        'Дата окончанию управления МКД',
-        'Документ на право управления МКД',
-        'Начало периода взыскания',
-        'Конец периода взыскания',
-        'Начислено за период (долг)',
-        'Начислено за период (пени)',
-        'Оплачено за период (долг)',
-        'Оплачено за период (пени)',
-        'Размер долга',
-        'Размер пени',
-        'Суд',
-        'Адрес суда',
-        'Отделение ФССП',
-        'Адрес отделения ФССП'
-    ];
-
-    /** @var array какую сущность использовать для получения значения поля подстановки */
-    private static $templateFieldValueEntity = [
-        'city'                      => 'flat',
-        'street'                    => 'flat',
-        'house_number'              => 'flat',
-        'flat_number'               => 'flat',
-        'personal_account'          =>  false,
-        'subscriber'                =>  false,
-        'debtor'                    =>  false,
-        'ownership_status'          =>  false,
-        'management_start_date'     =>  'flat',
-        'management_end_date'       =>  'flat',
-        'legal_document_name'       =>  'flat',
-        'start_debt_period'         =>  'flat',
-        'end_debt_period'           =>  'flat',
-        'period_accrued_debt'       =>  'flat',
-        'period_accrued_fine'       =>  'flat',
-        'period_pay_debt'           =>  'flat',
-        'period_pay_fine'           =>  'flat',
-        'sum_debt'                  =>  'flat',
-        'sum_fine'                  =>  'flat',
-        'judicial_sector_name'      =>  'flat',
-        'judicial_sector_address'   =>  'flat',
-        'fssp_department_name'      =>  'flat',
-        'fssp_department_address'   =>  'flat'
     ];
 
     /** @var EntityManager  */
@@ -140,14 +165,20 @@ class TemplateGenerator
 
     /**
      * получение доступных полей для шаблона
+     * @param Event $event
      * @return array
      */
-    public function getTemplateFields()
+    public function getTemplateFields(Event $event)
     {
         $templateFields = [];
 
-        for ($i = 0; $i < count(TemplateGenerator::$templateFieldAliases); $i++) {
-            $templateFields[TemplateGenerator::$templateFieldTitles[$i] . ' {{' . TemplateGenerator::$templateFieldAliases[$i] . '}}'] = TemplateGenerator::$templateFieldAliases[$i];
+        foreach (self::$templateFields as $fieldAlias => $fieldParams) {
+            if (
+                ($event->getType() == Event::PRETENSE_ALIAS && $fieldParams['type'] != self::DEBTOR) ||//если у события тип "Претензия" - выводим все поля кроме типа "debtor"
+                ($event->getType() != Event::PRETENSE_ALIAS && $fieldParams['type'] != self::SUBSCRIBER)//если у события тип не "Претензия" - выводим все поля кроме типа "subscriber"
+            ) {
+                $templateFields[$fieldParams['title'] . ' {{' . $fieldAlias . '}}'] = $fieldAlias;
+            }
         }
 
         return $templateFields;
@@ -163,6 +194,7 @@ class TemplateGenerator
      */
     public function generateTemplate(Flat $flat, Event $event)
     {
+        //если тип события "Претензия" - достаем список абонентов, иначе должников
         $subjects = $event->getType() == Event::PRETENSE_ALIAS ?
             $flat->getSubscribers() :
             $flat->getDebtors();
@@ -184,15 +216,12 @@ class TemplateGenerator
 
             /** @var string $field */
             foreach ($event->getTemplateFields() as $field) {
-                $fieldValueMethod = $this->getFieldValueMethod($field);
+                $fieldValueMethod = $this->getFieldValueMethod($field);//вызываемый метод для получения значения подстановки
+                $fieldValueMethodParam = self::$templateFields[$field]['type'] == self::FLAT ? $flat : $subject;//передаваемый параметр
 
                 $template = $this->templateReplace(
                     '{{' . $field . '}}',
-                    $this->$fieldValueMethod(
-                        TemplateGenerator::$templateFieldValueEntity[$field] == 'flat' ?
-                            $flat :
-                            $subject
-                    ),
+                    $this->$fieldValueMethod($fieldValueMethodParam),
                     $template
                 );
             }
@@ -257,16 +286,6 @@ class TemplateGenerator
     }
 
     /**
-     * название города
-     * @param Flat $flat
-     * @return string
-     */
-    private function getCityFieldValue(Flat $flat)
-    {
-        return $flat->getHouse()->getStreet()->getCity()->getTitle();
-    }
-
-    /**
      * название улицы
      * @param Flat $flat
      * @return string
@@ -297,6 +316,16 @@ class TemplateGenerator
     }
 
     /**
+     * ФИО абонента
+     * @param Subscriber $subscriber
+     * @return string
+     */
+    private function getSubscriberFieldValue(Subscriber $subscriber)
+    {
+        return $subscriber->getName();
+    }
+
+    /**
      * лицевой счет
      * @param $object
      * @return string
@@ -307,23 +336,49 @@ class TemplateGenerator
     }
 
     /**
-     * ФИО абонента
-     * @param Subscriber $object
+     * статус лицевого счета
+     * @param $object
      * @return string
      */
-    private function getSubscriberFieldValue(Subscriber $object)
+    private function getPersonalAccountStatusFieldValue($object)
     {
-        return $object->getName();
+        $currentSubscriber = $object;
+
+        if ($object instanceof Debtor) {
+            $debtorPersonalAccount = $object->getPersonalAccount()->getAccount();
+
+            /** @var Subscriber $subscriber */
+            foreach ($object->getFlat()->getSubscribers() as $subscriber) {
+                if ($subscriber->getPersonalAccount()->getAccount() == $debtorPersonalAccount) {
+                    $currentSubscriber = $subscriber;
+                    break;
+                }
+            }
+        }
+
+        return $currentSubscriber->getDateCloseAccount() && $currentSubscriber->getDateCloseAccount() < new \DateTime() ?
+            'Закрыт' :
+            'Открыт';
     }
 
     /**
      * ФИО должника
-     * @param Debtor $object
+     * @param Debtor $debtor
      * @return string
      */
-    private function getDebtorFieldValue(Debtor $object)
+    private function getDebtorFieldValue(Debtor $debtor)
     {
-        return $object->getName();
+        return $debtor->getName();
+    }
+
+    /**
+     * Субъект
+     * @param Debtor $debtor
+     * @return string
+     */
+    private function getDebtorTypeFieldValue(Debtor $debtor)
+    {
+        return $debtor->getType()->getTitle();
     }
 
     /**
@@ -333,13 +388,52 @@ class TemplateGenerator
      */
     private function getOwnershipStatusFieldValue(Debtor $debtor)
     {
-        $ownerShipStatus = $debtor->getOwnershipStatus()->getTitle();
+        $ownerShipStatus = $debtor->getOwnershipStatus();
 
-        while ($parent = $debtor->getOwnershipStatus()->getParent()) {
-            $ownerShipStatus = $parent->getTitle();
+        //если нужно будет вывести родительский статус - раскомментить
+        /*while ($parent = $ownerShipStatus->getParent()) {
+            $ownerShipStatus = $parent;
+        }*/
+
+        return $ownerShipStatus->getTitle();
+    }
+
+    /**
+     * информация о должнике
+     * @param Debtor $debtor
+     * @return string
+     */
+    private function getDebtorInfoFieldValue(Debtor $debtor)
+    {
+        $debtorInfo = '';
+        $ownershipStatus = $debtor->getOwnershipStatus();
+
+        if ($ownershipStatus->getAlias() == 'owner_shared') {
+            $debtorInfo .= 'Доля: ' . $debtor->getShareSize() . '<br>';
         }
 
-        return $ownerShipStatus;
+        switch ($debtor->getType()->getAlias()) {
+            case 'individual':
+                $debtorInfo .=
+                    'Дата рождения: ' . ($debtor->getDateOfBirth() ? $debtor->getDateOfBirth()->format('d.m.Y') : self::UNDEFINED) . '<br>' .
+                    'Место рождения: ' . ($debtor->getPlaceOfBirth() ?: self::UNDEFINED) . '<br>' .
+                    'Место жительства: ' . ($debtor->getLocation() ?: self::UNDEFINED) . '<br>';
+                break;
+            case 'businessman':
+                $debtorInfo .=
+                    'ОГРНИП: ' . ($debtor->getOgrnip() ?: self::UNDEFINED) . '<br>' .
+                    'ИНН: ' . ($debtor->getInn() ?: self::UNDEFINED) . '<br>' .
+                    'Место жительства: ' . ($debtor->getLocation() ?: self::UNDEFINED) . '<br>';
+                break;
+            case 'legal':
+                $debtorInfo .=
+                    'ОГРН: ' . ($debtor->getOgrn() ?: self::UNDEFINED) . '<br>' .
+                    'ИНН: ' . ($debtor->getInn() ?: self::UNDEFINED) . '<br>' .
+                    'Место нахождения: ' . ($debtor->getLocation() ?: self::UNDEFINED) . '<br>';
+                break;
+        }
+
+        return $debtorInfo;
     }
 
     /**
@@ -347,9 +441,11 @@ class TemplateGenerator
      * @param Flat $flat
      * @return string
      */
-    private function getManagementStartDateFieldValue(Flat $flat)
+    private function getMkdManagementStartDateFieldValue(Flat $flat)
     {
-        return $flat->getHouse()->getMkd()->getManagementStartDate()->format('d.m.Y');
+        return $flat->getHouse()->getMkd()->getManagementStartDate() ?
+            $flat->getHouse()->getMkd()->getManagementStartDate()->format('d.m.Y') :
+            self::UNDEFINED;
     }
 
     /**
@@ -357,11 +453,11 @@ class TemplateGenerator
      * @param Flat $flat
      * @return string
      */
-    private function getManagementEndDateFieldValue(Flat $flat)
+    private function getMkdManagementEndDateFieldValue(Flat $flat)
     {
         return $flat->getHouse()->getMkd()->getManagementEndDate() ?
             $flat->getHouse()->getMkd()->getManagementEndDate()->format('d.m.Y') :
-            '';
+            self::UNDEFINED;
     }
 
     /**
@@ -369,9 +465,11 @@ class TemplateGenerator
      * @param Flat $flat
      * @return string
      */
-    private function getLegalDocumentNameFieldValue(Flat $flat)
+    private function getMkdLegalDocumentNameFieldValue(Flat $flat)
     {
-        return $flat->getHouse()->getMkd()->getLegalDocumentName();
+        return $flat->getHouse()->getMkd() ?
+            $flat->getHouse()->getMkd()->getLegalDocumentName() :
+            self::UNDEFINED;
     }
 
     /**
@@ -383,7 +481,7 @@ class TemplateGenerator
     {
         return $flat->getStartDebtPeriod() ?
             $flat->getStartDebtPeriod()->format('d.m.Y') :
-            '';
+            self::UNDEFINED;
     }
 
     /**
@@ -395,67 +493,148 @@ class TemplateGenerator
     {
         return $flat->getEndDebtPeriod() ?
             $flat->getEndDebtPeriod()->format('d.m.Y') :
-            '';
+            self::UNDEFINED;
     }
 
     /**
      * начислено за период (долг)
-     * @param Flat $flat
-     * @return float
+     * @param Debtor $debtor
+     * @return string
      */
-    private function getPeriodAccruedDebtFieldValue(Flat $flat)
+    private function getPeriodAccruedDebtFieldValue(Debtor $debtor)
     {
-        return $flat->getPeriodAccruedDebt();
+        //есть вопрос по расчету
+        $flat = $debtor->getFlat();
+
+        if (!$flat->getPeriodAccruedDebt()) {
+            return self::UNDEFINED;
+        }
+
+        $periodAccruedDebt = $flat->getPeriodAccruedDebt();
+
+        //если долевой собственник - делим долги на всех
+        if ($debtor->getOwnershipStatus()->getAlias() == 'owner_shared') {
+            //количество собственников - вычисляем из размера доли
+            $size = (int)explode('/', $debtor->getShareSize())[1];
+
+            $periodAccruedDebt = $periodAccruedDebt/$size;
+        }
+
+        return number_format($periodAccruedDebt, 2, '.', ' ');
     }
 
     /**
      * начислено за период (пени)
-     * @param Flat $flat
-     * @return float
+     * @param Debtor $debtor
+     * @return string
      */
-    private function getPeriodAccruedFineFieldValue(Flat $flat)
+    private function getPeriodAccruedFineFieldValue(Debtor $debtor)
     {
-        return $flat->getPeriodAccruedFine();
+        //есть вопрос по расчету
+        $flat = $debtor->getFlat();
+
+        if (!$flat->getPeriodAccruedFine()) {
+            return self::UNDEFINED;
+        }
+
+        $periodAccruedFine = $flat->getPeriodAccruedFine();
+
+        //если долевой собственник - делим долги на всех
+        if ($debtor->getOwnershipStatus()->getAlias() == 'owner_shared') {
+            //количество собственников - вычисляем из размера доли
+            $size = (int)explode('/', $debtor->getShareSize())[1];
+
+            $periodAccruedFine = $periodAccruedFine/$size;
+        }
+
+        return number_format($periodAccruedFine, 2, '.', ' ');
     }
 
     /**
      * за период оплачено долга
-     * @param Flat $flat
-     * @return float
+     * @param Debtor $debtor
+     * @return string
      */
-    private function getPeriodPayDebtFieldValue(Flat $flat)
+    private function getPeriodPayDebtFieldValue(Debtor $debtor)
     {
-        return $flat->getPeriodPayDebt();
+        //есть вопрос по расчету
+        $flat = $debtor->getFlat();
+
+        if (!$flat->getPeriodPayDebt()) {
+            return self::UNDEFINED;
+        }
+
+        return number_format($flat->getPeriodPayDebt(), 2, '.', ' ');
     }
 
     /**
      * за период оплачено пени
-     * @param Flat $flat
-     * @return float
+     * @param Debtor $debtor
+     * @return string
      */
-    private function getPeriodPayFineFieldValue(Flat $flat)
+    private function getPeriodPayFineFieldValue(Debtor $debtor)
     {
-        return $flat->getPeriodPayFine();
+        //есть вопрос по расчету
+        $flat = $debtor->getFlat();
+
+        if (!$flat->getPeriodPayFine()) {
+            return self::UNDEFINED;
+        }
+
+        return number_format($flat->getPeriodPayFine(), 2, '.', ' ');
     }
 
     /**
      * размер долга
-     * @param Flat $flat
-     * @return float
+     * @param Debtor $debtor
+     * @return string
      */
-    private function getSumDebtFieldValue(Flat $flat)
+    private function getSumDebtFieldValue(Debtor $debtor)
     {
-        return $flat->getSumDebt();
+        //есть вопрос по расчету
+        $flat = $debtor->getFlat();
+
+        if (!$flat->getSumDebt()) {
+            return self::UNDEFINED;
+        }
+
+        $sumDebt = $flat->getSumDebt();
+
+        //если долевой собственник - делим долги на всех
+        if ($debtor->getOwnershipStatus()->getAlias() == 'owner_shared') {
+            //количество собственников - вычисляем из размера доли
+            $size = (int)explode('/', $debtor->getShareSize())[1];
+
+            $sumDebt = $sumDebt/$size;
+        }
+
+        return number_format($sumDebt, 2, '.', ' ');
     }
 
     /**
      * размер пени
-     * @param Flat $flat
-     * @return float
+     * @param Debtor $debtor
+     * @return string
      */
-    private function getSumFineFieldValue(Flat $flat)
+    private function getSumFineFieldValue(Debtor $debtor)
     {
-        return $flat->getSumFine();
+        $flat = $debtor->getFlat();
+
+        if (!$flat->getSumFine()) {
+            return self::UNDEFINED;
+        }
+
+        $sumFine = $flat->getSumFine();
+
+        //если долевой собственник - делим долги на всех
+        if ($debtor->getOwnershipStatus()->getAlias() == 'owner_shared') {
+            //количество собственников - вычисляем из размера доли
+            $size = (int)explode('/', $debtor->getShareSize())[1];
+
+            $sumFine = $sumFine/$size;
+        }
+
+        return number_format($sumFine, 2, '.', ' ');
     }
 
     /**

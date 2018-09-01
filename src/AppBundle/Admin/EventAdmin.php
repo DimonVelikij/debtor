@@ -75,8 +75,11 @@ class EventAdmin extends AbstractAdmin
      */
     protected function configureFormFields(FormMapper $formMapper)
     {
+        /** @var Event $event */
+        $event = $this->getSubject();
+
         /** @var array $templateFields */
-        $templateFields = $this->getTemplateGenerator()->getTemplateFields();//поля подстановки для шаблонов
+        $templateFields = $this->getTemplateGenerator()->getTemplateFields($event);//поля подстановки для шаблонов
 
         $formMapper
             ->add('name', TextType::class, [
