@@ -19,6 +19,7 @@
             {% if not is_next_events %}
                 <span class="label label-success">ожидает действий пользователя</span>
             {% endif %}
+            <a href="{{ path('admin_app_flat_finish', {flat_id: object.id}) }}">Завершить работу с помещением</a>
         {% else %}
             <span class="label label-success">отсутствует</span>
         {% endif %}

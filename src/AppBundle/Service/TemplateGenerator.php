@@ -229,10 +229,10 @@ class TemplateGenerator
             $pdfDir = '/pdf/' . $flat->getId() . '/' . $event->getAlias() . '_' . md5(uniqid()) . '.pdf';
 
             //генерация pdf
-            /*$this->pdfGenerator->generateFromHtml(
+            $this->pdfGenerator->generateFromHtml(
                 $this->wrapUpTemplate($template),
                 $this->rootDir . $pdfDir
-            );*/
+            );
 
             $pdfLinks[] = $pdfDir;
         }

@@ -4,6 +4,7 @@ namespace AppBundle\Controller\Admin;
 
 use AppBundle\Entity\Debtor;
 use AppBundle\Entity\Flat;
+use AppBundle\Entity\FlatEvent;
 use AppBundle\Entity\Log;
 use AppBundle\Entity\PersonalAccount;
 use AppBundle\Entity\Subscriber;
@@ -585,6 +586,62 @@ class FlatAdminController extends CRUDController
         }
 
         $this->get('app.generator.' . $event)->miss($request);
+
+        return $this->redirect($request->headers->get('referer') ?: $this->generateUrl('admin_app_flat_list'));
+    }
+
+    /**
+     * закончить работу с должником
+     * @param Request $request
+     * @param $flat_id
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @throws \Exception
+     */
+    public function finishAction(Request $request, $flat_id)
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        if (!$user) {
+            throw new AccessDeniedException('Bad credentials');
+        }
+
+        /** @var Flat $flat */
+        $flat = $this->getDoctrine()->getRepository('AppBundle:Flat')->find($flat_id);
+
+        if (!$flat) {
+            throw new \Exception("Undefined flat by id: '{$flat_id}'");
+        }
+
+        if (
+            //если пользователь не суперадмин и помещение не обслуживается УК пользователя
+            !$user->isSuperAdmin() &&
+            $flat->getHouse()->getCompany()->getId() !== $user->getCompany()->getId()
+        ) {
+            throw new AccessDeniedException('Bad credentials');
+        }
+
+        /** @var EntityManager $em */
+        $em = $this->getDoctrine()->getManager();
+
+        $flat
+            ->setEventData(null)
+            ->setSumDebt(0)
+            ->setSumFine(null)
+            ->setPeriodAccruedDebt(null)
+            ->setPeriodAccruedFine(null);
+
+        $em->persist($flat);
+        $em->flush();
+
+        /** @var FlatEvent $flatEvent */
+        foreach ($flat->getFlatsEvents() as $flatEvent) {
+            $em->remove($flatEvent);
+        }
+
+        $em->flush();
+
+        $this->get('app.service.flat_logger')->log($flat, "<b>Завершена работа с помещением</b>");
 
         return $this->redirect($request->headers->get('referer') ?: $this->generateUrl('admin_app_flat_list'));
     }

@@ -7,6 +7,7 @@ use AppBundle\Entity\Event;
 use AppBundle\Entity\Flat;
 use AppBundle\Entity\FlatEvent;
 use AppBundle\Entity\User;
+use AppBundle\EventGenerator\Generator\GeneratorAggregate;
 use AppBundle\Service\FlatLogger;
 use AppBundle\Validator\Constraints\FlatExist;
 use Doctrine\ORM\EntityManager;
@@ -68,6 +69,7 @@ class FlatAdmin extends AbstractAdmin
             ->add('process_user', 'process_user/{event}')
             ->add('perform', 'perform/{event}')
             ->add('miss', 'miss/{event}')
+            ->add('finish', 'finish/{flat_id}')
             ->remove('batch')
             ->remove('export')
             ->remove('delete');
@@ -320,7 +322,10 @@ class FlatAdmin extends AbstractAdmin
             //если были ошибки генерации шаблона, при сохранени записи считаем что они исправлены
             $flat->setIsGenerateErrors(false);
 
-            if (!$flat->getId()) {//если помещение новое
+            if (
+                !$flat->getId() ||
+                ($flat->getId() && !$flat->getFlatsEvents()->count() && $flat->getSumDebt() + $flat->getSumFine() >= GeneratorAggregate::TOTAL_DEBT)
+            ) {//если помещение новое или старое помещение у которого нет событий и сумма долга и пени больше либо равно 5000
                 /** @var Event $event */
                 $event = $em->getRepository('AppBundle:Event')->findOneBy(['alias' => 'entered_processing']);
                 //создаем событие "поступил в работу"

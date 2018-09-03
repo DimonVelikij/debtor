@@ -139,7 +139,12 @@ class ControlEnforcementProceedingsGenerator extends BaseGenerator implements Ge
             case 'finish':
                 /** @var Flat $flat */
                 $flat = $currentFlatEvent->getFlat();
-                $flat->setEventData(null);
+                $flat
+                    ->setEventData(null)
+                    ->setSumDebt(0)
+                    ->setSumFine(null)
+                    ->setPeriodAccruedDebt(null)
+                    ->setPeriodAccruedFine(null);
 
                 $this->em->persist($flat);
                 $this->em->flush();
