@@ -239,6 +239,7 @@ abstract class BaseGenerator
     protected function getMissData()
     {
         return [
+            'miss'  =>  true,
             'show'  =>  'Пропущено'
         ];
     }

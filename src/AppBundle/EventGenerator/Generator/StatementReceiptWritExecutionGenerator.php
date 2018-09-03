@@ -54,7 +54,7 @@ class StatementReceiptWritExecutionGenerator extends BaseGenerator implements Ge
             $dateMeeting = $flatEvent->getParameter('dateMeeting');
 
             return $this->dateDiffer->getDays(new \DateTime(), $dateMeeting);
-        } elseif ($flatEvent->getParameter('not_appealed')) {
+        } elseif ($flatEvent->getParameter('not_appealed') || $flatEvent->getParameter('miss')) {
             //если не обжаловано получение исполнительного листа - через 7 дней переходим к следующему событию
             return 7;
         } else {
@@ -72,8 +72,8 @@ class StatementReceiptWritExecutionGenerator extends BaseGenerator implements Ge
         if ($flatEvent->getParameter('appealed')) {
             //если обжаловано заявление на получение исполнительного листа - снова генерим текущее событие
             return [$this];
-        } elseif ($flatEvent->getParameter('not_appealed')) {
-            //если не обжаловано заявление на получение исполнительного листа - выполняем следующее событие
+        } elseif ($flatEvent->getParameter('not_appealed') || $flatEvent->getParameter('miss')) {
+            //если не обжаловано заявление на получение исполнительного листа или пропущено - выполняем следующее событие
             $generatorAlias = 'obtaining_writ_execution';
         } else {
             $generatorAlias = false;
@@ -262,19 +262,10 @@ class StatementReceiptWritExecutionGenerator extends BaseGenerator implements Ge
     {
         if ($flatEvent->getParameter('appealed')) {
             return $this->event;
-        } elseif ($flatEvent->getParameter('not_appealed')) {
+        } elseif ($flatEvent->getParameter('not_appealed') || $flatEvent->getParameter('miss')) {
             return $this->em->getRepository('AppBundle:Event')->findOneBy(['alias' => 'obtaining_writ_execution']);
         } else {
             return null;
         }
-    }
-
-    /**
-     * @return array
-     */
-    protected function getMissData()
-    {
-        //при пропуске "Получение исполнительного листа" - ставим метку подстверждения, чтобы вывелось следующее событие
-        return array_merge(parent::getMissData(), ['confirm' => true]);
     }
 }

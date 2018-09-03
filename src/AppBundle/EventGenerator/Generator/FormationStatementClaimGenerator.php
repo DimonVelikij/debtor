@@ -110,13 +110,4 @@ class FormationStatementClaimGenerator extends BaseGenerator implements Generato
     {
         return $this->em->getRepository('AppBundle:Event')->findOneBy(['alias' => 'applying_statement_claim']);
     }
-
-    /**
-     * @return array
-     */
-    protected function getMissData()
-    {
-        //при пропуске "Подача искового заявления" - ставим ему метку подтверждения, чтобы вывелось след событие
-        return array_merge(parent::getMissData(), ['confirm' => true]);
-    }
 }

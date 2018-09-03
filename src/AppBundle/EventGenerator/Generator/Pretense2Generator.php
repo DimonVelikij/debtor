@@ -143,6 +143,10 @@ class Pretense2Generator extends BaseGenerator implements GeneratorInterface
         }
     }
 
+    /**
+     * @param Request $request
+     * @return bool
+     */
     public function miss(Request $request)
     {
         /** @var FlatEvent|null $flatEvent */

@@ -54,7 +54,7 @@ class LegalProceedingsGenerator extends BaseGenerator implements GeneratorInterf
             $dateMeeting = $flatEvent->getParameter('dateMeeting');
 
             return $this->dateDiffer->getDays(new \DateTime(), $dateMeeting);
-        } elseif ($flatEvent->getParameter('confirm')) {
+        } elseif ($flatEvent->getParameter('confirm') || $flatEvent->getParameter('miss')) {
             //если решение принято - через 30 дней заявление на получение исполнительного листа
             return 30;
         } else {
@@ -72,8 +72,8 @@ class LegalProceedingsGenerator extends BaseGenerator implements GeneratorInterf
         if ($flatEvent->getParameter('deferred')) {
             //если заседание было отложено - возвращаем текущий генератор
             return [$this];
-        } elseif ($flatEvent->getParameter('confirm')) {
-            //если принято решение - возвращаем генератор "заявление на получение исполнительного листа"
+        } elseif ($flatEvent->getParameter('confirm') || $flatEvent->getParameter('miss')) {
+            //если принято решение или пропущено - возвращаем генератор "заявление на получение исполнительного листа"
             $generatorAlias = 'statement_receipt_writ_execution';
         } else {
             //пользователь ничего не делал - ничего не возвращаем
@@ -237,19 +237,10 @@ class LegalProceedingsGenerator extends BaseGenerator implements GeneratorInterf
     {
         if ($flatEvent->getParameter('deferred')) {
             return $this->event;
-        } elseif ($flatEvent->getParameter('confirm')) {
+        } elseif ($flatEvent->getParameter('confirm') || $flatEvent->getParameter('miss')) {
             return $this->em->getRepository('AppBundle:Event')->findOneBy(['alias' => 'statement_receipt_writ_execution']);
         } else {
             return null;
         }
-    }
-
-    /**
-     * @return array
-     */
-    protected function getMissData()
-    {
-        //при пропуске "Заявление на получение исполнительного листа" - ставим метку что оно не обжаловано, что вывелось следующее событие
-        return array_merge(parent::getMissData(), ['not_appealed' => true]);
     }
 }

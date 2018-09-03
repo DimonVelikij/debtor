@@ -54,7 +54,7 @@ class StatementCommencementEnforcementProceedingsGenerator extends BaseGenerator
             $deadline = $flatEvent->getParameter('deadline');
 
             return $this->dateDiffer->getDays(new \DateTime(), $deadline);
-        } elseif ($flatEvent->getParameter('perform')) {
+        } elseif ($flatEvent->getParameter('perform') || $flatEvent->getParameter('miss')) {
             //если успешное обращение - через 3 дня выполняем следующее событие
             return 3;
         } else {
@@ -72,7 +72,7 @@ class StatementCommencementEnforcementProceedingsGenerator extends BaseGenerator
         if ($flatEvent->getParameter('deferred')) {
             //если обращение в ФССП отложено - снова выполняем текущее событие
             return [$this];
-        } elseif ($flatEvent->getParameter('perform')) {
+        } elseif ($flatEvent->getParameter('perform') || $flatEvent->getParameter('miss')) {
             //если обращение в ФССП успешное - выполняем следующее событие
             $generatorAlias = 'submission_commencement_enforcement_proceedings';
         } else {
@@ -261,19 +261,10 @@ class StatementCommencementEnforcementProceedingsGenerator extends BaseGenerator
     {
         if ($flatEvent->getParameter('deferred')) {
             return $this->event;
-        } elseif ($flatEvent->getParameter('perform')) {
+        } elseif ($flatEvent->getParameter('perform') || $flatEvent->getParameter('miss')) {
             return $this->em->getRepository('AppBundle:Event')->findOneBy(['alias' => 'submission_commencement_enforcement_proceedings']);
         } else {
             return null;
         }
-    }
-
-    /**
-     * @return array
-     */
-    protected function getMissData()
-    {
-        //при пропуске "Подача заявления на возбуждение исполнительного производства" - ставим метку подстверждения, чтобы вывелось следующее событие
-        return array_merge(parent::getMissData(), ['confirm' => true]);
     }
 }

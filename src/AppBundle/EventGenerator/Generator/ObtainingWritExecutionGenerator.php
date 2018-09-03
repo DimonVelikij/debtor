@@ -124,17 +124,8 @@ class ObtainingWritExecutionGenerator extends BaseGenerator implements Generator
      */
     public function getNextEvent(FlatEvent $flatEvent)
     {
-        return $flatEvent->getParameter('confirm') ?
+        return $flatEvent->getParameter('confirm') || $flatEvent->getParameter('miss') ?
             $this->em->getRepository('AppBundle:Event')->findOneBy(['alias' => 'statement_commencement_enforcement_proceedings']) :
             null;
-    }
-
-    /**
-     * @return array
-     */
-    protected function getMissData()
-    {
-        //при пропуске "Заявление на возбуждение исполнительного производства" - ставим метку выполнено, чтобы вывелось следующее событие
-        return array_merge(parent::getMissData(), ['perform' => true]);
     }
 }

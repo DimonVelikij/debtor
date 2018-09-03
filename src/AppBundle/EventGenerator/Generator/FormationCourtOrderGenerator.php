@@ -114,14 +114,4 @@ class FormationCourtOrderGenerator extends BaseGenerator implements GeneratorInt
     {
         return $this->em->getRepository('AppBundle:Event')->findOneBy(['alias' => 'applying_court_order']);
     }
-
-    /**
-     * @return array
-     */
-    protected function getMissData()
-    {
-        //при пропуске "Формирование заявления на выдачу судебного приказа" ставим метку на событие
-        //"Подача заявления на выдачу судебного приказа" что оно подтверждено, чтобы вывелось следющее событие
-        return array_merge(parent::getMissData(), ['confirm' => true]);
-    }
 }

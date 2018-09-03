@@ -110,13 +110,4 @@ class StatementPreparationFSSPGenerator extends BaseGenerator implements Generat
     {
         return $this->em->getRepository('AppBundle:Event')->findOneBy(['alias' => 'applying_statement_fssp']);
     }
-
-    /**
-     * @return array
-     */
-    protected function getMissData()
-    {
-        //при пропуске "Подача заявления на бездействие ФССП" - ставим признак подтверждения, чтобы вывелось следующее событие
-        return array_merge(parent::getMissData(), ['confirm' => true]);
-    }
 }

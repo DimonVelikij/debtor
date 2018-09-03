@@ -46,7 +46,11 @@ class ObtainingCourtOrderGenerator extends BaseGenerator implements GeneratorInt
      */
     public function getTimePerformAction(FlatEvent $flatEvent)
     {
-        if ($flatEvent->getParameter('confirm') || $flatEvent->getParameter('cancel')) {
+        if (
+            $flatEvent->getParameter('confirm') ||
+            $flatEvent->getParameter('cancel') ||
+            $flatEvent->getParameter('miss')
+        ) {
             //если пользователь подтвердил или отменил получение приказа - выполняем следующее событие через 1 день
             return 1;
         } elseif ($flatEvent->getParameter('failure')) {
@@ -70,7 +74,7 @@ class ObtainingCourtOrderGenerator extends BaseGenerator implements GeneratorInt
         } elseif ($flatEvent->getParameter('failure')) {
             //если отказано получение приказа - следующее событие "Формирование заявления на выдачу судебного приказа"
             $generatorAlias = 'formation_court_order';
-        } elseif ($flatEvent->getParameter('cancel')) {
+        } elseif ($flatEvent->getParameter('cancel') || $flatEvent->getParameter('miss')) {
             //если отменено получение приказа - следующее событие "Формирование искового заявления"
             $generatorAlias = 'formation_statement_claim';
         } else {
@@ -199,7 +203,7 @@ class ObtainingCourtOrderGenerator extends BaseGenerator implements GeneratorInt
         $eventRepository = $this->em->getRepository('AppBundle:Event');
         if ($flatEvent->getParameter('failure')) {
             return $eventRepository->findOneBy(['alias' => 'formation_court_order']);
-        } elseif ($flatEvent->getParameter('cancel')) {
+        } elseif ($flatEvent->getParameter('cancel') || $flatEvent->getParameter('miss')) {
             return $eventRepository->findOneBy(['alias' =>  'formation_statement_claim']);
         } elseif ($flatEvent->getParameter('confirm')) {
             return $eventRepository->findOneBy(['alias'  =>  'statement_commencement_enforcement_proceedings']);

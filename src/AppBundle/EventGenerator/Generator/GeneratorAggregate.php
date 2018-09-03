@@ -76,9 +76,9 @@ class GeneratorAggregate
             $currentEventGenerator = $this->eventGenerators[$flatEvent->getEvent()->getAlias()];
 
             //если время не пришло
-            if ($this->dateDiffer->getDays($flatEvent->getDateGenerate(), new \DateTime()) < $currentEventGenerator->getTimePerformAction($flatEvent)) {
+            /*if ($this->dateDiffer->getDays($flatEvent->getDateGenerate(), new \DateTime()) < $currentEventGenerator->getTimePerformAction($flatEvent)) {
                 continue;
-            }
+            }*/
 
             $this->generateEvent($flatEvent);
         }

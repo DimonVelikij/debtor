@@ -48,8 +48,8 @@ class VerificationCaseGenerator extends BaseGenerator implements GeneratorInterf
      */
     public function getTimePerformAction(FlatEvent $flatEvent)
     {
-        if ($flatEvent->getParameter('failure')) {
-            //если пользователь выбрал отказ - генерируем следующее событие при следующем выполнении таски
+        if ($flatEvent->getParameter('failure') || $flatEvent->getParameter('miss')) {
+            //если пользователь выбрал отказ или пропустил - генерируем следующее событие при следующем выполнении таски
             return 0;
         } elseif ($flatEvent->getParameter('confirm')) {
             //если пользователь выбрал принятие - вычисляем разницу между текущим временем и датой заседания
@@ -71,7 +71,7 @@ class VerificationCaseGenerator extends BaseGenerator implements GeneratorInterf
     {
         if ($flatEvent->getParameter('failure')) {
             $generatorAlias = 'formation_statement_claim';
-        } elseif ($flatEvent->getParameter('confirm')) {
+        } elseif ($flatEvent->getParameter('confirm') || $flatEvent->getParameter('miss')) {
             $generatorAlias = 'legal_proceedings';
         } else {
             $generatorAlias = false;
@@ -254,19 +254,10 @@ class VerificationCaseGenerator extends BaseGenerator implements GeneratorInterf
         $eventRepository = $this->em->getRepository('AppBundle:Event');
         if ($flatEvent->getParameter('failure')) {
             return $eventRepository->findOneBy(['alias' => 'formation_statement_claim']);
-        } elseif ($flatEvent->getParameter('confirm')) {
+        } elseif ($flatEvent->getParameter('confirm') || $flatEvent->getParameter('miss')) {
             return $eventRepository->findOneBy(['alias' =>  'legal_proceedings']);
         } else {
             return null;
         }
-    }
-
-    /**
-     * @return array
-     */
-    protected function getMissData()
-    {
-        //при пропуске "Судебное делопроизводство" - ставим метку что оно выполнено, чтобы вывелось следующее событие
-        return array_merge(parent::getMissData(), ['confirm' => true]);
     }
 }

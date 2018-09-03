@@ -46,8 +46,8 @@ class ApplyingCourtOrderGenerator extends BaseGenerator implements GeneratorInte
      */
     public function getTimePerformAction(FlatEvent $flatEvent)
     {
-        //если подача заявления подтверждена, то можно приступать к следующему событию, иначе нельзя
-        return $flatEvent->getParameter('confirm') ? 40 : INF;
+        //если подача заявления подтверждена или пропущена, то можно приступать к следующему событию, иначе нельзя
+        return $flatEvent->getParameter('confirm') || $flatEvent->getParameter('miss') ? 40 : INF;
     }
 
     /**
@@ -57,7 +57,7 @@ class ApplyingCourtOrderGenerator extends BaseGenerator implements GeneratorInte
     public function getNextEventGenerators(FlatEvent $flatEvent)
     {
         //если подача заявления подтверждена, то отдаем следующие генераторы, иначе - пустой массив
-        return $flatEvent->getParameter('confirm') ?
+        return $flatEvent->getParameter('confirm') || $flatEvent->getParameter('miss') ?
             $this->nextEventGenerators :
             [];
     }
@@ -137,18 +137,8 @@ class ApplyingCourtOrderGenerator extends BaseGenerator implements GeneratorInte
      */
     public function getNextEvent(FlatEvent $flatEvent)
     {
-        return $flatEvent->getParameter('confirm') ?
+        return $flatEvent->getParameter('confirm') || $flatEvent->getParameter('miss') ?
             $this->em->getRepository('AppBundle:Event')->findOneBy(['alias' => 'obtaining_court_order']) :
             null;
-    }
-
-    /**
-     * @return array
-     */
-    protected function getMissData()
-    {
-        //при отмене "Подача заявления на выдачу судебного приказа" ставим метку на событие
-        //"Получение судебного приказа" что оно отмененно, чтобы вывелось следующее событие
-        return array_merge(parent::getMissData(), ['cancel' => true]);
     }
 }

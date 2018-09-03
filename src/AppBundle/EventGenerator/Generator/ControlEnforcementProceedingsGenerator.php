@@ -49,7 +49,7 @@ class ControlEnforcementProceedingsGenerator extends BaseGenerator implements Ge
         if ($flatEvent->getParameter('process')) {
             //если в процессе - через 1 день
             return 1;
-        } elseif ($flatEvent->getParameter('inactivity')) {
+        } elseif ($flatEvent->getParameter('inactivity') || $flatEvent->getParameter('miss')) {
             //если бездействие ФССП - через 1 день
             return 1;
         } else {
@@ -66,7 +66,7 @@ class ControlEnforcementProceedingsGenerator extends BaseGenerator implements Ge
     {
         if ($flatEvent->getParameter('process')) {
             return [$this];
-        } elseif ($flatEvent->getParameter('inactivity')) {
+        } elseif ($flatEvent->getParameter('inactivity') || $flatEvent->getParameter('miss')) {
             $generatorAlias = 'statement_preparation_fssp';
         } else {
             $generatorAlias = false;
@@ -204,7 +204,7 @@ class ControlEnforcementProceedingsGenerator extends BaseGenerator implements Ge
     {
         if ($flatEvent->getParameter('process')) {
             return $this->event;
-        } elseif ($flatEvent->getParameter('inactivity')) {
+        } elseif ($flatEvent->getParameter('inactivity') || $flatEvent->getParameter('miss')) {
             return $this->em->getRepository('AppBundle:Event')->findOneBy(['alias' => 'statement_preparation_fssp']);
         } else {
             return null;

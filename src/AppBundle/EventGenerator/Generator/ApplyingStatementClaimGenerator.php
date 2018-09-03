@@ -46,8 +46,8 @@ class ApplyingStatementClaimGenerator extends BaseGenerator implements Generator
      */
     public function getTimePerformAction(FlatEvent $flatEvent)
     {
-        //если подача искового заявления подтверждена, то можно приступать к следующему событию, иначе нельзя
-        return $flatEvent->getParameter('confirm') ? 7 : INF;
+        //если подача искового заявления подтверждена или пропущена, то можно приступать к следующему событию, иначе нельзя
+        return $flatEvent->getParameter('confirm') || $flatEvent->getParameter('miss') ? 7 : INF;
     }
 
     /**
@@ -56,7 +56,7 @@ class ApplyingStatementClaimGenerator extends BaseGenerator implements Generator
      */
     public function getNextEventGenerators(FlatEvent $flatEvent)
     {
-        return $flatEvent->getParameter('confirm') ?
+        return $flatEvent->getParameter('confirm') || $flatEvent->getParameter('miss') ?
             $this->nextEventGenerators :
             [];
     }
@@ -136,21 +136,8 @@ class ApplyingStatementClaimGenerator extends BaseGenerator implements Generator
      */
     public function getNextEvent(FlatEvent $flatEvent)
     {
-        return $flatEvent->getParameter('confirm') ?
+        return $flatEvent->getParameter('confirm') || $flatEvent->getParameter('miss') ?
             $this->em->getRepository('AppBundle:Event')->findOneBy(['alias' => 'verification_case']) :
             null;
-    }
-
-    /**
-     * @return array
-     */
-    protected function getMissData()
-    {
-        //при пропуске "Проверка принятия дела к производству" ставим метку подстверждения, чтобы вывелось следующее событие
-        return array_merge(
-            parent::getMissData(), [
-                'confirm'       =>  true,
-                'dateMeeting'   =>  (new \DateTime())->modify('+30 day')
-            ]);
     }
 }
