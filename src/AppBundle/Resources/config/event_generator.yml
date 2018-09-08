@@ -145,6 +145,8 @@ services:
     app.generator.control_enforcement_proceedings:
         class: AppBundle\EventGenerator\Generator\ControlEnforcementProceedingsGenerator
         parent: app.generator.base
+        arguments:
+            - "@app.generator.finish"
         calls:
             - [ addNextEventGenerator, ["@app.generator.statement_preparation_fssp"] ]
 
@@ -161,3 +163,9 @@ services:
         parent: app.generator.base
         calls:
             - [ addNextEventGenerator, ["@app.generator.control_enforcement_proceedings"] ]
+
+    # фильный генератор
+    app.generator.finish:
+        class: AppBundle\EventGenerator\FinishGenerator
+        arguments:
+            - "@doctrine.orm.doctrine_entity_manager"

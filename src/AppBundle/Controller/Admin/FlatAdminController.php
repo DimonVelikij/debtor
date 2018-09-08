@@ -621,25 +621,7 @@ class FlatAdminController extends CRUDController
             throw new AccessDeniedException('Bad credentials');
         }
 
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-
-        $flat
-            ->setEventData(null)
-            ->setSumDebt(0)
-            ->setSumFine(null)
-            ->setPeriodAccruedDebt(null)
-            ->setPeriodAccruedFine(null);
-
-        $em->persist($flat);
-        $em->flush();
-
-        /** @var FlatEvent $flatEvent */
-        foreach ($flat->getFlatsEvents() as $flatEvent) {
-            $em->remove($flatEvent);
-        }
-
-        $em->flush();
+        $this->get('app.generator.finish')->finishAction($flat);
 
         $this->get('app.service.flat_logger')->log($flat, "<b>Завершена работа с помещением</b>");
 

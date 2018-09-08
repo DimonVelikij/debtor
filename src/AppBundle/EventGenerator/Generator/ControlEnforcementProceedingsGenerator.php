@@ -4,6 +4,7 @@ namespace AppBundle\EventGenerator\Generator;
 
 use AppBundle\Entity\Flat;
 use AppBundle\Entity\FlatEvent;
+use AppBundle\EventGenerator\FinishGenerator;
 use AppBundle\Service\DateDiffer;
 use AppBundle\Service\FlatLogger;
 use AppBundle\Service\TemplateGenerator;
@@ -16,6 +17,9 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class ControlEnforcementProceedingsGenerator extends BaseGenerator implements GeneratorInterface
 {
+    /** @var FinishGenerator  */
+    private $finishGenerator;
+
     /**
      * ControlEnforcementProceedingsGenerator constructor.
      * @param EntityManager $em
@@ -26,10 +30,12 @@ class ControlEnforcementProceedingsGenerator extends BaseGenerator implements Ge
      * @param TwigEngine $twig
      * @param ValidatorInterface $validator
      * @param DataCollectorTranslator $translator
+     * @param FinishGenerator $finishGenerator
      */
-    public function __construct(EntityManager $em, FlatLogger $flatLogger, Router $router, TemplateGenerator $templateGenerator, DateDiffer $dateDiffer, TwigEngine $twig, ValidatorInterface $validator, DataCollectorTranslator $translator)
+    public function __construct(EntityManager $em, FlatLogger $flatLogger, Router $router, TemplateGenerator $templateGenerator, DateDiffer $dateDiffer, TwigEngine $twig, ValidatorInterface $validator, DataCollectorTranslator $translator, FinishGenerator $finishGenerator)
     {
         parent::__construct($em, $flatLogger, $router, $templateGenerator, $dateDiffer, $twig, $validator, $translator);
+        $this->finishGenerator = $finishGenerator;
     }
 
     /**
@@ -139,21 +145,9 @@ class ControlEnforcementProceedingsGenerator extends BaseGenerator implements Ge
             case 'finish':
                 /** @var Flat $flat */
                 $flat = $currentFlatEvent->getFlat();
-                $flat
-                    ->setEventData(null)
-                    ->setSumDebt(0)
-                    ->setSumFine(null)
-                    ->setPeriodAccruedDebt(null)
-                    ->setPeriodAccruedFine(null);
 
-                $this->em->persist($flat);
-                $this->em->flush();
+                $this->finishGenerator->finishAction($flat);
 
-                //работа с должником прекращается
-                foreach ($currentFlatEvent->getFlat()->getFlatsEvents() as $flatEvent) {
-                    $this->em->remove($flatEvent);
-                }
-                $this->em->flush();
                 break;
         }
 
