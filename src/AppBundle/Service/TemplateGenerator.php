@@ -14,7 +14,7 @@ use Knp\Bundle\SnappyBundle\Snappy\LoggableGenerator;
 class TemplateGenerator
 {
     //текст сообщения, если не указано
-    const UNDEFINED = 'Не указано';
+    const UNDEFINED = 'неизвестно';
     //данные для полей подставновки извлекаем из
     const FLAT          = 'flat';//помещения
     const SUBSCRIBER    = 'subscriber';//абонента
@@ -23,6 +23,10 @@ class TemplateGenerator
 
     /** @var array алиасы полей подстановки в шаблон */
     private static $templateFields = [
+        'city'                      =>  [
+            'title' =>  'Город',
+            'type'  =>  self::FLAT
+        ],
         'street'                    =>  [
             'title' =>  'Улица',
             'type'  =>  self::FLAT
@@ -283,6 +287,16 @@ class TemplateGenerator
                         $template .
                     '</body>
                 </html>';
+    }
+
+    /**
+     * название города
+     * @param Flat $flat
+     * @return string
+     */
+    private function getCityFieldValue(Flat $flat)
+    {
+        return $flat->getHouse()->getStreet()->getCity()->getTitle();
     }
 
     /**
