@@ -71,7 +71,7 @@ class Log
     public function getDateString()
     {
         if ($this->date instanceof \DateTime) {
-            return $this->date->format('dmY');
+            return $this->date->format('dmYHi');
         }
 
         return null;

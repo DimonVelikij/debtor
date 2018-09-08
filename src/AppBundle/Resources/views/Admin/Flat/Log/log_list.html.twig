@@ -12,7 +12,7 @@
                 <tbody>
                 <tr ng-repeat="log in logs | orderBy: '-id'" style="background-color: #befab4">
                     <td>[[ log.id ]]</td>
-                    <td>[[ log.date | date ]]</td>
+                    <td>[[ log.date | dateTime ]]</td>
                     <td><log-message log="log"></log-message></td>
                 </tr>
                 </tbody>
