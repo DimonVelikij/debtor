@@ -47,3 +47,8 @@ services:
             - "@doctrine.orm.doctrine_entity_manager"
         tags:
             - { name: validator.constraint_validator, alias: mkd_exist }
+
+    app.validator.share_size:
+        class: AppBundle\Validator\Constraints\ShareSizeValidator
+        tags:
+            - { name: validator.constraint_validator, alias: share_size }

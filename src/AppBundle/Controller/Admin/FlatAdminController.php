@@ -11,6 +11,7 @@ use AppBundle\Entity\User;
 use AppBundle\EventGenerator\Generator\GeneratorAggregate;
 use AppBundle\EventGenerator\Generator\GeneratorInterface;
 use AppBundle\Validator\Constraints\OwnershipStatus;
+use AppBundle\Validator\Constraints\ShareSize;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
@@ -744,7 +745,7 @@ class FlatAdminController extends CRUDController
             ) {
                 $constraints['shareSize'] = [
                     new NotBlank(['message' => 'Укажите размер доли']),
-                    new Regex(['pattern' => '/^\d\/\d{1,2}$/', 'message' => 'Неверно указан размер доли'])
+                    new ShareSize()
                 ];
             }
 

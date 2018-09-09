@@ -51,8 +51,8 @@
                     >
                         <div class="form-group" ng-class="{'has-error': debtor.shareSize.$invalid && debtor.shareSize.$dirty}">
                             <label for="shareSize" class="control-label required">Размер доли</label>
-                            <input id="shareSize" name="shareSize" type="text" class="form-control" ng-model="currentDebtor.shareSize" ng-required="1" ng-pattern="/^\d\/\d{1,2}$/" backend>
-                            <span class="help-block sonata-ba-field-widget-help">Указивается в виде "1/2 - половина, 1/3 - треть, 1/4 - четверть и т.д."</span>
+                            <input id="shareSize" name="shareSize" type="text" class="form-control" ng-model="currentDebtor.shareSize" ng-required="1" ng-pattern="/^\d+/\d+$/" backend>
+                            <span class="help-block sonata-ba-field-widget-help">Указивается в виде "1/2 - половина, 1/3 - треть, 17/100 - семнадцать сотых и т.д."</span>
                             <div class="help-block sonata-ba-field-error-messages" ng-if="debtor.shareSize.$invalid && debtor.shareSize.$dirty" ng-messages="debtor.shareSize.$error">
                                 <ul class="list-unstyled">
                                     <li ng-message="required"><i class="fa fa-exclamation-circle"></i>Укажите размер доли</li>

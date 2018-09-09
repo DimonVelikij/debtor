@@ -418,12 +418,7 @@ class TemplateGenerator
      */
     private function getDebtorInfoFieldValue(Debtor $debtor)
     {
-        $debtorInfo = '';
-        $ownershipStatus = $debtor->getOwnershipStatus();
-
-        if ($ownershipStatus->getAlias() == 'owner_shared') {
-            $debtorInfo .= 'Доля: ' . $debtor->getShareSize() . '<br>';
-        }
+        $debtorInfo = 'Доля: ' . ($debtor->getShareSize() ?: 1) . '<br>';
 
         switch ($debtor->getType()->getAlias()) {
             case 'individual':
