@@ -8,6 +8,7 @@
     DebtorCtrl.$inject = [
         '$scope',
         '$http',
+        '$rootScope',
         '$q',
         '$filter',
         '_',
@@ -19,6 +20,7 @@
     function DebtorCtrl(
         $scope,
         $http,
+        $rootScope,
         $q,
         $filter,
         _,
@@ -89,6 +91,11 @@
                 }).children
             };
             $scope.personalAccounts = response[3].data;
+        });
+
+        //ловим список л\с из контроллера с абонентами
+        $rootScope.$on('personalAccounts', function (event, data) {
+            $scope.personalAccounts = data.personalAccounts;
         });
 
         /**

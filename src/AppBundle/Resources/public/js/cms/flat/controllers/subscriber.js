@@ -8,6 +8,7 @@
     SubscriberCtrl.$inject = [
         '$scope',
         '$http',
+        '$rootScope',
         '$filter',
         '_',
         'Initializer',
@@ -17,6 +18,7 @@
     function SubscriberCtrl(
         $scope,
         $http,
+        $rootScope,
         $filter,
         _,
         Initializer,
@@ -42,12 +44,21 @@
                 $scope.state.currentSubscriber = {
                     id: subscriber.id,
                     name: subscriber.name,
-                    personalAccount: subscriber.personalAccount ? subscriber.personalAccount.account : null,
+                    personalAccount: subscriber.personalAccount.account,
                     phone: parseInt(subscriber.phone),
                     email: subscriber.email,
                     dateDebt: $filter('date')(subscriber.dateDebt),
-                    dateOpenAccount: $filter('date')(subscriber.dateOpenAccount),
-                    dateCloseAccount: $filter('date')(subscriber.dateCloseAccount)
+                    dateOpenAccount: $filter('date')(subscriber.personalAccount.dateOpenAccount),
+                    dateCloseAccount: $filter('date')(subscriber.personalAccount.dateCloseAccount)
+                };
+            }
+
+            //если добавляем нового абонента и уже есть абоненты - подставляем данные л\с из первого
+            if (!subscriber && $scope.subscribers.length) {
+                $scope.state.currentSubscriber = {
+                    personalAccount: $scope.subscribers[0].personalAccount.account,
+                    dateOpenAccount: $filter('date')($scope.subscribers[0].personalAccount.dateOpenAccount),
+                    dateCloseAccount: $filter('date')($scope.subscribers[0].personalAccount.dateCloseAccount)
                 };
             }
         };
@@ -104,6 +115,21 @@
                         if (!$scope.state.currentSubscriber.id) {
                             //добавляем в список нового абонента
                             $scope.subscribers.push(response.data.subscriber);
+                            //отдаем список л\с в контроллер с должниками, чтобы не пришлось обновлять страницу
+                            var personalAccounts = [];
+                            _.forEach($scope.subscribers, function (subscriber) {
+                                var exist = _.filter(personalAccounts, function (personalAccount) {
+                                    return personalAccount.account === subscriber.personalAccount.account;
+                                });
+
+                                if (!exist.length) {
+                                    personalAccounts.push(subscriber.personalAccount);
+                                }
+                            });
+
+                            $rootScope.$broadcast('personalAccounts', {
+                                personalAccounts: personalAccounts
+                            })
                         } else {
                             _.forEach($scope.subscribers, function (subscriber, index) {
                                 if ($scope.subscribers[index].id === response.data.subscriber.id) {

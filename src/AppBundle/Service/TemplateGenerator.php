@@ -356,21 +356,7 @@ class TemplateGenerator
      */
     private function getPersonalAccountStatusFieldValue($object)
     {
-        $currentSubscriber = $object;
-
-        if ($object instanceof Debtor) {
-            $debtorPersonalAccount = $object->getPersonalAccount()->getAccount();
-
-            /** @var Subscriber $subscriber */
-            foreach ($object->getFlat()->getSubscribers() as $subscriber) {
-                if ($subscriber->getPersonalAccount()->getAccount() == $debtorPersonalAccount) {
-                    $currentSubscriber = $subscriber;
-                    break;
-                }
-            }
-        }
-
-        return $currentSubscriber->getDateCloseAccount() && $currentSubscriber->getDateCloseAccount() < new \DateTime() ?
+        return $object->getPersonalAccount()->getDateCloseAccount() && $object->getPersonalAccount()->getDateCloseAccount() < new \DateTime() ?
             'Закрыт' :
             'Открыт';
     }

@@ -234,7 +234,7 @@ class Debtor
     private $ownershipStatus;
 
     /**
-     * @ORM\OneToOne(targetEntity="PersonalAccount", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="PersonalAccount", cascade={"persist"})
      * @ORM\JoinColumn(name="personal_account_id", referencedColumnName="id", nullable=false)
      *
      * @JMS\Expose

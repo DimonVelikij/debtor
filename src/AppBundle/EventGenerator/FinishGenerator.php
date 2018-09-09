@@ -29,7 +29,7 @@ class FinishGenerator
         $flat
             ->setEventData(null)
             ->setSumDebt(0)
-            ->setSumFine(null)
+            ->setSumFine(0)
             ->setPeriodAccruedDebt(null)
             ->setPeriodAccruedFine(null);
 

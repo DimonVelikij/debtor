@@ -4,7 +4,6 @@ namespace AppBundle\Controller\Admin;
 
 use AppBundle\Entity\Debtor;
 use AppBundle\Entity\Flat;
-use AppBundle\Entity\FlatEvent;
 use AppBundle\Entity\Log;
 use AppBundle\Entity\PersonalAccount;
 use AppBundle\Entity\Subscriber;
@@ -161,22 +160,59 @@ class FlatAdminController extends CRUDController
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
 
-        //если были ошибки генерации шаблона, при сохранени абонента считаем что они исправлены
-        $flat->setIsGenerateErrors(false);
-
         //создаем или получаем объект абонента
         $subscriber = $this->findOrCreateSubscriber($input);
 
+        //проверка на л\с
+        /** @var PersonalAccount|null $searchPersonalAccount */
+        $searchPersonalAccount = $em->getRepository('AppBundle:PersonalAccount')->findOneBy(['account' => $input['personalAccount']]);
+
+        if ($searchPersonalAccount) {
+            if ($subscriber->getId()) {//если редактируем абонента
+                if ($subscriber->getPersonalAccount()->getId() !== $searchPersonalAccount->getId()) {
+                    return new JsonResponse([
+                        'success'   =>  false,
+                        'errors'    =>  [
+                            'personalAccount'   =>  "Лицевой счет '{$input['personalAccount']}' уже существует"
+                        ]
+                    ]);
+                }
+            } else {//если создаем нового абонента
+                $isAlready = false;
+                /** @var Subscriber $existSubscriber */
+                foreach ($flat->getSubscribers() as $existSubscriber) {
+                    if ($existSubscriber->getPersonalAccount()->getId() === $searchPersonalAccount->getId()) {
+                        $isAlready = true;
+                        $subscriber->setPersonalAccount($searchPersonalAccount);
+                        break;
+                    }
+                }
+
+                if (!$isAlready) {
+                    return new JsonResponse([
+                        'success'   =>  false,
+                        'errors'    =>  [
+                            'personalAccount'   =>  "Лицевой счет '{$input['personalAccount']}' уже существует"
+                        ]
+                    ]);
+                }
+            }
+        }
+
+        //если были ошибки генерации шаблона, при сохранени абонента считаем что они исправлены
+        $flat->setIsGenerateErrors(false);
+
         $personalAccount = $subscriber->getPersonalAccount() ?? new PersonalAccount();
-        $personalAccount->setAccount($input['personalAccount']);
+        $personalAccount
+            ->setAccount($input['personalAccount'])
+            ->setDateOpenAccount(\DateTime::createFromFormat('dmY', $input['dateOpenAccount']))
+            ->setDateCloseAccount($input['dateCloseAccount'] ? \DateTime::createFromFormat('dmY', $input['dateCloseAccount']) : null);
 
         $subscriber
             ->setName($input['name'])
             ->setPhone($input['phone'])
             ->setEmail($input['email'])
             ->setDateDebt($input['dateDebt'] ? \DateTime::createFromFormat('dmY', $input['dateDebt']) : new \DateTime())
-            ->setDateOpenAccount(\DateTime::createFromFormat('dmY', $input['dateOpenAccount']))
-            ->setDateCloseAccount($input['dateCloseAccount'] ? \DateTime::createFromFormat('dmY', $input['dateCloseAccount']) : null)
             ->setFlat($flat)
             ->setPersonalAccount($personalAccount);
 
@@ -317,7 +353,9 @@ class FlatAdminController extends CRUDController
 
         /** @var Subscriber $subscriber */
         foreach ($flat->getSubscribers() as $subscriber) {
-            $personalAccounts[] = $subscriber->getPersonalAccount();
+            if (!in_array($subscriber->getPersonalAccount(), $personalAccounts)) {
+                $personalAccounts[] = $subscriber->getPersonalAccount();
+            }
         }
 
         return new Response(

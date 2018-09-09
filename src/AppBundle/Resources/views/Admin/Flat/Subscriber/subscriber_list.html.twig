@@ -21,8 +21,8 @@
                         <td>[[ subscriber.phone ]]</td>
                         <td>[[ subscriber.email ]]</td>
                         <td>[[ subscriber.dateDebt | date ]]</td>
-                        <td>[[ subscriber.dateOpenAccount | date ]]</td>
-                        <td>[[ subscriber.dateCloseAccount | date ]]</td>
+                        <td>[[ subscriber.personalAccount.dateOpenAccount | date ]]</td>
+                        <td>[[ subscriber.personalAccount.dateCloseAccount | date ]]</td>
                         <td>
                             <a class="btn btn-success" ng-click="subscriber.isShow = !subscriber.isShow" ng-hide="subscriber.isShow"><i class="fa fa-eye"></i> Показать</a>
                             <a class="btn btn-success" ng-click="subscriber.isShow = !subscriber.isShow" ng-show="subscriber.isShow"><i class="fa fa-eye"></i> Скрыть</a>
@@ -33,6 +33,8 @@
                         <td colspan="8">
                             <p>ФИО: <strong>[[ subscriber.name ]]</strong></p>
                             <p>Лицевой счет: <strong>[[ subscriber.personalAccount.account ]]</strong></p>
+                            <p>Дата открытия лицевого счета: <strong>[[ subscriber.personalAccount.dateOpenAccount | date ]]</strong></p>
+                            <p>Дата закрытия лицевого счета: <strong>[[ subscriber.personalAccount.dateCloseAccount | date ]]</strong></p>
                             <p>Телефон: <strong>[[ subscriber.phone ]]</strong></p>
                             <p>E-mail: <strong>[[ subscriber.email ]]</strong></p>
                             <p>Дата заполнения: <strong>[[ subscriber.dateDebt | date ]]</strong></p>
