@@ -60,7 +60,11 @@ class TemplateGenerator
             'type'  =>  self::DEBTOR
         ],
         'ownership_status'          =>  [
-            'title' =>  'Статус',
+            'title' =>  'Статус собственности',
+            'type'  =>  self::DEBTOR
+        ],
+        'ownership_sub_status'      =>  [
+            'title' =>  'Подстатус собственности',
             'type'  =>  self::DEBTOR
         ],
         'debtor_info'               =>  [
@@ -390,12 +394,21 @@ class TemplateGenerator
     {
         $ownerShipStatus = $debtor->getOwnershipStatus();
 
-        //если нужно будет вывести родительский статус - раскомментить
-        /*while ($parent = $ownerShipStatus->getParent()) {
+        while ($parent = $ownerShipStatus->getParent()) {
             $ownerShipStatus = $parent;
-        }*/
+        }
 
         return $ownerShipStatus->getTitle();
+    }
+
+    /**
+     * подстатус собственности (если его нет - возвращаем обычный статус)
+     * @param Debtor $debtor
+     * @return string
+     */
+    private function getOwnershipSubStatusFieldValue(Debtor $debtor)
+    {
+        return $debtor->getOwnershipStatus()->getTitle();
     }
 
     /**
