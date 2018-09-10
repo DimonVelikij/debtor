@@ -42,6 +42,7 @@ services:
         public: true
         calls:
             - [ setTemplate, [edit, AppBundle:Admin\Flat:edit.html.twig] ]
+            - [ setTemplate, [button_create, AppBundle:Admin\Flat:button_create.html.twig] ]
 
     app.admin.event:
         class: AppBundle\Admin\EventAdmin
