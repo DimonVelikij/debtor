@@ -43,10 +43,46 @@ class House
     private $company;
 
     /**
-     * @ORM\OneToOne(targetEntity="AppBundle\Entity\MKD")
-     * @ORM\JoinColumn(name="mkd_id", referencedColumnName="id", nullable=false)
+     * @ORM\Column(name="management_start_date", type="date", nullable=false)
+     * дата начала управления
      */
-    private $mkd;
+    private $managementStartDate;
+
+    /**
+     * @ORM\Column(name="management_end_date", type="date", nullable=true)
+     * дата окончания управления
+     */
+    private $managementEndDate;
+
+    /**
+     * @ORM\Column(name="legal_document_name", type="string", length=255, nullable=false)
+     * название документа на право управления
+     */
+    private $legalDocumentName;
+
+    /**
+     * @ORM\Column(name="legal_document_date", type="date", nullable=false)
+     * дата документа начала управления
+     */
+    private $legalDocumentDate;
+
+    /**
+     * @ORM\Column(name="legal_document_number", type="string", length=255, nullable=true)
+     * номер документа начала управления
+     */
+    private $legalDocumentNumber;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\JudicialSector")
+     * @ORM\JoinColumn(name="judicial_sector_id", referencedColumnName="id", nullable=false)
+     */
+    private $judicialSector;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\FSSPDepartment")
+     * @ORM\JoinColumn(name="fssp_department_id", referencedColumnName="id", nullable=false)
+     */
+    private $fsspDepartment;
 
     /**
      * @return string
@@ -96,6 +132,126 @@ class House
     public function getNumber()
     {
         return $this->number;
+    }
+
+    /**
+     * Set managementStartDate
+     *
+     * @param \DateTime $managementStartDate
+     *
+     * @return House
+     */
+    public function setManagementStartDate($managementStartDate)
+    {
+        $this->managementStartDate = $managementStartDate;
+
+        return $this;
+    }
+
+    /**
+     * Get managementStartDate
+     *
+     * @return \DateTime
+     */
+    public function getManagementStartDate()
+    {
+        return $this->managementStartDate;
+    }
+
+    /**
+     * Set managementEndDate
+     *
+     * @param \DateTime $managementEndDate
+     *
+     * @return House
+     */
+    public function setManagementEndDate($managementEndDate)
+    {
+        $this->managementEndDate = $managementEndDate;
+
+        return $this;
+    }
+
+    /**
+     * Get managementEndDate
+     *
+     * @return \DateTime
+     */
+    public function getManagementEndDate()
+    {
+        return $this->managementEndDate;
+    }
+
+    /**
+     * Set legalDocumentName
+     *
+     * @param string $legalDocumentName
+     *
+     * @return House
+     */
+    public function setLegalDocumentName($legalDocumentName)
+    {
+        $this->legalDocumentName = $legalDocumentName;
+
+        return $this;
+    }
+
+    /**
+     * Get legalDocumentName
+     *
+     * @return string
+     */
+    public function getLegalDocumentName()
+    {
+        return $this->legalDocumentName;
+    }
+
+    /**
+     * Set legalDocumentDate
+     *
+     * @param \DateTime $legalDocumentDate
+     *
+     * @return House
+     */
+    public function setLegalDocumentDate($legalDocumentDate)
+    {
+        $this->legalDocumentDate = $legalDocumentDate;
+
+        return $this;
+    }
+
+    /**
+     * Get legalDocumentDate
+     *
+     * @return \DateTime
+     */
+    public function getLegalDocumentDate()
+    {
+        return $this->legalDocumentDate;
+    }
+
+    /**
+     * Set legalDocumentNumber
+     *
+     * @param string $legalDocumentNumber
+     *
+     * @return House
+     */
+    public function setLegalDocumentNumber($legalDocumentNumber)
+    {
+        $this->legalDocumentNumber = $legalDocumentNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get legalDocumentNumber
+     *
+     * @return string
+     */
+    public function getLegalDocumentNumber()
+    {
+        return $this->legalDocumentNumber;
     }
 
     /**
@@ -181,26 +337,50 @@ class House
     }
 
     /**
-     * Set mkd
+     * Set judicialSector
      *
-     * @param \AppBundle\Entity\MKD $mkd
+     * @param \AppBundle\Entity\JudicialSector $judicialSector
      *
      * @return House
      */
-    public function setMkd(\AppBundle\Entity\MKD $mkd)
+    public function setJudicialSector(\AppBundle\Entity\JudicialSector $judicialSector)
     {
-        $this->mkd = $mkd;
+        $this->judicialSector = $judicialSector;
 
         return $this;
     }
 
     /**
-     * Get mkd
+     * Get judicialSector
      *
-     * @return \AppBundle\Entity\MKD
+     * @return \AppBundle\Entity\JudicialSector
      */
-    public function getMkd()
+    public function getJudicialSector()
     {
-        return $this->mkd;
+        return $this->judicialSector;
+    }
+
+    /**
+     * Set fsspDepartment
+     *
+     * @param \AppBundle\Entity\FSSPDepartment $fsspDepartment
+     *
+     * @return House
+     */
+    public function setFsspDepartment(\AppBundle\Entity\FSSPDepartment $fsspDepartment)
+    {
+        $this->fsspDepartment = $fsspDepartment;
+
+        return $this;
+    }
+
+    /**
+     * Get fsspDepartment
+     *
+     * @return \AppBundle\Entity\FSSPDepartment
+     */
+    public function getFsspDepartment()
+    {
+        return $this->fsspDepartment;
     }
 }

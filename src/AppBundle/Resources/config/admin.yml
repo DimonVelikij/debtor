@@ -64,10 +64,3 @@ services:
         tags:
             - { name: sonata.admin, manager_type: orm, group: cms.fssp, label: Отделения ФССП }
         public: true
-
-    app.admin.mkd:
-        class: AppBundle\Admin\MKDAdmin
-        arguments: [~, AppBundle\Entity\MKD, SonataAdminBundle:CRUD]
-        tags:
-            - { name: sonata.admin, manager_type: orm, group: cms.mkd, label: МКД }
-        public: true

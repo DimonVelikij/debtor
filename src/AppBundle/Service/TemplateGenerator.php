@@ -451,8 +451,8 @@ class TemplateGenerator
      */
     private function getMkdManagementStartDateFieldValue(Flat $flat)
     {
-        return $flat->getHouse()->getMkd()->getManagementStartDate() ?
-            $flat->getHouse()->getMkd()->getManagementStartDate()->format('d.m.Y') :
+        return $flat->getHouse()->getManagementStartDate() ?
+            $flat->getHouse()->getManagementStartDate()->format('d.m.Y') :
             self::UNDEFINED;
     }
 
@@ -463,8 +463,8 @@ class TemplateGenerator
      */
     private function getMkdManagementEndDateFieldValue(Flat $flat)
     {
-        return $flat->getHouse()->getMkd()->getManagementEndDate() ?
-            $flat->getHouse()->getMkd()->getManagementEndDate()->format('d.m.Y') :
+        return $flat->getHouse()->getManagementEndDate() ?
+            $flat->getHouse()->getManagementEndDate()->format('d.m.Y') :
             self::UNDEFINED;
     }
 
@@ -475,9 +475,7 @@ class TemplateGenerator
      */
     private function getMkdLegalDocumentNameFieldValue(Flat $flat)
     {
-        return $flat->getHouse()->getMkd() ?
-            $flat->getHouse()->getMkd()->getLegalDocumentName() :
-            self::UNDEFINED;
+        return $flat->getHouse()->getLegalDocumentName() ?: self::UNDEFINED;
     }
 
     /**
@@ -652,7 +650,7 @@ class TemplateGenerator
      */
     private function getJudicialSectorNameFieldValue(Flat $flat)
     {
-        return $flat->getHouse()->getMkd()->getJudicialSector()->getName();
+        return $flat->getHouse()->getJudicialSector()->getName();
     }
 
     /**
@@ -662,7 +660,7 @@ class TemplateGenerator
      */
     private function getJudicialSectorAddressFieldValue(Flat $flat)
     {
-        return $flat->getHouse()->getMkd()->getJudicialSector()->getAddress();
+        return $flat->getHouse()->getJudicialSector()->getAddress();
     }
 
     /**
@@ -672,7 +670,7 @@ class TemplateGenerator
      */
     private function getFsspDepartmentNameFieldValue(Flat $flat)
     {
-        return $flat->getHouse()->getMkd()->getFsspDepartment()->getName();
+        return $flat->getHouse()->getFsspDepartment()->getName();
     }
 
     /**
@@ -682,6 +680,6 @@ class TemplateGenerator
      */
     private function getFsspDepartmentAddressFieldValue(Flat $flat)
     {
-        return $flat->getHouse()->getMkd()->getFsspDepartment()->getAddress();
+        return $flat->getHouse()->getFsspDepartment()->getAddress();
     }
 }
