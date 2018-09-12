@@ -152,6 +152,12 @@ class Flat
     private $flatsEvents;
 
     /**
+     * @ORM\ManyToOne(targetEntity="FlatType")
+     * @ORM\JoinColumn(name="type_id", referencedColumnName="id", nullable=false)
+     */
+    private $type;
+
+    /**
      * @return string
      */
     public function __toString()
@@ -739,5 +745,29 @@ class Flat
     public function getFlatsEvents()
     {
         return $this->flatsEvents;
+    }
+
+    /**
+     * Set type
+     *
+     * @param \AppBundle\Entity\FlatType $type
+     *
+     * @return Flat
+     */
+    public function setType(\AppBundle\Entity\FlatType $type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * Get type
+     *
+     * @return \AppBundle\Entity\FlatType
+     */
+    public function getType()
+    {
+        return $this->type;
     }
 }

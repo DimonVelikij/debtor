@@ -44,6 +44,12 @@ class Street
     private $houses;
 
     /**
+     * @ORM\ManyToOne(targetEntity="StreetType")
+     * @ORM\JoinColumn(name="type_id", referencedColumnName="id", nullable=false)
+     */
+    private $type;
+
+    /**
      * @return string
      */
     public function __toString()
@@ -173,5 +179,29 @@ class Street
     public function getHouses()
     {
         return $this->houses;
+    }
+
+    /**
+     * Set type
+     *
+     * @param \AppBundle\Entity\StreetType $type
+     *
+     * @return Street
+     */
+    public function setType(\AppBundle\Entity\StreetType $type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * Get type
+     *
+     * @return \AppBundle\Entity\StreetType
+     */
+    public function getType()
+    {
+        return $this->type;
     }
 }

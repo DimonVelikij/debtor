@@ -116,6 +116,9 @@ class FlatAdmin extends AbstractAdmin
                     'label'     => 'по:'
                 ]
             ])
+            ->add('type', null, [
+                'label' =>  'Тип'
+            ])
         ;
     }
 
@@ -217,6 +220,15 @@ class FlatAdmin extends AbstractAdmin
                                     );
                             }
                         }
+                    ])
+                    ->add('type', null, [
+                        'label'     =>  'Тип',
+                        'class'     =>  'AppBundle\Entity\FlatType',
+                        'required'  =>  true,
+                        'help'          =>  "<span style='color: blue;'>Если в списке нет нужного типа квартиры, необходимо <a target='_blank' href='{$this->getRouter()->generate('admin_app_flattype_create')}'>добавить тип квартиры</a> и обновить страницу</span>",
+                        'constraints'   =>  [
+                            new NotBlank(['message' => 'Укажите тип помещения'])
+                        ]
                     ])
                     ->add('number', TextType::class, [
                         'label'         =>  'Номер помещения',

@@ -31,7 +31,6 @@ class StreetAdmin extends AbstractAdmin
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
-            ->add('id')
             ->add('title', null, [
                 'label' =>  'Название'
             ])
@@ -40,6 +39,9 @@ class StreetAdmin extends AbstractAdmin
             ])
             ->add('city', null, [
                 'label' =>  'Город'
+            ])
+            ->add('type', null, [
+                'label' =>  'Тип'
             ])
         ;
     }
@@ -59,6 +61,9 @@ class StreetAdmin extends AbstractAdmin
             ])
             ->add('city', null, [
                 'label' =>  'Город'
+            ])
+            ->add('type', null, [
+                'label' =>  'Тип'
             ])
             ->add('_action', null, array(
                 'label'     =>  'Действия',
@@ -83,6 +88,15 @@ class StreetAdmin extends AbstractAdmin
                 'help'          =>  "<span style='color: blue;'>Если в списке нет нужного города, необнодимо <a target='_blank' href='{$this->getRouter()->generate('admin_app_city_create')}'>добавить город</a> и обновить страницу</span>",
                 'constraints'   =>  [
                     new NotBlank(['message' => 'Укажите город'])
+                ]
+            ])
+            ->add('type', 'entity', [
+                'label'         =>  'Тип',
+                'class'         =>  'AppBundle\Entity\StreetType',
+                'required'      =>  true,
+                'help'          =>  "<span style='color: blue;'>Если в списке нет нужного типа улицы, необнодимо <a target='_blank' href='{$this->getRouter()->generate('admin_app_streettype_create')}'>добавить вид улицы</a> и обновить страницу</span>",
+                'constraints'   =>  [
+                    new NotBlank(['message' =>  'Укажите тип улицы'])
                 ]
             ])
             ->add('title', TextType::class, [
@@ -117,6 +131,9 @@ class StreetAdmin extends AbstractAdmin
             ])
             ->add('city', null, [
                 'label' =>  'Город'
+            ])
+            ->add('type', null, [
+                'label' =>  'Тип'
             ])
         ;
     }

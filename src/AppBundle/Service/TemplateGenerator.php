@@ -310,7 +310,7 @@ class TemplateGenerator
      */
     private function getStreetFieldValue(Flat $flat)
     {
-        return $flat->getHouse()->getStreet()->getTitle();
+        return $flat->getHouse()->getStreet()->getType()->getTitle() . ' ' . $flat->getHouse()->getStreet()->getTitle();
     }
 
     /**
@@ -330,7 +330,7 @@ class TemplateGenerator
      */
     private function getFlatNumberFieldValue(Flat $flat)
     {
-        return $flat->getNumber();
+        return $flat->getType()->getTitle() . ' №' . $flat->getNumber();
     }
 
     /**
