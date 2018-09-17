@@ -271,9 +271,11 @@ class TemplateGenerator
      */
     private function templateReplace($search, $replace, $text)
     {
-        $position = strpos($text, $search);
+        while (($position = strpos($text, $search)) !== false) {
+            $text = substr_replace($text, $replace, $position, mb_strlen($search));
+        }
 
-        return $position === false ? $text : substr_replace($text, $replace, $position, mb_strlen($search));
+        return $text;
     }
 
     /**
