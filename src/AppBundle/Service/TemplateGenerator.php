@@ -115,6 +115,10 @@ class TemplateGenerator
             'title' =>  'Размер пени',
             'type'  =>  self::DEBTOR
         ],
+        'total_sum'                 =>  [
+            'title' =>  'Общая сумма (долг+пени)',
+            'type'  =>  self::MIXED
+        ],
         'judicial_sector_name'      =>  [
             'title' =>  'Суд',
             'type'  =>  self::FLAT
@@ -641,6 +645,31 @@ class TemplateGenerator
         }
 
         return number_format($sumFine, 2, '.', ' ');
+    }
+
+    /**
+     * сумма долга (долг + пени)
+     * @param $object
+     * @return string
+     */
+    private function getTotalSumFieldValue($object)
+    {
+        $totalSum = 'Общая сумма долга: ';
+
+        $sumDebt = $object->getFlat()->getSumDebt();
+        $sumFine = $object->getFlat()->getSumFine();
+
+        if ($object instanceof Debtor && $object->getOwnershipStatus()->getAlias() == 'owner_shared') {
+            list($numerator, $denominator) = explode('/', $object->getShareSize());
+            $sumDebt = $sumDebt / (int)$denominator * (int)$numerator;
+            $sumFine = $sumFine / (int)$denominator * (int)$numerator;
+        }
+
+        $totalSum .= number_format(($sumDebt + $sumFine), 2, '.', ' ') . 'р. ' .
+            'из которых ' . number_format($sumDebt, 2, '.', ' ') . 'р. - долг, ' .
+            number_format($sumFine, 2, '.', ' ') . 'р. - пени';
+
+        return $totalSum;
     }
 
     /**
