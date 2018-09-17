@@ -93,27 +93,27 @@ class TemplateGenerator
         ],
         'period_accrued_debt'       =>  [
             'title' =>  'Начислено за период (долг)',
-            'type'  =>  self::DEBTOR
+            'type'  =>  self::MIXED
         ],
         'period_accrued_fine'       =>  [
             'title' =>  'Начислено за период (пени)',
-            'type'  =>  self::DEBTOR
+            'type'  =>  self::MIXED
         ],
         'period_pay_debt'           =>  [
             'title' =>  'Оплачено за период (долг)',
-            'type'  =>  self::DEBTOR
+            'type'  =>  self::MIXED
         ],
         'period_pay_fine'           =>  [
             'title' =>  'Оплачено за период (пени)',
-            'type'  =>  self::DEBTOR
+            'type'  =>  self::MIXED
         ],
         'sum_debt'                  =>  [
             'title' =>  'Размер долга',
-            'type'  =>  self::DEBTOR
+            'type'  =>  self::MIXED
         ],
         'sum_fine'                  =>  [
             'title' =>  'Размер пени',
-            'type'  =>  self::DEBTOR
+            'type'  =>  self::MIXED
         ],
         'total_sum'                 =>  [
             'title' =>  'Общая сумма (долг+пени)',
@@ -508,13 +508,13 @@ class TemplateGenerator
 
     /**
      * начислено за период (долг)
-     * @param Debtor $debtor
+     * @param $object
      * @return string
      */
-    private function getPeriodAccruedDebtFieldValue(Debtor $debtor)
+    private function getPeriodAccruedDebtFieldValue($object)
     {
         //есть вопрос по расчету
-        $flat = $debtor->getFlat();
+        $flat = $object->getFlat();
 
         if (!$flat->getPeriodAccruedDebt()) {
             return self::UNDEFINED;
@@ -523,11 +523,9 @@ class TemplateGenerator
         $periodAccruedDebt = $flat->getPeriodAccruedDebt();
 
         //если долевой собственник - делим долги на всех
-        if ($debtor->getOwnershipStatus()->getAlias() == 'owner_shared') {
-            //количество собственников - вычисляем из размера доли
-            $size = (int)explode('/', $debtor->getShareSize())[1];
-
-            $periodAccruedDebt = $periodAccruedDebt/$size;
+        if ($object instanceof Debtor && $object->getOwnershipStatus()->getAlias() == 'owner_shared') {
+            list($numerator, $denominator) = explode('/', $object->getShareSize());
+            $periodAccruedDebt = $periodAccruedDebt / (int)$denominator * (int)$numerator;
         }
 
         return number_format($periodAccruedDebt, 2, '.', ' ');
@@ -535,13 +533,13 @@ class TemplateGenerator
 
     /**
      * начислено за период (пени)
-     * @param Debtor $debtor
+     * @param $object
      * @return string
      */
-    private function getPeriodAccruedFineFieldValue(Debtor $debtor)
+    private function getPeriodAccruedFineFieldValue($object)
     {
         //есть вопрос по расчету
-        $flat = $debtor->getFlat();
+        $flat = $object->getFlat();
 
         if (!$flat->getPeriodAccruedFine()) {
             return self::UNDEFINED;
@@ -550,11 +548,9 @@ class TemplateGenerator
         $periodAccruedFine = $flat->getPeriodAccruedFine();
 
         //если долевой собственник - делим долги на всех
-        if ($debtor->getOwnershipStatus()->getAlias() == 'owner_shared') {
-            //количество собственников - вычисляем из размера доли
-            $size = (int)explode('/', $debtor->getShareSize())[1];
-
-            $periodAccruedFine = $periodAccruedFine/$size;
+        if ($object instanceof Debtor && $object->getOwnershipStatus()->getAlias() == 'owner_shared') {
+            list($numerator, $denominator) = explode('/', $object->getShareSize());
+            $periodAccruedFine = $periodAccruedFine / (int)$denominator * (int)$numerator;
         }
 
         return number_format($periodAccruedFine, 2, '.', ' ');
@@ -562,13 +558,13 @@ class TemplateGenerator
 
     /**
      * за период оплачено долга
-     * @param Debtor $debtor
+     * @param $object
      * @return string
      */
-    private function getPeriodPayDebtFieldValue(Debtor $debtor)
+    private function getPeriodPayDebtFieldValue($object)
     {
         //есть вопрос по расчету
-        $flat = $debtor->getFlat();
+        $flat = $object->getFlat();
 
         if (!$flat->getPeriodPayDebt()) {
             return self::UNDEFINED;
@@ -579,13 +575,13 @@ class TemplateGenerator
 
     /**
      * за период оплачено пени
-     * @param Debtor $debtor
+     * @param $object
      * @return string
      */
-    private function getPeriodPayFineFieldValue(Debtor $debtor)
+    private function getPeriodPayFineFieldValue($object)
     {
         //есть вопрос по расчету
-        $flat = $debtor->getFlat();
+        $flat = $object->getFlat();
 
         if (!$flat->getPeriodPayFine()) {
             return self::UNDEFINED;
@@ -596,13 +592,12 @@ class TemplateGenerator
 
     /**
      * размер долга
-     * @param Debtor $debtor
+     * @param $object
      * @return string
      */
-    private function getSumDebtFieldValue(Debtor $debtor)
+    private function getSumDebtFieldValue($object)
     {
-        //есть вопрос по расчету
-        $flat = $debtor->getFlat();
+        $flat = $object->getFlat();
 
         if (!$flat->getSumDebt()) {
             return self::UNDEFINED;
@@ -611,11 +606,9 @@ class TemplateGenerator
         $sumDebt = $flat->getSumDebt();
 
         //если долевой собственник - делим долги на всех
-        if ($debtor->getOwnershipStatus()->getAlias() == 'owner_shared') {
-            //количество собственников - вычисляем из размера доли
-            $size = (int)explode('/', $debtor->getShareSize())[1];
-
-            $sumDebt = $sumDebt/$size;
+        if ($object instanceof Debtor && $object->getOwnershipStatus()->getAlias() == 'owner_shared') {
+            list($numerator, $denominator) = explode('/', $object->getShareSize());
+            $sumDebt = $sumDebt / (int)$denominator * (int)$numerator;
         }
 
         return number_format($sumDebt, 2, '.', ' ');
@@ -623,12 +616,12 @@ class TemplateGenerator
 
     /**
      * размер пени
-     * @param Debtor $debtor
+     * @param $object
      * @return string
      */
-    private function getSumFineFieldValue(Debtor $debtor)
+    private function getSumFineFieldValue($object)
     {
-        $flat = $debtor->getFlat();
+        $flat = $object->getFlat();
 
         if (!$flat->getSumFine()) {
             return self::UNDEFINED;
@@ -637,11 +630,9 @@ class TemplateGenerator
         $sumFine = $flat->getSumFine();
 
         //если долевой собственник - делим долги на всех
-        if ($debtor->getOwnershipStatus()->getAlias() == 'owner_shared') {
-            //количество собственников - вычисляем из размера доли
-            $size = (int)explode('/', $debtor->getShareSize())[1];
-
-            $sumFine = $sumFine/$size;
+        if ($object instanceof Debtor && $object->getOwnershipStatus()->getAlias() == 'owner_shared') {
+            list($numerator, $denominator) = explode('/', $object->getShareSize());
+            $sumFine = $sumFine / (int)$denominator * (int)$numerator;
         }
 
         return number_format($sumFine, 2, '.', ' ');
