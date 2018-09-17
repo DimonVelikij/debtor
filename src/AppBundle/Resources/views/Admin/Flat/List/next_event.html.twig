@@ -10,8 +10,8 @@
                 {% set next_event = get_next_event(flatEvent) %}
                 {% if next_event %}
                     <span><b>{{ next_event.event.name }}({{ next_event.dateGenerate.format('d.m.Y') }})</b></span>
-                    <a href="{{ path('admin_app_flat_perform', {flat_id: flatEvent.flat.id, event: flatEvent.event.alias}) }}">Выполнить</a>
-                    <a href="{{ path('admin_app_flat_miss', {flat_id: flatEvent.flat.id, event: flatEvent.event.alias}) }}">Пропустить</a>
+                    <a class="label label-success" href="{{ path('admin_app_flat_perform', {flat_id: flatEvent.flat.id, event: flatEvent.event.alias}) }}">Выполнить</a>
+                    <a class="label label-success" href="{{ path('admin_app_flat_miss', {flat_id: flatEvent.flat.id, event: flatEvent.event.alias}) }}">Пропустить</a>
                     <br>
                     {% set is_next_events = true %}
                 {% endif %}
@@ -19,7 +19,7 @@
             {% if not is_next_events %}
                 <span class="label label-success">ожидает действий пользователя</span>
             {% endif %}
-            <a href="{{ path('admin_app_flat_finish', {flat_id: object.id}) }}">Завершить работу с помещением</a>
+            <a class="label label-warning" href="{{ path('admin_app_flat_finish', {flat_id: object.id}) }}">Завершить работу с помещением</a>
         {% else %}
             <span class="label label-success">отсутствует</span>
         {% endif %}
