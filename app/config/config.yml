@@ -200,3 +200,8 @@ knp_snappy:
         binary:     '/usr/bin/xvfb-run /usr/bin/wkhtmltopdf'
         options:    []
 
+ivory_ck_editor:
+    default_config: default
+    configs:
+        default:
+            customConfig: "/bundles/app/js/cms/ckeditor/config.js"
