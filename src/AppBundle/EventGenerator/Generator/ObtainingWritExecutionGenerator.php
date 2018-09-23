@@ -66,6 +66,11 @@ class ObtainingWritExecutionGenerator extends BaseGenerator implements Generator
             return true;
         }
 
+        //записываем в event_data дату полуения исполнительного листа
+        $currentFlatEvent->getFlat()->setEventDataParameter('obtaining_writ_execution', [
+           'confirm'    =>  new \DateTime()
+        ]);
+
         $currentDate = new \DateTime();
         $showData = "Получение исполнительного листа подтверждено {$currentDate->format('d.m.Y')}";
 

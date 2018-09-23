@@ -79,6 +79,12 @@ class ApplyingStatementClaimGenerator extends BaseGenerator implements Generator
         }
 
         $currentData = new \DateTime();
+
+        //записываем в event_data дату подачи заявления в суд
+        $this->em->persist($currentFlatEvent->getFlat()->setEventDataParameter('applying_statement_claim', [
+            'confirm'   =>  $currentData
+        ]));
+
         $showData = "Подтверждено {$currentData->format('d.m.Y')}";
 
         $currentFlatEvent

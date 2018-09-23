@@ -80,6 +80,12 @@ class ApplyingCourtOrderGenerator extends BaseGenerator implements GeneratorInte
         }
 
         $currentData = new \DateTime();
+
+        //записываем в event_data - дату подачи заявления судебного приказа в суд
+        $this->em->persist($currentFlatEvent->getFlat()->setEventDataParameter('applying_court_order', [
+            'confirm'   =>  $currentData
+        ]));
+
         $showData = "Подтверждено {$currentData->format('d.m.Y')}";
 
         $currentFlatEvent

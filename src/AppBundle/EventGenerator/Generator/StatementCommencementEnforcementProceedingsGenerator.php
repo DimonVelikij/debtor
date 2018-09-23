@@ -105,7 +105,7 @@ class StatementCommencementEnforcementProceedingsGenerator extends BaseGenerator
         if (
             !$currentFlatEvent ||
             $currentFlatEvent->getParameter('perform')
-            //если обращение в ФССП отложено - пользователь снова может указать вид работ с дату выполнения
+            //если обращение в ФССП отложено - пользователь снова может указать вид работ и дату выполнения
         ) {
             //действие уже выполнено
             return true;
@@ -113,6 +113,11 @@ class StatementCommencementEnforcementProceedingsGenerator extends BaseGenerator
 
         //если формирование выполнено - переходим к следующему событию
         if ($request->get('action') == 'perform') {
+            //записываем в event_data дату формирования заявления возбуждение исполнительного производства
+            $this->em->persist($currentFlatEvent->getFlat()->setEventDataParameter('statement_commencement_enforcement_proceedings', [
+                'perform'   =>  new \DateTime()
+            ]));
+
             $showData = "Выполнено формирование заявления на возбеждение исполнительного производства";
             $currentFlatEvent
                 ->setDateGenerate(new \DateTime())
@@ -172,11 +177,18 @@ class StatementCommencementEnforcementProceedingsGenerator extends BaseGenerator
             $currentFlatEvent
                 ->setDateGenerate(new \DateTime())
                 ->setData([
-                   'show'       =>  $showData,
+                    'show'      =>  $showData,
                     'deferred'  =>  true,
                     'typeEvent' =>  $input['typeEvent'],
                     'deadline'  =>  \DateTime::createFromFormat('dmY', $input['deadline'])
                 ]);
+
+            //записываем в event_data дату когда отложили обращение в ФССП
+            $this->em->persist($currentFlatEvent->getFlat()->setEventDataParameter('statement_commencement_enforcement_proceedings', [
+                'deferred'      =>  new \DateTime(),
+                'type_event'    =>  $input['typeEvent'],
+                'deadline'      =>  \DateTime::createFromFormat('dmY', $input['deadline'])
+            ]));
 
             $this->em->persist($currentFlatEvent);
             $this->em->flush();

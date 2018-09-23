@@ -143,11 +143,23 @@ class TemplateGenerator
         'fssp_department_address'   =>  [
             'title' =>  'Адрес отделения ФССП',
             'type'  =>  self::FLAT
-        ]
+        ],
         //дата подачи приказа в ФССП ????
         //исполнительное производство ????
         //итого задолженность ????
         //итого пошлина ????
+        'applying_court_order_date' =>  [
+            'title' =>  'Дата подачи заявления судебного приказа в суд',
+            'type'  =>  self::DEBTOR
+        ],
+        'obtaining_court_order_date'=>  [
+            'title' =>  'Дата получения судебного приказа',
+            'type'  =>  self::DEBTOR
+        ],
+        'applying_statement_claim_date' =>  [
+            'title' =>  'Дата подачи искового заявления в суд',
+            'type'  =>  self::DEBTOR
+        ]
     ];
 
     /** @var EntityManager  */
@@ -703,5 +715,53 @@ class TemplateGenerator
     private function getFsspDepartmentAddressFieldValue(Flat $flat)
     {
         return $flat->getHouse()->getFsspDepartment()->getAddress();
+    }
+
+    /**
+     * дата подачи заявления судебного приказа в суд
+     * @param Debtor $debtor
+     * @return string
+     */
+    private function getApplyingCourtOrderDateFieldValue(Debtor $debtor)
+    {
+        $applyingCourtOrder = $debtor->getFlat()->getEventDataParameter('applying_court_order');
+
+        return (!$applyingCourtOrder ||
+            !isset($applyingCourtOrder['confirm']) ||
+            !$applyingCourtOrder['confirm'] instanceof \DateTime) ?
+            self::UNDEFINED :
+            $applyingCourtOrder['confirm']->format('d.m.Y');
+    }
+
+    /**
+     * дата получения судебного приказа
+     * @param Debtor $debtor
+     * @return string
+     */
+    private function getObtainingCourtOrderDateFieldValue(Debtor $debtor)
+    {
+        $obtainingCourtOrder = $debtor->getFlat()->getEventDataParameter('obtaining_court_order');
+
+        return (!$obtainingCourtOrder ||
+            !isset($obtainingCourtOrder['confirm']) ||
+            !$obtainingCourtOrder['confirm'] instanceof \DateTime) ?
+            self::UNDEFINED :
+            $obtainingCourtOrder['confirm']->format('d.m.Y');
+    }
+
+    /**
+     * дата подачи искового заявления в суд
+     * @param Debtor $debtor
+     * @return string
+     */
+    private function getApplyingStatementClaimDateFieldValue(Debtor $debtor)
+    {
+        $applyingStatementClaim = $debtor->getFlat()->getEventDataParameter('applying_statement_claim');
+
+        return (!$applyingStatementClaim ||
+            !isset($applyingStatementClaim['confirm']) ||
+            !$applyingStatementClaim['confirm'] instanceof \DateTime) ?
+            self::UNDEFINED :
+            $applyingStatementClaim['confirm']->format('d.m.Y');
     }
 }

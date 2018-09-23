@@ -113,6 +113,11 @@ class StatementReceiptWritExecutionGenerator extends BaseGenerator implements Ge
 
         //если не обжаловано - переходим к следующему событию
         if ($request->get('action') == 'not_appealed') {
+            //записываем в event_data дату когда решение вступило в силу
+            $currentFlatEvent->getFlat()->setEventDataParameter('statement_receipt_writ_execution', [
+                'not_appealed'  =>  new \DateTime()
+            ]);
+
             $showData = "Решение вступилов в силу (не обжаловано)";
             $currentFlatEvent
                 ->setDateGenerate(new \DateTime())
@@ -178,6 +183,13 @@ class StatementReceiptWritExecutionGenerator extends BaseGenerator implements Ge
                     'timeMeeting'       =>  $input['timeMeeting'],
                     'show'              =>  $showData
                 ]);
+
+            //записываем в event_data дату обжалования и данные следующего заседания
+            $this->em->persist($currentFlatEvent->getFlat()->setEventDataParameter('statement_receipt_writ_execution', [
+                'appealed'      =>  new \DateTime(),
+                'date_meeting'  =>  \DateTime::createFromFormat('dmY', $input['dateMeeting']),
+                'time_meeting'  =>  $input['timeMeeting']
+            ]));
 
             $this->em->persist($currentFlatEvent);
             $this->em->flush();

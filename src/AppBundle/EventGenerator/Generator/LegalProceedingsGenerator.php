@@ -113,7 +113,13 @@ class LegalProceedingsGenerator extends BaseGenerator implements GeneratorInterf
         }
 
         if ($request->get('action') == 'confirm') {
+            //записываем в event_data дату принятия решения
+            $this->em->persist($currentFlatEvent->getFlat()->setEventDataParameter('legal_proceedings', [
+                'confirm'   =>  new \DateTime()
+            ]));
+
             $showData = "Принято решение";
+
             $currentFlatEvent
                 ->setDateGenerate(new \DateTime())
                 ->setData([
@@ -134,7 +140,7 @@ class LegalProceedingsGenerator extends BaseGenerator implements GeneratorInterf
 
             //входные данные
             $input = [
-                'dateMeeting'   => $data['dateMeeting'] ?? null,
+                'dateMeeting'   =>  $data['dateMeeting'] ?? null,
                 'timeMeeting'   =>  $data['timeMeeting'] ?? null
             ];
 
@@ -168,7 +174,7 @@ class LegalProceedingsGenerator extends BaseGenerator implements GeneratorInterf
 
             $showData = "
                 Заседание отложено<br>
-                Дата заседания: " . substr($input['dateMeeting'], 0, 2) . ":" . substr($input['dateMeeting'], 2, 2) . ":" . substr($input['dateMeeting'], 4, 4) . "<br>
+                Дата заседания: " . substr($input['dateMeeting'], 0, 2) . "." . substr($input['dateMeeting'], 2, 2) . "." . substr($input['dateMeeting'], 4, 4) . "<br>
                 Время заседания: " . substr($input['timeMeeting'], 0, 2) . ":" . substr($input['timeMeeting'], 2, 2);
 
             $currentFlatEvent
@@ -179,6 +185,13 @@ class LegalProceedingsGenerator extends BaseGenerator implements GeneratorInterf
                     'timeMeeting'   =>  $input['timeMeeting'],
                     'show'          =>  $showData
                 ]);
+
+            //записываем в event_data дату получения определения и данные следующего заседания
+            $this->em->persist($currentFlatEvent->getFlat()->setEventDataParameter('legal_proceedings', [
+                'deferred'      =>  new \DateTime(),
+                'date_meeting'  =>  \DateTime::createFromFormat('dmY', $input['dateMeeting']),
+                'time_meeting'  =>  $input['timeMeeting']
+            ]));
 
             $this->em->persist($currentFlatEvent);
             $this->em->flush();

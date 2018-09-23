@@ -130,13 +130,14 @@ class SubmissionCommencementEnforcementProceedingsGenerator extends BaseGenerato
                 'confirm'           =>  true
             ]);
 
-        $flat = $currentFlatEvent->getFlat();
-        $flat
-            ->setEventDataParameter('enforcementNumber', $input['enforcementNumber'])
-            ->setEventDataParameter('bailiffName', $input['bailiffName'])
-            ->setEventDataParameter('bailiffContacts', $input['bailiffContacts']);
-
-        $this->em->persist($flat);
+        //записываем в event_data дату подтверждения подачи заявления в ФССП
+        $this->em->persist($currentFlatEvent->getFlat()->setEventDataParameter('submission_commencement_enforcement_proceedings', [
+            'enforcement_number'    =>  $input['enforcementNumber'],
+            'bailiff_name'          =>  $input['bailiffName'],
+            'bailiff_contacts'      =>  $input['bailiffContacts'],
+            'deadline'              =>  \DateTime::createFromFormat('dmY', $input['deadline']),
+            'confirm'               =>  $currentDate
+        ]));
 
         $this->em->persist($currentFlatEvent);
         $this->em->flush();

@@ -76,6 +76,11 @@ class ApplyingStatementFSSPGenerator extends BaseGenerator implements GeneratorI
                 'confirm'   =>  true//подтверждено - можно через 7 дней выполнять следующее событие
             ]);
 
+        //записываем в event_data дату подачи заявления в прокуратуру
+        $this->em->persist($currentFlatEvent->getFlat()->setEventDataParameter('applying_statement_fssp', [
+            'confirm'   =>  $currentData
+        ]));
+
         $this->em->persist($currentFlatEvent);
         $this->em->flush();
 

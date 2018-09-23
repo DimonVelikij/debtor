@@ -207,6 +207,16 @@ class Flat
     }
 
     /**
+     * @param $parameter
+     */
+    public function removeEventParameter($parameter)
+    {
+        if (isset($this->eventData[$parameter])) {
+            unset($this->eventData[$parameter]);
+        }
+    }
+
+    /**
      * Constructor
      */
     public function __construct()

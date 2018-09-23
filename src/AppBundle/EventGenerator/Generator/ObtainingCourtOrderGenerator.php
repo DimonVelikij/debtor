@@ -131,6 +131,13 @@ class ObtainingCourtOrderGenerator extends BaseGenerator implements GeneratorInt
                     ->setParameter('show', $showData)
                     ->setParameter('confirm', true);
 
+                //записываем в event_data - дата получения судебного приказа
+                $this->em->persist($currentFlatEvent->getFlat()->setEventDataParameter(
+                    'obtaining_court_order', [
+                        'confirm'   =>  $currentDate
+                    ]
+                ));
+
                 break;
             case 'failure':
                 $currentFlatEvent
@@ -138,12 +145,26 @@ class ObtainingCourtOrderGenerator extends BaseGenerator implements GeneratorInt
                     ->setParameter('show', $showData)
                     ->setParameter('failure', true);
 
+                //записываем в event_data дату получения определения об отказе в принятии
+                $this->em->persist($currentFlatEvent->getFlat()->setEventDataParameter(
+                    'obtaining_court_order', [
+                        'failure'   =>  $currentDate
+                    ]
+                ));
+
                 break;
             case 'cancel':
                 $currentFlatEvent
                     ->setDateGenerate($currentDate)
                     ->setParameter('show', $showData)
                     ->setParameter('cancel', true);
+
+                //записываем в event_data дату получения определения об отмене судебного приказа
+                $this->em->persist($currentFlatEvent->getFlat()->setEventDataParameter(
+                    'obtaining_court_order', [
+                        'cancel'    =>  $currentDate
+                    ]
+                ));
 
                 break;
         }

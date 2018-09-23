@@ -111,6 +111,11 @@ class VerificationCaseGenerator extends BaseGenerator implements GeneratorInterf
 
         //если отказ
         if ($request->get('action') == 'failure') {
+            //записываем в event_data дату определения
+            $currentFlatEvent->getFlat()->setEventDataParameter('verification_case', [
+                'failure'   =>  new \DateTime()
+            ]);
+
             $showData = "Отказ в принятии искового заявления к производству";
             $currentFlatEvent
                 ->setDateGenerate(new \DateTime())
@@ -175,7 +180,7 @@ class VerificationCaseGenerator extends BaseGenerator implements GeneratorInterf
                     Подтверждено принятие искового заявления к производству<br>
                     Номер дела: {$input['courtCaseNumber']}<br>
                     Судья: {$input['judge']}<br>
-                    Дата заседания: " . substr($input['dateMeeting'], 0, 2) . "-" . substr($input['dateMeeting'], 2, 2) . "-" . substr($input['dateMeeting'], 4, 4) . "<br>
+                    Дата заседания: " . substr($input['dateMeeting'], 0, 2) . "." . substr($input['dateMeeting'], 2, 2) . "." . substr($input['dateMeeting'], 4, 4) . "<br>
                     Время заседания: " . substr($input['timeMeeting'], 0, 2) . ":" . substr($input['timeMeeting'], 2, 2);
 
             $currentFlatEvent
@@ -189,12 +194,14 @@ class VerificationCaseGenerator extends BaseGenerator implements GeneratorInterf
                     'show'              =>  $showData
                 ]);
 
-            $flat = $currentFlatEvent->getFlat();
-            $flat
-                ->setEventDataParameter('courtCaseNumber', $input['courtCaseNumber'])
-                ->setEventDataParameter('judge', $input['judge']);
-
-            $this->em->persist($flat);
+            //записываем в event_data дату получения определения и данных заседания
+            $this->em->persist($currentFlatEvent->getFlat()->setEventDataParameter('verification_case', [
+                'court_case_number' =>  $input['courtCaseNumber'],
+                'judge'             =>  $input['judge'],
+                'date_meeting'      =>  \DateTime::createFromFormat('dmY', $input['dateMeeting']),
+                'time_meeting'      =>  $input['timeMeeting'],
+                'confirm'           =>  new \DateTime()
+            ]));
 
             $this->em->persist($currentFlatEvent);
             $this->em->flush();
