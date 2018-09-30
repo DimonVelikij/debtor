@@ -17,5 +17,6 @@ class AppExtension extends Extension
         $loader->load('service.yml');
         $loader->load('event_generator.yml');
         $loader->load('twig.yml');
+        $loader->load('form_admin.yml');
     }
 }

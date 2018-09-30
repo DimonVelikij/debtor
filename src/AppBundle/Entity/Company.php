@@ -111,6 +111,13 @@ class Company
     private $correspondentAccount;
 
     /**
+     * @ORM\Column(name="signature", type="object", nullable=false)
+     *
+     * подписанты
+     */
+    private $signature;
+
+    /**
      * @ORM\OneToMany(targetEntity="User", mappedBy="company")
      */
     private $users;
@@ -409,6 +416,30 @@ class Company
     public function getCorrespondentAccount()
     {
         return $this->correspondentAccount;
+    }
+
+    /**
+     * Set signature
+     *
+     * @param \stdClass $signature
+     *
+     * @return Company
+     */
+    public function setSignature($signature)
+    {
+        $this->signature = $signature;
+
+        return $this;
+    }
+
+    /**
+     * Get signature
+     *
+     * @return \stdClass
+     */
+    public function getSignature()
+    {
+        return $this->signature;
     }
 
     /**

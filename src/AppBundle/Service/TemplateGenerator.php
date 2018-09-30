@@ -127,6 +127,22 @@ class TemplateGenerator
             'title' =>  'Адрес суда',
             'type'  =>  self::FLAT
         ],
+        'soy_sc'                    =>  [
+            'title' =>  'СОЮ пошлина ИскП',
+            'type'  =>  self::MIXED
+        ],
+        'soy_co'                    =>  [
+            'title' =>  'СОЮ пошлина ПрикП',
+            'type'  =>  self::MIXED
+        ],
+        'as_sc'                     =>  [
+            'title' =>  'Арбитраж ИскП',
+            'type'  =>  self::MIXED
+        ],
+        'as_co'                     =>  [
+            'title' =>  'Арбитраж ПрикП',
+            'type'  =>  self::MIXED
+        ],
         //пошлина (ИскП) ????
         //пошлина (ПрикП) ????
         //полшлина (ИскП) ????
@@ -159,6 +175,10 @@ class TemplateGenerator
         'applying_statement_claim_date' =>  [
             'title' =>  'Дата подачи искового заявления в суд',
             'type'  =>  self::DEBTOR
+        ],
+        'signature'                     =>  [
+            'title' =>  'Подписант',
+            'type'  =>  self::FLAT
         ]
     ];
 
@@ -168,6 +188,9 @@ class TemplateGenerator
     /** @var LoggableGenerator  */
     private $pdfGenerator;
 
+    /** @var DutyCalculator  */
+    private $dutyCalculator;
+
     /** @var string  */
     private $rootDir;
 
@@ -175,15 +198,18 @@ class TemplateGenerator
      * TemplateGenerator constructor.
      * @param EntityManager $em
      * @param LoggableGenerator $pdfGenerator
+     * @param DutyCalculator $dutyCalculator
      * @param $rootDir
      */
     public function __construct(
         EntityManager $em,
         LoggableGenerator $pdfGenerator,
+        DutyCalculator $dutyCalculator,
         $rootDir
     ) {
         $this->em = $em;
         $this->pdfGenerator = $pdfGenerator;
+        $this->dutyCalculator = $dutyCalculator;
         $this->rootDir = $rootDir . '/../web';
     }
 
@@ -245,7 +271,7 @@ class TemplateGenerator
 
                 $template = $this->templateReplace(
                     '{{' . $field . '}}',
-                    $this->$fieldValueMethod($fieldValueMethodParam),
+                    $this->$fieldValueMethod($fieldValueMethodParam, $event),
                     $template
                 );
             }
@@ -698,6 +724,82 @@ class TemplateGenerator
     }
 
     /**
+     * пошлина при исковом заявлении в суд общей юрисдикции
+     * @param $object
+     * @return string
+     */
+    private function getSoyScFieldValue($object)
+    {
+        $sumDebt = $object->getFlat()->getSumDebt();
+        $sumFine = $object->getFlat()->getSumFine();
+
+        if ($object instanceof Debtor && $object->getOwnershipStatus()->getAlias() == 'owner_shared') {
+            list($numerator, $denominator) = explode('/', $object->getShareSize());
+            $sumDebt = $sumDebt / (int)$denominator * (int)$numerator;
+            $sumFine = $sumFine / (int)$denominator * (int)$numerator;
+        }
+
+        return $this->dutyCalculator->calculationCGJStatementClaim($sumDebt + $sumFine) . ' р.';
+    }
+
+    /**
+     * пошлина при судебном приказе в суд общей юрисдикции
+     * @param $object
+     * @return string
+     */
+    private function getSoyCoFieldValue($object)
+    {
+        $sumDebt = $object->getFlat()->getSumDebt();
+        $sumFine = $object->getFlat()->getSumFine();
+
+        if ($object instanceof Debtor && $object->getOwnershipStatus()->getAlias() == 'owner_shared') {
+            list($numerator, $denominator) = explode('/', $object->getShareSize());
+            $sumDebt = $sumDebt / (int)$denominator * (int)$numerator;
+            $sumFine = $sumFine / (int)$denominator * (int)$numerator;
+        }
+
+        return $this->dutyCalculator->calculationCGJCourtOrder($sumDebt + $sumFine) . ' р.';
+    }
+
+    /**
+     * пошлина при исковом заявлении в арбитражный суд
+     * @param $object
+     * @return string
+     */
+    private function getAsScFieldValue($object)
+    {
+        $sumDebt = $object->getFlat()->getSumDebt();
+        $sumFine = $object->getFlat()->getSumFine();
+
+        if ($object instanceof Debtor && $object->getOwnershipStatus()->getAlias() == 'owner_shared') {
+            list($numerator, $denominator) = explode('/', $object->getShareSize());
+            $sumDebt = $sumDebt / (int)$denominator * (int)$numerator;
+            $sumFine = $sumFine / (int)$denominator * (int)$numerator;
+        }
+
+        return $this->dutyCalculator->calculationACStatementClaim($sumDebt + $sumFine) . ' р.';
+    }
+
+    /**
+     * пошлина при судебном приказе в арбитражный суд
+     * @param $object
+     * @return string
+     */
+    private function getAsCoFieldValue($object)
+    {
+        $sumDebt = $object->getFlat()->getSumDebt();
+        $sumFine = $object->getFlat()->getSumFine();
+
+        if ($object instanceof Debtor && $object->getOwnershipStatus()->getAlias() == 'owner_shared') {
+            list($numerator, $denominator) = explode('/', $object->getShareSize());
+            $sumDebt = $sumDebt / (int)$denominator * (int)$numerator;
+            $sumFine = $sumFine / (int)$denominator * (int)$numerator;
+        }
+
+        return $this->dutyCalculator->calculationACCourtOrder($sumDebt + $sumFine) . ' р.';
+    }
+
+    /**
      * отделение ФССП
      * @param Flat $flat
      * @return string
@@ -763,5 +865,39 @@ class TemplateGenerator
             !$applyingStatementClaim['confirm'] instanceof \DateTime) ?
             self::UNDEFINED :
             $applyingStatementClaim['confirm']->format('d.m.Y');
+    }
+
+    /**
+     * подписант
+     * @param Flat $flat
+     * @param Event $event
+     * @return string
+     */
+    private function getSignatureFieldValue(Flat $flat, Event $event)
+    {
+        //подписанты у компании
+        $companySignatures = $flat->getHouse()->getCompany()->getSignature();
+
+        $signatures = [];
+
+        foreach ($companySignatures as $signature) {
+            $signatures[$signature['event']] = $signature;
+        }
+
+        $signature = null;
+
+        //если у компании есть подписант для текущего события
+        if (isset($signatures[$event->getAlias()])) {
+            $signature = $signatures[$event->getAlias()];
+        }
+
+        //если для текущего события нет подписанта, пытаемся получить дефолтного
+        if (!$signature && isset($signatures['default'])) {
+            $signature = $signatures['default'];
+        }
+
+        return $signature ?
+            $signature['position'] . ' ' . $signature['name'] :
+            '';
     }
 }

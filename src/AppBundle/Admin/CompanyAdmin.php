@@ -2,6 +2,7 @@
 
 namespace AppBundle\Admin;
 
+use AppBundle\Form\Admin\SignatureType;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
@@ -124,8 +125,11 @@ class CompanyAdmin extends AbstractAdmin
     {
         $formMapper
             ->add('title', TextType::class, [
-                'label'     =>  'Название',
-                'required'  =>  true
+                'label'         =>  'Название',
+                'required'      =>  true,
+                'constraints'   =>  [
+                    new NotBlank(['message' => 'Укажите название'])
+                ]
             ])
             ->add('ogrn', TextType::class, [
                 'label'         =>  'ОГРН',
@@ -219,6 +223,17 @@ class CompanyAdmin extends AbstractAdmin
                         'message'   =>  'Введите корреспондентский счет'
                     ])
                 ]
+            ])
+            ->add('signature', 'sonata_type_native_collection', [
+                'label'         =>  'Подписанты',
+                'required'      =>  true,
+                'entry_type'    =>  SignatureType::class,
+                'allow_add'     =>  true,
+                'allow_delete'  =>  true,
+                'constraints'   =>  [
+                    new NotBlank(['message' => 'Укажите хотя бы одного подписанта'])
+                ],
+                'error_bubbling'=>  true
             ])
         ;
     }

@@ -1,0 +1,8 @@
+services:
+
+    app.form_admin.signature:
+        class: AppBundle\Form\Admin\SignatureType
+        arguments:
+            - "@doctrine.orm.doctrine_entity_manager"
+        tags:
+            - { name: form.type, alias: signature }
