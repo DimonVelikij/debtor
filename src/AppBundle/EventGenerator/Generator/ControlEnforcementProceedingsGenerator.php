@@ -12,7 +12,7 @@ use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Translation\DataCollectorTranslator;
+use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class ControlEnforcementProceedingsGenerator extends BaseGenerator implements GeneratorInterface
@@ -29,10 +29,10 @@ class ControlEnforcementProceedingsGenerator extends BaseGenerator implements Ge
      * @param DateDiffer $dateDiffer
      * @param TwigEngine $twig
      * @param ValidatorInterface $validator
-     * @param DataCollectorTranslator $translator
+     * @param TranslatorInterface $translator
      * @param FinishGenerator $finishGenerator
      */
-    public function __construct(EntityManager $em, FlatLogger $flatLogger, Router $router, TemplateGenerator $templateGenerator, DateDiffer $dateDiffer, TwigEngine $twig, ValidatorInterface $validator, DataCollectorTranslator $translator, FinishGenerator $finishGenerator)
+    public function __construct(EntityManager $em, FlatLogger $flatLogger, Router $router, TemplateGenerator $templateGenerator, DateDiffer $dateDiffer, TwigEngine $twig, ValidatorInterface $validator, TranslatorInterface $translator, FinishGenerator $finishGenerator)
     {
         parent::__construct($em, $flatLogger, $router, $templateGenerator, $dateDiffer, $twig, $validator, $translator);
         $this->finishGenerator = $finishGenerator;

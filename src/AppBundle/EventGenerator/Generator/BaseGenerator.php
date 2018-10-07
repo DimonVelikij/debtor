@@ -16,7 +16,7 @@ use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Translation\DataCollectorTranslator;
+use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 abstract class BaseGenerator
@@ -42,7 +42,7 @@ abstract class BaseGenerator
     /** @var ValidatorInterface  */
     protected $validator;
 
-    /** @var DataCollectorTranslator  */
+    /** @var TranslatorInterface */
     protected $translator;
 
     /** @var  Event */
@@ -60,9 +60,9 @@ abstract class BaseGenerator
      * @param DateDiffer $dateDiffer
      * @param TwigEngine $twig
      * @param ValidatorInterface $validator
-     * @param DataCollectorTranslator $translator
+     * @param TranslatorInterface $translator
      */
-    public function __construct(EntityManager $em, FlatLogger $flatLogger, Router $router, TemplateGenerator $templateGenerator, DateDiffer $dateDiffer, TwigEngine $twig, ValidatorInterface $validator, DataCollectorTranslator $translator)
+    public function __construct(EntityManager $em, FlatLogger $flatLogger, Router $router, TemplateGenerator $templateGenerator, DateDiffer $dateDiffer, TwigEngine $twig, ValidatorInterface $validator, TranslatorInterface $translator)
     {
         $this->em = $em;
         $this->flatLogger = $flatLogger;
