@@ -17,21 +17,21 @@ services:
         class: AppBundle\Admin\CityAdmin
         arguments: [~, AppBundle\Entity\City, SonataAdminBundle:CRUD]
         tags:
-            - { name: sonata.admin, manager_type: orm, group: cms.address_book, label: Города }
+            - { name: sonata.admin, manager_type: orm, group: cms.directory, label: Города }
         public: true
 
     app.admin.street:
         class: AppBundle\Admin\StreetAdmin
         arguments: [~, AppBundle\Entity\Street, SonataAdminBundle:CRUD]
         tags:
-            - { name: sonata.admin, manager_type: orm, group: cms.address_book, label: Улицы }
+            - { name: sonata.admin, manager_type: orm, group: cms.directory, label: Улицы }
         public: true
 
     app.admin.house:
         class: AppBundle\Admin\HouseAdmin
         arguments: [~, AppBundle\Entity\House, SonataAdminBundle:CRUD]
         tags:
-            - { name: sonata.admin, manager_type: orm, group: cms.address_book, label: Дома }
+            - { name: sonata.admin, manager_type: orm, group: cms.directory, label: Дома }
         public: true
 
     app.admin.flat:
@@ -55,26 +55,26 @@ services:
         class: AppBundle\Admin\JudicialSectorAdmin
         arguments: [~, AppBundle\Entity\JudicialSector, SonataAdminBundle:CRUD]
         tags:
-            - { name: sonata.admin, manager_type: orm, group: cms.judicial_sector, label: Судебные участки }
+            - { name: sonata.admin, manager_type: orm, group: cms.directory, label: Судебные участки }
         public: true
 
     app.admin.fssp_department:
         class: AppBundle\Admin\FSSPDepartmentAdmin
         arguments: [~, AppBundle\Entity\FSSPDepartment, SonataAdminBundle:CRUD]
         tags:
-            - { name: sonata.admin, manager_type: orm, group: cms.fssp, label: Отделения ФССП }
+            - { name: sonata.admin, manager_type: orm, group: cms.directory, label: Отделения ФССП }
         public: true
 
     app.admin.street_type:
         class: AppBundle\Admin\StreetTypeAdmin
         arguments: [~, AppBundle\Entity\StreetType, SonataAdminBundle:CRUD]
         tags:
-            - { name: sonata.admin, manager_type: orm, group: cms.address_book, label: Тип улицы }
+            - { name: sonata.admin, manager_type: orm, group: cms.directory, label: Тип улицы }
         public: true
 
     app.admin.flat_type:
         class: AppBundle\Admin\FlatTypeAdmin
         arguments: [~, AppBundle\Entity\FlatType, SonataAdminBundle:CRUD]
         tags:
-            - { name: sonata.admin, manager_type: orm, group: cms.address_book, label: Тип помещения }
+            - { name: sonata.admin, manager_type: orm, group: cms.directory, label: Тип помещения }
         public: true

@@ -159,9 +159,9 @@ class FlatAdmin extends AbstractAdmin
                 'label'     =>  'Новые события',
                 'sortable'  =>  true
             ])
-            ->add('updatedAt', null, [
-                'label'     =>  'Дата последнего обновления',
-                'format'    =>  'd.m.Y H:i'
+            ->add('dateFillDebt', null, [
+                'label'     =>  'Дата заполнения долга',
+                'format'    =>  'd.m.Y'
             ])
             ->add('subscribers.personalAccount.account', null, [
                 'label'     =>  'Лицевые счета',
@@ -193,6 +193,9 @@ class FlatAdmin extends AbstractAdmin
         /** @var User $user */
         $user = $this->getUser();
 
+        /** @var Flat $flat */
+        $flat = $this->getSubject();
+
         $formMapper
             ->tab('Помещение')
                 ->with('Адрес', [
@@ -204,7 +207,7 @@ class FlatAdmin extends AbstractAdmin
                         'class'         =>  'AppBundle\Entity\House',
                         'required'      =>  true,
                         'group_by'      =>  'street.city',
-                        'help'          =>  "<span style='color: blue;'>Если в списке нет нужного дома, необходимо <a target='_blank' href='{$this->getRouter()->generate('admin_app_house_create')}'>добавить дом</a> и обновить страницу</span>",
+                        'help'          =>  $flat->getId() ? "" : "<span style='color: blue;'>Если в списке нет нужного дома, необходимо <a target='_blank' href='{$this->getRouter()->generate('admin_app_house_create')}'>добавить дом</a> и обновить страницу</span>",
                         'constraints'   =>  [
                             new NotBlank(['message' => 'Укажите дом']),
                             new FlatExist()
@@ -222,10 +225,10 @@ class FlatAdmin extends AbstractAdmin
                         }
                     ])
                     ->add('type', null, [
-                        'label'     =>  'Тип',
-                        'class'     =>  'AppBundle\Entity\FlatType',
-                        'required'  =>  true,
-                        'help'          =>  "<span style='color: blue;'>Если в списке нет нужного типа квартиры, необходимо <a target='_blank' href='{$this->getRouter()->generate('admin_app_flattype_create')}'>добавить тип квартиры</a> и обновить страницу</span>",
+                        'label'         =>  'Тип',
+                        'class'         =>  'AppBundle\Entity\FlatType',
+                        'required'      =>  true,
+                        'help'          =>  $flat->getId() ? "" : "<span style='color: blue;'>Если в списке нет нужного типа квартиры, необходимо <a target='_blank' href='{$this->getRouter()->generate('admin_app_flattype_create')}'>добавить тип квартиры</a> и обновить страницу</span>",
                         'constraints'   =>  [
                             new NotBlank(['message' => 'Укажите тип помещения'])
                         ]
