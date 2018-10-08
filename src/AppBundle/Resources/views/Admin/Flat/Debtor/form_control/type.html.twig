@@ -1,5 +1,5 @@
 <div class="form-group" ng-class="{'has-error': debtor.type.$invalid && debtor.type.$dirty}">
-    <label for="type" class="control-label required">Тип должника</label>
+    <label for="type" class="control-label required">Тип собственника</label>
     <ui-select id="type" name="type" ng-required="1" ng-model="state.type" backend>
         <ui-select-match>
             <span ng-bind="$select.selected.title"></span>
@@ -10,7 +10,7 @@
     </ui-select>
     <div class="help-block sonata-ba-field-error-messages" ng-if="debtor.type.$invalid && debtor.type.$dirty" ng-messages="debtor.type.$error">
         <ul class="list-unstyled">
-            <li ng-message="required"><i class="fa fa-exclamation-circle"></i>Укажите тип должника</li>
+            <li ng-message="required"><i class="fa fa-exclamation-circle"></i>Укажите тип собственника</li>
             <li ng-message="backend"><i class="fa fa-exclamation-circle"></i>[[ debtor.type.errorMessages.backend ]]</li>
         </ul>
     </div>

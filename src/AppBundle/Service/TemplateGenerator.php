@@ -52,7 +52,7 @@ class TemplateGenerator
             'type'  =>  self::MIXED
         ],
         'debtor'                    =>  [
-            'title' =>  'Должник',
+            'title' =>  'Собственник',
             'type'  =>  self::DEBTOR
         ],
         'debtor_type'               =>  [
@@ -68,7 +68,7 @@ class TemplateGenerator
             'type'  =>  self::DEBTOR
         ],
         'debtor_info'               =>  [
-            'title' =>  'Информация о должнике (ОГРН/ОГРНИП/ИНН/Место рожд/жит-ва/доля и пр)',
+            'title' =>  'Информация о собственнике (ОГРН/ОГРНИП/ИНН/Место рожд/жит-ва/доля и пр)',
             'type'  =>  self::DEBTOR
         ],
         'mkd_management_start_date' =>  [

@@ -677,7 +677,7 @@ class FlatAdminController extends CRUDController
     {
         if (!$input['type']) {
             return [
-                'type'  =>  'Укажите тип должника'
+                'type'  =>  'Укажите тип собственника'
             ];
         }
 
@@ -715,7 +715,7 @@ class FlatAdminController extends CRUDController
     {
         $constraints = [
             'type'              =>  [
-                new NotBlank(['message' =>  'Укажите тип должника'])
+                new NotBlank(['message' =>  'Укажите тип собственника'])
             ],
             'personalAccount'   =>  [
                 new NotBlank(['message' =>  'Укажите лицевой счет'])
