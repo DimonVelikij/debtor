@@ -128,7 +128,7 @@ class VerificationCaseGenerator extends BaseGenerator implements GeneratorInterf
             $this->em->flush();
 
             //добавляем лог - отказ принятия искового заявления
-            $this->flatLogger->log($currentFlatEvent->getFlat(), "<b>{$this->event->getName()}</b><br>{$showData}");
+            $this->flatLogger->log($currentFlatEvent->getFlat(), "<b>{$this->event->getName()}</b><br>{$showData}", $this->event);
 
             return true;
         } else {//если принятие
@@ -207,7 +207,7 @@ class VerificationCaseGenerator extends BaseGenerator implements GeneratorInterf
             $this->em->flush();
 
             //добавляем лог - подтверждено принятие искового заявления
-            $this->flatLogger->log($currentFlatEvent->getFlat(), "<b>{$this->event->getName()}</b><br>{$showData}");
+            $this->flatLogger->log($currentFlatEvent->getFlat(), "<b>{$this->event->getName()}</b><br>{$showData}", $this->event);
 
             return [
                 'success'   =>  true,
@@ -247,7 +247,7 @@ class VerificationCaseGenerator extends BaseGenerator implements GeneratorInterf
         $this->em->flush();
 
         //добавляем лог - сгенерировалось событие "Проверка принятия дела к производству"
-        $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}");
+        $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}", $this->event);
 
         return true;
     }

@@ -98,7 +98,7 @@ class ApplyingStatementClaimGenerator extends BaseGenerator implements Generator
         $this->em->flush();
 
         //добавляем лог - что все подтверждения подача заявления на СП в суд
-        $this->flatLogger->log($currentFlatEvent->getFlat(), "<b>{$this->event->getName()}</b><br>{$showData}");
+        $this->flatLogger->log($currentFlatEvent->getFlat(), "<b>{$this->event->getName()}</b><br>{$showData}", $this->event);
 
         return true;
     }
@@ -131,7 +131,7 @@ class ApplyingStatementClaimGenerator extends BaseGenerator implements Generator
         $this->em->flush();
 
         //добавляем лог - сгенерировалось событие "Подача искового заявления"
-        $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}");
+        $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}", $this->event);
 
         return true;
     }

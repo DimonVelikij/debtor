@@ -131,7 +131,7 @@ class LegalProceedingsGenerator extends BaseGenerator implements GeneratorInterf
             $this->em->flush();
 
             //добавляем лог - принято решение
-            $this->flatLogger->log($currentFlatEvent->getFlat(), "<b>{$this->event->getName()}</b><br>{$showData}");
+            $this->flatLogger->log($currentFlatEvent->getFlat(), "<b>{$this->event->getName()}</b><br>{$showData}", $this->event);
 
             return true;
         } else {
@@ -197,7 +197,7 @@ class LegalProceedingsGenerator extends BaseGenerator implements GeneratorInterf
             $this->em->flush();
 
             //добавляем лог - заседание отложено
-            $this->flatLogger->log($currentFlatEvent->getFlat(), "<b>{$this->event->getName()}</b><br>{$showData}");
+            $this->flatLogger->log($currentFlatEvent->getFlat(), "<b>{$this->event->getName()}</b><br>{$showData}", $this->event);
 
             return [
                 'success'   =>  true,
@@ -237,7 +237,7 @@ class LegalProceedingsGenerator extends BaseGenerator implements GeneratorInterf
         $this->em->flush();
 
         //добавляем лог - сгенерировалось событие "Судебное делопроизводство"
-        $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}");
+        $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}", $this->event);
 
         return true;
     }

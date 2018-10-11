@@ -97,7 +97,7 @@ class FormationStatementClaimGenerator extends BaseGenerator implements Generato
         $this->em->flush();
 
         //добавляем лог - сгенерировалось событие "Формирование искового заявления"
-        $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}");
+        $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}", $this->event);
 
         return true;
     }

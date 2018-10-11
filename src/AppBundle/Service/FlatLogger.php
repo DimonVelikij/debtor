@@ -2,6 +2,7 @@
 
 namespace AppBundle\Service;
 
+use AppBundle\Entity\Event;
 use AppBundle\Entity\Flat;
 use AppBundle\Entity\Log;
 use Doctrine\ORM\EntityManager;
@@ -23,16 +24,18 @@ class FlatLogger
     /**
      * создание объекта лога
      * @param Flat $flat
-     * @param $message
+     * @param string $message
+     * @param Event|null $event
      * @return Log
      */
-    public function createLog(Flat $flat, $message)
+    public function createLog(Flat $flat, string $message, Event $event = null)
     {
         $log = new Log();
 
         $log
             ->setDate(new \DateTime())
             ->setData($message)
+            ->setEvent($event ? $event->getAlias() : null)
             ->setIsRead(false)
             ->setFlat($flat);
 
@@ -43,11 +46,12 @@ class FlatLogger
      * добавляем запись в таблицу logs, привязанную к помещению
      * @param Flat $flat
      * @param $message
+     * @param Event|null $event
      * @return Log
      */
-    public function log(Flat $flat, $message)
+    public function log(Flat $flat, $message, Event $event = null)
     {
-        $log = $this->createLog($flat, $message);
+        $log = $this->createLog($flat, $message, $event);
 
         $this->em->persist($log);
         $this->em->flush();

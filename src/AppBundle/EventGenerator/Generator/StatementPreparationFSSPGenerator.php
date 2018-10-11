@@ -97,7 +97,7 @@ class StatementPreparationFSSPGenerator extends BaseGenerator implements Generat
         $this->em->flush();
 
         //добавляем лог - сгенерировалось событие "Подготовка заявления на бездействие ФССП"
-        $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}");
+        $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}", $this->event);
 
         return true;
     }

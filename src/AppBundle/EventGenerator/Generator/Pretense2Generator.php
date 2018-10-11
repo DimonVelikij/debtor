@@ -123,7 +123,7 @@ class Pretense2Generator extends BaseGenerator implements GeneratorInterface
         $this->em->flush();
 
         //добавляем лог - сгенерировалось событие "Претензия2"
-        $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}");
+        $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}", $this->event);
 
         return true;
     }
@@ -185,7 +185,7 @@ class Pretense2Generator extends BaseGenerator implements GeneratorInterface
         $this->em->flush();
 
         //добавляем лог - пропущено событие
-        $this->flatLogger->log($flatEvent->getFlat(), "<b>{$nextEvent->getName()}</b><br>Пропущено");
+        $this->flatLogger->log($flatEvent->getFlat(), "<b>{$nextEvent->getName()}</b><br>Пропущено", $this->event);
 
         return true;
     }

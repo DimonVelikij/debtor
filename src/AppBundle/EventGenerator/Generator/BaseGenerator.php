@@ -207,7 +207,7 @@ abstract class BaseGenerator
         $this->em->flush();
 
         //добавляем лог - пропущено событие
-        $this->flatLogger->log($flatEvent->getFlat(), "<b>{$nextEvent->getName()}</b><br>Пропущено");
+        $this->flatLogger->log($flatEvent->getFlat(), "<b>{$nextEvent->getName()}</b><br>Пропущено", $nextEvent);
 
         return true;
     }

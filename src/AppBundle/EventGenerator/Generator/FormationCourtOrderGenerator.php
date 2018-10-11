@@ -101,7 +101,7 @@ class FormationCourtOrderGenerator extends BaseGenerator implements GeneratorInt
         $this->em->flush();
 
         //добавляем лог - сгенерировалось событие "Формирование заявления на выдачу судебного приказа"
-        $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}");
+        $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}", $this->event);
 
         return true;
     }

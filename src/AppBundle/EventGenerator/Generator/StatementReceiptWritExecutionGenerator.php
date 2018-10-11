@@ -130,7 +130,7 @@ class StatementReceiptWritExecutionGenerator extends BaseGenerator implements Ge
             $this->em->flush();
 
             //добавляем лог - не обжаловано заявление на получение исполнительного листа
-            $this->flatLogger->log($currentFlatEvent->getFlat(), "<b>{$this->event->getName()}</b><br>{$showData}");
+            $this->flatLogger->log($currentFlatEvent->getFlat(), "<b>{$this->event->getName()}</b><br>{$showData}", $this->event);
 
             return true;
         } else {//если обжаловано - заседаные переносится
@@ -195,7 +195,7 @@ class StatementReceiptWritExecutionGenerator extends BaseGenerator implements Ge
             $this->em->flush();
 
             //добавляем лог - обжаловано заявление на получение исполнительного листа
-            $this->flatLogger->log($currentFlatEvent->getFlat(), "<b>{$this->event->getName()}</b><br>{$showData}");
+            $this->flatLogger->log($currentFlatEvent->getFlat(), "<b>{$this->event->getName()}</b><br>{$showData}", $this->event);
 
             return [
                 'success'   =>  true,
@@ -261,7 +261,7 @@ class StatementReceiptWritExecutionGenerator extends BaseGenerator implements Ge
         }
 
         //добавляем лог - сгенерировалось событие "Заявление на получение исполнительного листа"
-        $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}");
+        $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}", $this->event);
 
         return true;
     }

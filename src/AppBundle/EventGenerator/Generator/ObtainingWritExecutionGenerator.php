@@ -85,7 +85,7 @@ class ObtainingWritExecutionGenerator extends BaseGenerator implements Generator
         $this->em->flush();
 
         //добавляем лог - подтверждено получение исполнительного листа
-        $this->flatLogger->log($currentFlatEvent->getFlat(), "<b>{$this->event->getName()}</b><br>{$showData}");
+        $this->flatLogger->log($currentFlatEvent->getFlat(), "<b>{$this->event->getName()}</b><br>{$showData}", $this->event);
 
         return true;
     }
@@ -118,7 +118,7 @@ class ObtainingWritExecutionGenerator extends BaseGenerator implements Generator
         $this->em->flush();
 
         //добавляем лог - сгенерировалось событие "Получение исполнительного листа"
-        $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}");
+        $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}", $this->event);
 
         return true;
     }

@@ -50,6 +50,11 @@ class Log
     private $data;
 
     /**
+     * @ORM\Column(name="event", type="string", nullable=true)
+     */
+    private $event;
+
+    /**
      * @ORM\Column(name="is_read", type="boolean", nullable=false)
      *
      * @JMS\Expose
@@ -133,6 +138,30 @@ class Log
     public function getData()
     {
         return $this->data;
+    }
+
+    /**
+     * Set event
+     *
+     * @param string $event
+     *
+     * @return Log
+     */
+    public function setEvent($event)
+    {
+        $this->event = $event;
+
+        return $this;
+    }
+
+    /**
+     * Get event
+     *
+     * @return string
+     */
+    public function getEvent()
+    {
+        return $this->event;
     }
 
     /**

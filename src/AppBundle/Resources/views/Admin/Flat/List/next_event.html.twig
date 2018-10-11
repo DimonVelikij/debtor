@@ -10,6 +10,7 @@
                 {% set next_event = get_next_event(flatEvent) %}
                 {% if next_event %}
                     <span><b>{{ next_event.event.name }}({{ next_event.dateGenerate.format('d.m.Y') }})</b></span>
+                    <br>
                     <a class="label label-success" href="{{ path('admin_app_flat_perform', {flat_id: flatEvent.flat.id, event: flatEvent.event.alias}) }}">Выполнить</a>
                     <a class="label label-success" href="{{ path('admin_app_flat_miss', {flat_id: flatEvent.flat.id, event: flatEvent.event.alias}) }}">Пропустить</a>
                     <br>

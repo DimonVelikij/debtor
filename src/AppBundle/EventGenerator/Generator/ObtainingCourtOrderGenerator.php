@@ -173,7 +173,7 @@ class ObtainingCourtOrderGenerator extends BaseGenerator implements GeneratorInt
         $this->em->flush();
 
         //добавляем лог - либо подтверждение, либо отказ, либо отмена судебного приказа
-        $this->flatLogger->log($currentFlatEvent->getFlat(), "<b>{$this->event->getName()}</b><br>{$showData}");
+        $this->flatLogger->log($currentFlatEvent->getFlat(), "<b>{$this->event->getName()}</b><br>{$showData}", $this->event);
 
         return true;
     }
@@ -210,7 +210,7 @@ class ObtainingCourtOrderGenerator extends BaseGenerator implements GeneratorInt
         $this->em->flush();
 
         //добавляем лог - сгенерировалось событие "Получение судебного приказа"
-        $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}");
+        $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}", $this->event);
 
         return true;
     }

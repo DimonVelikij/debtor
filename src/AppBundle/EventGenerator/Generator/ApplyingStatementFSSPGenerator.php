@@ -85,7 +85,7 @@ class ApplyingStatementFSSPGenerator extends BaseGenerator implements GeneratorI
         $this->em->flush();
 
         //добавляем лог - что все подтверждения подача заявления на СП в суд
-        $this->flatLogger->log($currentFlatEvent->getFlat(), "<b>{$this->event->getName()}</b><br>{$showData}");
+        $this->flatLogger->log($currentFlatEvent->getFlat(), "<b>{$this->event->getName()}</b><br>{$showData}", $this->event);
 
         return true;
     }
@@ -118,7 +118,7 @@ class ApplyingStatementFSSPGenerator extends BaseGenerator implements GeneratorI
         $this->em->flush();
 
         //добавляем лог - сгенерировалось событие "Подача заявления на бездействие ФССП"
-        $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}");
+        $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}", $this->event);
 
         return true;
     }

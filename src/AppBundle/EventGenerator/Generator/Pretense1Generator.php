@@ -97,7 +97,7 @@ class Pretense1Generator extends BaseGenerator implements GeneratorInterface
         $this->em->flush();
 
         //добавляем лог - сгенерировалось событие "Претензия1"
-        $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}");
+        $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}", $this->event);
 
         return true;
     }

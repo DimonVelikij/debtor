@@ -355,7 +355,7 @@ class FlatAdmin extends AbstractAdmin
 
                 //пишем лог
                 //если добавлять через метод log - будет ошибка вставки лога, т.к. помещения еще не существует
-                $flat->addLog($flatLogger->createLog($flat, "<b>{$event->getName()}</b>"));
+                $flat->addLog($flatLogger->createLog($flat, "<b>{$event->getName()}</b>", $event));
             }
         });
     }

@@ -130,7 +130,7 @@ class StatementCommencementEnforcementProceedingsGenerator extends BaseGenerator
             $this->em->flush();
 
             //добавляем лог - выполнено формирование заявления на возбеждение исполнительного производства
-            $this->flatLogger->log($currentFlatEvent->getFlat(), "<b>{$this->event->getName()}</b><br>{$showData}");
+            $this->flatLogger->log($currentFlatEvent->getFlat(), "<b>{$this->event->getName()}</b><br>{$showData}", $this->event);
 
             return true;
         } else {//если отложено обращение в ФССП - обращение переносится
@@ -194,7 +194,7 @@ class StatementCommencementEnforcementProceedingsGenerator extends BaseGenerator
             $this->em->flush();
 
             //добавляем лог - отложено обращение в ФССП
-            $this->flatLogger->log($currentFlatEvent->getFlat(), "<b>{$this->event->getName()}</b><br>{$showData}");
+            $this->flatLogger->log($currentFlatEvent->getFlat(), "<b>{$this->event->getName()}</b><br>{$showData}", $this->event);
 
             return [
                 'success'   =>  true,
@@ -260,7 +260,7 @@ class StatementCommencementEnforcementProceedingsGenerator extends BaseGenerator
         }
 
         //добавляем лог - сгенерировалось событие "Заявление на возбуждение сполнительного производства"
-        $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}");
+        $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}", $this->event);
 
         return true;
     }

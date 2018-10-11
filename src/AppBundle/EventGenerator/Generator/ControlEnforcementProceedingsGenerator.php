@@ -152,7 +152,7 @@ class ControlEnforcementProceedingsGenerator extends BaseGenerator implements Ge
         }
 
         //добавляем лог - либо проводится, либо бездействие, либо окончено
-        $this->flatLogger->log($currentFlatEvent->getFlat(), "<b>{$this->event->getName()}</b><br>{$showData}");
+        $this->flatLogger->log($currentFlatEvent->getFlat(), "<b>{$this->event->getName()}</b><br>{$showData}", $this->event);
 
         return true;
     }
@@ -190,7 +190,7 @@ class ControlEnforcementProceedingsGenerator extends BaseGenerator implements Ge
         $this->em->flush();
 
         //добавляем лог - сгенерировалось событие "Контроль исполнительного производства"
-        $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}");
+        $this->flatLogger->log($flat, "<b>{$this->event->getName()}</b><br>{$showData}", $this->event);
 
         return true;
     }
