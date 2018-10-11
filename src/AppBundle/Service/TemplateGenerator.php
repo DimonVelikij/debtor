@@ -143,15 +143,14 @@ class TemplateGenerator
             'title' =>  'Арбитраж ПрикП',
             'type'  =>  self::MIXED
         ],
-        //пошлина (ИскП) ????
-        //пошлина (ПрикП) ????
-        //полшлина (ИскП) ????
-        //дата получения приказа ????
-        //номер судебного приказа ????
-        //дата судебного приказа ????
-        //взыскано (долг) ????
-        //взыскано (пени) ????
-        //взыскано (пошлина) ????
+        'court_order_number'        =>  [
+            'title' =>  'Номер судебного приказа',
+            'type'  =>  self::FLAT
+        ],
+        'court_order_date'          =>  [
+            'title' =>  'Дата получения судебного приказа',
+            'type'  =>  self::FLAT
+        ],
         'fssp_department_name'      =>  [
             'title' =>  'Отделение ФССП',
             'type'  =>  self::FLAT
@@ -160,16 +159,8 @@ class TemplateGenerator
             'title' =>  'Адрес отделения ФССП',
             'type'  =>  self::FLAT
         ],
-        //дата подачи приказа в ФССП ????
-        //исполнительное производство ????
-        //итого задолженность ????
-        //итого пошлина ????
         'applying_court_order_date' =>  [
             'title' =>  'Дата подачи заявления судебного приказа в суд',
-            'type'  =>  self::DEBTOR
-        ],
-        'obtaining_court_order_date'=>  [
-            'title' =>  'Дата получения судебного приказа',
             'type'  =>  self::DEBTOR
         ],
         'applying_statement_claim_date' =>  [
@@ -800,6 +791,34 @@ class TemplateGenerator
     }
 
     /**
+     * номер судебного приказа
+     * @param Flat $flat
+     * @return bool|string
+     */
+    private function getCourtOrderNumberFieldValue(Flat $flat)
+    {
+        $applyingCourtOrder = $flat->getEventDataParameter('applying_court_order');
+
+        return !$applyingCourtOrder || !isset($applyingCourtOrder['courtOrderNumber']) ?
+            '' :
+            $applyingCourtOrder['courtOrderNumber'];
+    }
+
+    /**
+     * дата получения судебного приказа
+     * @param Flat $flat
+     * @return string
+     */
+    private function getCourtOrderDateFieldValue(Flat $flat)
+    {
+        $applyingCourtOrder = $flat->getEventDataParameter('applying_court_order');
+
+        return !$applyingCourtOrder || !isset($applyingCourtOrder['courtOrderDate']) || !$applyingCourtOrder['courtOrderDate'] instanceof \DateTime ?
+            '' :
+            $applyingCourtOrder['courtOrderDate']->format('d.m.Y');
+    }
+
+    /**
      * отделение ФССП
      * @param Flat $flat
      * @return string
@@ -833,22 +852,6 @@ class TemplateGenerator
             !$applyingCourtOrder['confirm'] instanceof \DateTime) ?
             self::UNDEFINED :
             $applyingCourtOrder['confirm']->format('d.m.Y');
-    }
-
-    /**
-     * дата получения судебного приказа
-     * @param Debtor $debtor
-     * @return string
-     */
-    private function getObtainingCourtOrderDateFieldValue(Debtor $debtor)
-    {
-        $obtainingCourtOrder = $debtor->getFlat()->getEventDataParameter('obtaining_court_order');
-
-        return (!$obtainingCourtOrder ||
-            !isset($obtainingCourtOrder['confirm']) ||
-            !$obtainingCourtOrder['confirm'] instanceof \DateTime) ?
-            self::UNDEFINED :
-            $obtainingCourtOrder['confirm']->format('d.m.Y');
     }
 
     /**
