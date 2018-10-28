@@ -24,6 +24,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Regex;
 
 class FlatAdmin extends AbstractAdmin
 {
@@ -274,8 +275,10 @@ class FlatAdmin extends AbstractAdmin
                         'label'         =>  'Сумма долга, руб.',
                         'required'      =>  true,
                         'constraints'   =>  [
-                            new NotBlank(['message' => 'Укажите сумма долга'])
-                        ]
+                            new NotBlank(['message' => 'Укажите сумма долга']),
+                            new Regex(['pattern' => '/^(\d+)(\.\d{1,2})?$/', 'message' => 'Неверно указана сумма долга'])
+                        ],
+                        'help'          =>  'Укажите копейки через точку'
                     ])
                     ->add('periodAccruedDebt', TextType::class, [
                         'label'         =>  'За период начислено',
@@ -297,8 +300,12 @@ class FlatAdmin extends AbstractAdmin
                         'help'      =>  'Оставьте поле пустым, подставится текущая дата'
                     ])
                     ->add('sumFine', TextType::class, [
-                        'label'     =>  'Сумма пени, руб.',
-                        'required'  =>  false
+                        'label'         =>  'Сумма пени, руб.',
+                        'required'      =>  false,
+                        'constraints'   =>  [
+                            new Regex(['pattern' => '/^(\d+)(\.\d{1,2})?$/', 'message' => 'Неверно указана сумма пени'])
+                        ],
+                        'help'          =>  'Укажите копейки через точку'
                     ])
                     ->add('periodAccruedFine', TextType::class, [
                         'label'         =>  'За период начислено',

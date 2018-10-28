@@ -79,10 +79,11 @@
 
                     {#дата начала собсвенности#}
                     <div class="form-group" ng-class="{'has-error': debtor.startDateOwnership.$invalid && debtor.startDateOwnership.$dirty}">
-                        <label for="startDateOwnership" class="control-label">Дата начала собственности</label>
-                        <input name="startDateOwnership" id="startDateOwnership" type="text" class="form-control" ng-model="currentDebtor.startDateOwnership" ui-mask="99.99.9999" ng-pattern="/^([0-2]\d|3[01])\.(0\d|1[012])\.(19|20)(\d\d)$/" backend>
+                        <label for="startDateOwnership" class="control-label required">Дата начала собственности</label>
+                        <input name="startDateOwnership" id="startDateOwnership" type="text" class="form-control" ng-model="currentDebtor.startDateOwnership" ui-mask="99.99.9999" ng-pattern="/^([0-2]\d|3[01])\.(0\d|1[012])\.(19|20)(\d\d)$/" ng-required="1" backend>
                         <div class="help-block sonata-ba-field-error-messages" ng-if="debtor.startDateOwnership.$invalid && debtor.startDateOwnership.$dirty" ng-messages="debtor.startDateOwnership.$error">
                             <ul class="list-unstyled">
+                                <li ng-message="required"><i class="fa fa-exclamation-circle"></i>Укажите дату начала собственности</li>
                                 <li ng-message="pattern"><i class="fa fa-exclamation-circle"></i>Неверно указана дата начала собственности</li>
                                 <li ng-message="backend"><i class="fa fa-exclamation-circle"></i>[[ debtor.startDateOwnership.errorMessages.backend ]]</li>
                             </ul>

@@ -731,6 +731,7 @@ class FlatAdminController extends CRUDController
                 new OwnershipStatus(['message'  =>   'Укажите статус собственности'])
             ],
             'startDateOwnership'=>  [
+                new NotBlank(['message' =>  'Укажите дату начала собственности']),
                 new Regex(['pattern'    =>  '/^([0-2]\d|3[01])(0\d|1[012])(19|20)(\d\d)$/', 'message'   =>  'Неверно указана дата начала собственности'])
             ],
             'endDateOwnership'  =>  [

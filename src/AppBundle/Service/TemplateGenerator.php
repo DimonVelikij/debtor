@@ -67,6 +67,14 @@ class TemplateGenerator
             'title' =>  'Подстатус собственности',
             'type'  =>  self::DEBTOR
         ],
+        'debtor_start_date_ownership'   =>  [
+            'title' =>  'Дата начала собственности должника',
+            'type'  =>  self::DEBTOR
+        ],
+        'debtor_end_date_ownership'     =>  [
+            'title' =>  'Дата окончания собственности должника',
+            'type'  =>  self::DEBTOR
+        ],
         'debtor_info'               =>  [
             'title' =>  'Информация о собственнике (ОГРН/ОГРНИП/ИНН/Место рожд/жит-ва/доля и пр)',
             'type'  =>  self::DEBTOR
@@ -447,33 +455,71 @@ class TemplateGenerator
     }
 
     /**
+     * дата начала собственности должника
+     * @param Debtor $debtor
+     * @return string
+     */
+    private function getDebtorStartDateOwnershipFieldValue(Debtor $debtor)
+    {
+        return $debtor->getStartDateOwnership()->format('d.m.Y');
+    }
+
+    /**
+     * дата окончания собственности должника
+     * @param Debtor $debtor
+     * @return string
+     */
+    private function getDebtorEndDateOwnershipFieldValue(Debtor $debtor)
+    {
+        return $debtor->getEndDateOwnership() ?
+            $debtor->getEndDateOwnership()->format('d.m.Y') :
+            'настоящего времени';
+    }
+
+    /**
      * информация о должнике
      * @param Debtor $debtor
      * @return string
      */
     private function getDebtorInfoFieldValue(Debtor $debtor)
     {
-        $debtorInfo = 'Доля: ' . ($debtor->getShareSize() ?: 1) . '<br>';
+        if ($debtor->getLocation()) {
+            $location = $debtor->getLocation();
+        } else {
+            $flat = $debtor->getFlat();
+            $house = $flat->getHouse();
+            $street = $house->getStreet();
+            $city = $street->getCity();
+
+            $location = 'г. ' . $city->getTitle() . ', ' .
+                $street->getType()->getTitle() . ' ' .
+                $street->getTitle() . ', ' .
+                'д. ' . $house->getNumber() . ', ' .
+                $flat->getType()->getTitle() . ' ' .
+                $flat->getNumber();
+        }
 
         switch ($debtor->getType()->getAlias()) {
             case 'individual':
-                $debtorInfo .=
+                $debtorInfo =
                     'Дата рождения: ' . ($debtor->getDateOfBirth() ? $debtor->getDateOfBirth()->format('d.m.Y') : self::UNDEFINED) . '<br>' .
                     'Место рождения: ' . ($debtor->getPlaceOfBirth() ?: self::UNDEFINED) . '<br>' .
-                    'Место жительства: ' . ($debtor->getLocation() ?: self::UNDEFINED) . '<br>';
+                    'Место жительства: ' . ($location) . '<br>';
                 break;
             case 'businessman':
-                $debtorInfo .=
+                $debtorInfo =
                     'ОГРНИП: ' . ($debtor->getOgrnip() ?: self::UNDEFINED) . '<br>' .
                     'ИНН: ' . ($debtor->getInn() ?: self::UNDEFINED) . '<br>' .
-                    'Место жительства: ' . ($debtor->getLocation() ?: self::UNDEFINED) . '<br>';
+                    'Место жительства: ' . ($location) . '<br>';
                 break;
             case 'legal':
-                $debtorInfo .=
+                $debtorInfo =
                     'ОГРН: ' . ($debtor->getOgrn() ?: self::UNDEFINED) . '<br>' .
                     'ИНН: ' . ($debtor->getInn() ?: self::UNDEFINED) . '<br>' .
-                    'Место нахождения: ' . ($debtor->getLocation() ?: self::UNDEFINED) . '<br>';
+                    'Место нахождения: ' . ($location) . '<br>';
                 break;
+            default:
+                $debtorInfo = '';
         }
 
         return $debtorInfo;
@@ -500,7 +546,7 @@ class TemplateGenerator
     {
         return $flat->getHouse()->getManagementEndDate() ?
             $flat->getHouse()->getManagementEndDate()->format('d.m.Y') :
-            self::UNDEFINED;
+            'настоящего времени';
     }
 
     /**
@@ -510,7 +556,15 @@ class TemplateGenerator
      */
     private function getMkdLegalDocumentNameFieldValue(Flat $flat)
     {
-        return $flat->getHouse()->getLegalDocumentName() ?: self::UNDEFINED;
+        $documentName = $flat->getHouse()->getLegalDocumentName();
+
+        if ($flat->getHouse()->getLegalDocumentNumber()) {
+            $documentName .= ' №' . $flat->getHouse()->getLegalDocumentNumber();
+        }
+
+        $documentName .= ' от' . $flat->getHouse()->getLegalDocumentDate()->format('d.m.Y');
+
+        return $documentName;
     }
 
     /**
@@ -676,7 +730,7 @@ class TemplateGenerator
      */
     private function getTotalSumFieldValue($object)
     {
-        $totalSum = 'Общая сумма долга: ';
+        /*$totalSum = 'Общая сумма долга: ';
 
         $sumDebt = $object->getFlat()->getSumDebt();
         $sumFine = $object->getFlat()->getSumFine();
@@ -691,7 +745,8 @@ class TemplateGenerator
             'из которых ' . number_format($sumDebt, 2, '.', ' ') . 'р. - долг, ' .
             number_format($sumFine, 2, '.', ' ') . 'р. - пени';
 
-        return $totalSum;
+        return $totalSum;*/
+        return number_format(($object->getFlat()->getSumDebt() + $object->getFlat()->getSumFine()), 2, '.', ' ') . 'р.';
     }
 
     /**
