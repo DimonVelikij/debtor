@@ -65,6 +65,15 @@ class CompanyAdmin extends AbstractAdmin
             ->add('correspondentAccount', null, [
                 'label' =>  'Корреспондентский счет'
             ])
+            ->add('directorName', null, [
+                'label'         =>  'ФИО директора'
+            ])
+            ->add('directorPosition', null, [
+                'label'         =>  'Должность'
+            ])
+            ->add('directorDocument', null, [
+                'label'         =>  'Документ, подтверждающий полномочия'
+            ])
         ;
     }
 
@@ -107,6 +116,15 @@ class CompanyAdmin extends AbstractAdmin
             ])
             ->add('correspondentAccount', null, [
                 'label' =>  'Корреспондентский счет'
+            ])
+            ->add('directorName', null, [
+                'label'         =>  'ФИО директора'
+            ])
+            ->add('directorPosition', null, [
+                'label'         =>  'Должность'
+            ])
+            ->add('directorDocument', null, [
+                'label'         =>  'Документ, подтверждающий полномочия'
             ])
             ->add('_action', null, array(
                 'label'     =>  'Действия',
@@ -224,15 +242,39 @@ class CompanyAdmin extends AbstractAdmin
                     ])
                 ]
             ])
+            ->add('directorName', TextType::class, [
+                'label'         =>  'ФИО директора',
+                'required'      =>  true,
+                'constraints'   =>  [
+                    new NotBlank([
+                        'message' => 'Укажите ФИО'
+                    ])
+                ]
+            ])
+            ->add('directorPosition', TextType::class, [
+                'label'         =>  'Должность',
+                'required'      =>  true,
+                'constraints'   =>  [
+                    new NotBlank([
+                        'message' => 'Укажите должность'
+                    ])
+                ]
+            ])
+            ->add('directorDocument', TextType::class, [
+                'label'         =>  'Документ, подтверждающий полномочия',
+                'required'      =>  true,
+                'constraints'   =>  [
+                    new NotBlank([
+                        'message' => 'Укажите документ, подтверждающий полномочия'
+                    ])
+                ]
+            ])
             ->add('signature', 'sonata_type_native_collection', [
                 'label'         =>  'Подписанты',
-                'required'      =>  true,
+                'required'      =>  false,
                 'entry_type'    =>  SignatureType::class,
                 'allow_add'     =>  true,
                 'allow_delete'  =>  true,
-                'constraints'   =>  [
-                    new NotBlank(['message' => 'Укажите хотя бы одного подписанта'])
-                ],
                 'error_bubbling'=>  true
             ])
         ;
@@ -280,6 +322,15 @@ class CompanyAdmin extends AbstractAdmin
             ])
             ->add('correspondentAccount', null, [
                 'label' =>  'Корреспондентский счет'
+            ])
+            ->add('directorName', null, [
+                'label'         =>  'ФИО директора'
+            ])
+            ->add('directorPosition', null, [
+                'label'         =>  'Должность'
+            ])
+            ->add('directorDocument', null, [
+                'label'         =>  'Документ, подтверждающий полномочия'
             ])
         ;
     }

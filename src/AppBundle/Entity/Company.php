@@ -111,7 +111,28 @@ class Company
     private $correspondentAccount;
 
     /**
-     * @ORM\Column(name="signature", type="object", nullable=false)
+     * @ORM\Column(name="director_name", type="string", length=255, nullable=false)
+     *
+     * ФИО директора
+     */
+    private $directorName;
+
+    /**
+     * @ORM\Column(name="director_position", type="string", length=255, nullable=false)
+     *
+     * Должность директора
+     */
+    private $directorPosition;
+
+    /**
+     * @ORM\Column(name="director_document", type="string", length=255, nullable=false)
+     *
+     * Документ, подтверждающий полномочия
+     */
+    private $directorDocument;
+
+    /**
+     * @ORM\Column(name="signature", type="object", nullable=true)
      *
      * подписанты
      */
@@ -416,6 +437,78 @@ class Company
     public function getCorrespondentAccount()
     {
         return $this->correspondentAccount;
+    }
+
+    /**
+     * Set directorName
+     *
+     * @param string $directorName
+     *
+     * @return Company
+     */
+    public function setDirectorName($directorName)
+    {
+        $this->directorName = $directorName;
+
+        return $this;
+    }
+
+    /**
+     * Get directorName
+     *
+     * @return string
+     */
+    public function getDirectorName()
+    {
+        return $this->directorName;
+    }
+
+    /**
+     * Set directorPosition
+     *
+     * @param string $directorPosition
+     *
+     * @return Company
+     */
+    public function setDirectorPosition($directorPosition)
+    {
+        $this->directorPosition = $directorPosition;
+
+        return $this;
+    }
+
+    /**
+     * Get directorPosition
+     *
+     * @return string
+     */
+    public function getDirectorPosition()
+    {
+        return $this->directorPosition;
+    }
+
+    /**
+     * Set directorDocument
+     *
+     * @param string $directorDocument
+     *
+     * @return Company
+     */
+    public function setDirectorDocument($directorDocument)
+    {
+        $this->directorDocument = $directorDocument;
+
+        return $this;
+    }
+
+    /**
+     * Get directorDocument
+     *
+     * @return string
+     */
+    public function getDirectorDocument()
+    {
+        return $this->directorDocument;
     }
 
     /**

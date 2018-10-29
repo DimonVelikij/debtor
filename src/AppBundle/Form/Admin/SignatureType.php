@@ -41,17 +41,6 @@ class SignatureType extends AbstractType
             ->getQuery()
             ->getResult();
 
-        array_unshift($templates, (new Event())
-            ->setAlias('default')
-            ->setName('Все шаблоны')
-        );
-
-        $templateChoice = [];
-
-        foreach ($templates as $template) {
-            $templateChoice[$template->getName()] = $template->getAlias();
-        }
-
         $builder
             ->add('name', TextType::class, [
                 'label'         =>  'ФИО',
@@ -80,7 +69,10 @@ class SignatureType extends AbstractType
                 'constraints'   =>  [
                     new NotBlank(['message' => 'Укажите шаблон'])
                 ],
-                'choices'       =>  $templateChoice
+                'choices'       =>  array_reduce($templates, function ($acc, Event $template) {
+                    $acc[$template->getName()] = $template->getAlias();
+                    return $acc;
+                }, [])
             ]);
     }
 }

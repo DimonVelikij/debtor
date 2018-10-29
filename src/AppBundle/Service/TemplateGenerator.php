@@ -175,8 +175,16 @@ class TemplateGenerator
             'title' =>  'Дата подачи искового заявления в суд',
             'type'  =>  self::DEBTOR
         ],
-        'signature'                     =>  [
-            'title' =>  'Подписант',
+        'signature_name'                =>  [
+            'title' =>  'ФИО подписанта',
+            'type'  =>  self::FLAT
+        ],
+        'signature_position'            =>  [
+            'title' =>  'Должность подписанта',
+            'type'  =>  self::FLAT
+        ],
+        'company_name'                  =>  [
+            'title' =>  'Наименование управляющей организации',
             'type'  =>  self::FLAT
         ]
     ];
@@ -926,36 +934,52 @@ class TemplateGenerator
     }
 
     /**
-     * подписант
+     * фио подписанта
      * @param Flat $flat
      * @param Event $event
      * @return string
      */
-    private function getSignatureFieldValue(Flat $flat, Event $event)
+    private function getSignatureNameFieldValue(Flat $flat, Event $event)
     {
-        //подписанты у компании
-        $companySignatures = $flat->getHouse()->getCompany()->getSignature();
+        $company = $flat->getHouse()->getCompany();
 
-        $signatures = [];
+        $signatures = array_reduce($company->getSignature(), function ($acc, $signature) {
+            $acc[$signature['event']] = $signature;
+            return $acc;
+        }, []);
 
-        foreach ($companySignatures as $signature) {
-            $signatures[$signature['event']] = $signature;
-        }
+        return isset($signatures[$event->getAlias()]) ?
+            $signatures[$event->getAlias()]['name'] :
+            $company->getDirectorName();
+    }
 
-        $signature = null;
+    /**
+     * должность подписанта
+     * @param Flat $flat
+     * @param Event $event
+     * @return string
+     */
+    private function getSignaturePositionFieldValue(Flat $flat, Event $event)
+    {
+        $company = $flat->getHouse()->getCompany();
 
-        //если у компании есть подписант для текущего события
-        if (isset($signatures[$event->getAlias()])) {
-            $signature = $signatures[$event->getAlias()];
-        }
+        $signatures = array_reduce($company->getSignature(), function ($acc, $signature) {
+            $acc[$signature['event']] = $signature;
+            return $acc;
+        });
 
-        //если для текущего события нет подписанта, пытаемся получить дефолтного
-        if (!$signature && isset($signatures['default'])) {
-            $signature = $signatures['default'];
-        }
+        return isset($signatures[$event->getAlias()]) ?
+            $signatures[$event->getAlias()]['position'] :
+            $company->getDirectorPosition();
+    }
 
-        return $signature ?
-            $signature['position'] . ' ' . $signature['name'] :
-            '';
+    /**
+     * название управляющей компании
+     * @param Flat $flat
+     * @return string
+     */
+    private function getCompanyNameFieldValue(Flat $flat)
+    {
+        return $flat->getHouse()->getCompany()->getTitle();
     }
 }
