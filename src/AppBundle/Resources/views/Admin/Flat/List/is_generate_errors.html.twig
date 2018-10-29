@@ -1,9 +1,12 @@
 {% extends admin.getTemplate('base_list_field') %}
 
 {% block field %}
-    {% if object.isGenerateErrors %}
-        <span class="label label-danger">Ошибка</span>
-    {% else %}
-        <span class="label label-success">OK</span>
-    {% endif %}
+    <div style="text-align: center">
+        {% if object.isNewLogs %}
+            <i title="Появились новые события, чтобы их просмотреть зайти в карточку помещения" class="fa fa-comment" style="color: #00a65a; font-size: 20px;"></i>
+        {% endif %}
+        {% if object.isGenerateErrors %}
+            <i title="Возникли ошибки при генерации шаблонов" class="fa fa-exclamation-triangle" style="color: #dd4b39; font-size: 20px; cursor: pointer;"></i>
+        {% endif %}
+    </div>
 {% endblock %}

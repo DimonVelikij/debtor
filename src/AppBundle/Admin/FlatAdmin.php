@@ -129,7 +129,6 @@ class FlatAdmin extends AbstractAdmin
     protected function configureListFields(ListMapper $listMapper)
     {
         $listMapper
-            ->add('id')
             ->add('house.street.city', null, [
                 'label'     =>  'Город',
                 'template'  =>  '@App/Admin/Flat/List/city.html.twig'
@@ -143,30 +142,27 @@ class FlatAdmin extends AbstractAdmin
                 'template'  =>  '@App/Admin/Flat/List/house.html.twig'
             ])
             ->add('number', null, [
-                'label'     =>  'Номер помещения',
+                'label'     =>  'Квартира',
                 'sortable'  =>  false
             ])
-            ->add('sumDebt', null, [
-                'label'     =>  'Сумма долга, руб.'
-            ])
-            ->add('sumFine', null, [
-                'label'     =>  'Сумма пени, руб.'
-            ])
-            ->add('isGenerateErrors', null, [
-                'label'     =>  'Ошибки генерации шаблона',
-                'template'  =>  '@App/Admin/Flat/List/is_generate_errors.html.twig'
-            ])
-            ->add('isNewLogs', 'boolean', [
-                'label'     =>  'Новые события',
-                'sortable'  =>  true
+            ->add('subscribers.personalAccount.account', null, [
+                'label'     =>  'л/с',
+                'template'  =>  '@App/Admin/Flat/List/personal_account.html.twig'
             ])
             ->add('dateFillDebt', null, [
-                'label'     =>  'Дата заполнения долга',
+                'label'     =>  'Дата',
                 'format'    =>  'd.m.Y'
             ])
-            ->add('subscribers.personalAccount.account', null, [
-                'label'     =>  'Лицевые счета',
-                'template'  =>  '@App/Admin/Flat/List/personal_account.html.twig'
+            ->add('sumDebt', null, [
+                'label'     =>  'Долг, руб.'
+            ])
+            ->add('sumFine', null, [
+                'label'     =>  'Пени, руб.'
+            ])
+            ->add('isGenerateErrors', null, [
+                'label'     =>  'Примечание',
+                'template'  =>  '@App/Admin/Flat/List/is_generate_errors.html.twig',
+                'sortable'  =>  false
             ])
             ->add('event', null, [
                 'label'     =>  'Текущее событие',
