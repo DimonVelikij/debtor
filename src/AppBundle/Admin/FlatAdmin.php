@@ -120,8 +120,7 @@ class FlatAdmin extends AbstractAdmin
                 'template'  =>  '@App/Admin/Flat/List/house.html.twig'
             ])
             ->add('number', null, [
-                'label'     =>  'Квартира',
-                'sortable'  =>  false
+                'label'     =>  'Квартира'
             ])
             ->add('subscribers.personalAccount.account', null, [
                 'label'     =>  'л/с',
