@@ -186,6 +186,10 @@ class TemplateGenerator
         'company_name'                  =>  [
             'title' =>  'Наименование управляющей организации',
             'type'  =>  self::FLAT
+        ],
+        'current_date'                  =>  [
+            'title' =>  'Текущая дата',
+            'type'  =>  self::FLAT
         ]
     ];
 
@@ -981,5 +985,15 @@ class TemplateGenerator
     private function getCompanyNameFieldValue(Flat $flat)
     {
         return $flat->getHouse()->getCompany()->getTitle();
+    }
+
+    /**
+     * текущая дата
+     * @param Flat $flat
+     * @return string
+     */
+    private function getCurrentDateFieldValue(Flat $flat)
+    {
+        return (new \DateTime())->format('d.m.Y');
     }
 }
