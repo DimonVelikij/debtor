@@ -6,7 +6,13 @@
             <i title="Появились новые события, чтобы их просмотреть зайти в карточку помещения" class="fa fa-comment" style="color: #00a65a; font-size: 20px;"></i>
         {% endif %}
         {% if object.isGenerateErrors %}
-            <i title="Возникли ошибки при генерации шаблонов" class="fa fa-exclamation-triangle" style="color: #dd4b39; font-size: 20px; cursor: pointer;"></i>
+            <a data-fancybox data-src="#event-generation-errors" href="javascript:;">
+                <i title="Возникли ошибки при генерации шаблонов" class="fa fa-exclamation-triangle" style="color: #dd4b39; font-size: 20px; cursor: pointer;"></i>
+            </a>
+            <div style="display: none;" id="event-generation-errors">
+                <h4>Во время генерации возникли ошибки</h4>
+                {{ object.logs.last.data }}
+            </div>
         {% endif %}
     </div>
 {% endblock %}
