@@ -76,7 +76,7 @@ class TemplateGenerator
             'type'  =>  self::DEBTOR
         ],
         'debtor_info'               =>  [
-            'title' =>  'Информация о собственнике (ОГРН/ОГРНИП/ИНН/Место рожд/жит-ва/доля и пр)',
+            'title' =>  'Информация о собственнике (ОГРН/ОГРНИП/ИНН/Место рожд/жит-ва и пр)',
             'type'  =>  self::DEBTOR
         ],
         'mkd_management_start_date' =>  [
