@@ -130,7 +130,6 @@ class FlatAdminController extends CRUDController
                 new Regex(['pattern'    =>  '/^([0-2]\d|3[01])(0\d|1[012])(19|20)(\d\d)$/', 'message' => 'Неверно указана дата заполнения'])
             ],
             'dateOpenAccount'   =>  [
-                new NotBlank(['message' => 'Укажите дату открытия лицевого счета']),
                 new Regex(['pattern'    =>  '/^([0-2]\d|3[01])(0\d|1[012])(19|20)(\d\d)$/', 'message' => 'Неверно указана дата открытия лицевого счета'])
             ],
             'dateCloseAccount'  =>  [
@@ -206,7 +205,7 @@ class FlatAdminController extends CRUDController
         $personalAccount = $subscriber->getPersonalAccount() ?? new PersonalAccount();
         $personalAccount
             ->setAccount($input['personalAccount'])
-            ->setDateOpenAccount(\DateTime::createFromFormat('dmY', $input['dateOpenAccount']))
+            ->setDateOpenAccount($input['dateOpenAccount'] ? \DateTime::createFromFormat('dmY', $input['dateOpenAccount']) : null)
             ->setDateCloseAccount($input['dateCloseAccount'] ? \DateTime::createFromFormat('dmY', $input['dateCloseAccount']) : null);
 
         $subscriber

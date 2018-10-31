@@ -38,7 +38,7 @@ class PersonalAccount
 
     /**
      * дата открытия лицевого счета
-     * @ORM\Column(name="date_open_account", type="date", nullable=false)
+     * @ORM\Column(name="date_open_account", type="date", nullable=true)
      *
      * @JMS\Expose
      * @JMS\Type("string")
