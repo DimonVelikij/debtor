@@ -83,9 +83,6 @@ class FlatAdmin extends AbstractAdmin
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
-            ->add('subscribers.personalAccount.account', null, [
-                'label' =>  'Лицевой счет'
-            ])
             ->add('house.street.city', null, [
                 'label' =>  'Город'
             ])
@@ -96,29 +93,10 @@ class FlatAdmin extends AbstractAdmin
                 'label' =>  'Дом'
             ])
             ->add('number', null, [
-                'label' =>  'Номер помещения'
+                'label' =>  'Квартира'
             ])
-            ->add('archive', null, [
-                'label' =>  'Архивный'
-            ])
-            ->add('isGenerateErrors', null, [
-                'label' =>  'Ошибки генерации шаблона'
-            ])
-            ->add('updatedAt', 'doctrine_orm_date_range', [
-                'label'         =>  'Дата последнего обновления',
-                'field_type'    =>  'sonata_type_date_range_picker'
-            ], 'sonata_type_date_range_picker', [
-                'field_options_start' => [
-                    'format'    => 'dd.MM.yyyy',
-                    'label'     => 'начиная с:'
-                ],
-                'field_options_end' => [
-                    'format'    => 'dd.MM.yyyy',
-                    'label'     => 'по:'
-                ]
-            ])
-            ->add('type', null, [
-                'label' =>  'Тип'
+            ->add('subscribers.personalAccount.account', null, [
+                'label' =>  'л/с'
             ])
         ;
     }
