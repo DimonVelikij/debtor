@@ -31,7 +31,7 @@ class JudicialSector
     private $address;
 
     /**
-     * @ORM\Column(name="requisites", type="text", nullable=false)
+     * @ORM\Column(name="requisites", type="text", nullable=true)
      */
     private $requisites;
 

@@ -88,10 +88,7 @@ class JudicialSectorAdmin extends AbstractAdmin
             ])
             ->add('requisites', null, [
                 'label'         =>  'Реквизиты',
-                'required'      =>  true,
-                'constraints'   =>  [
-                    new NotBlank(['message' => 'Укажите реквизиты'])
-                ]
+                'required'      =>  false
             ])
         ;
     }
