@@ -5,6 +5,7 @@ namespace AppBundle\Admin;
 use AppBundle\Admin\traits\UserTrait;
 use AppBundle\Entity\User;
 use AppBundle\Validator\Constraints\HouseExist;
+use AppBundle\Validator\Constraints\JudicialSector;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
@@ -244,13 +245,19 @@ class HouseAdmin extends AbstractAdmin
                         'required'      =>  false
                     ])
                     ->add('judicialSector', 'entity', [
-                        'label'         =>  'Судебный участок',
+                        'label'         =>  'Судебные участоки',
                         'required'      =>  true,
                         'class'         =>  'AppBundle\Entity\JudicialSector',
-                        'help'          =>  "<span style='color: blue;'>Если в списке нет нужного судебного участка, необходимо <a target='_blank' href='{$this->getRouter()->generate('admin_app_judicialsector_create')}'>добавить судебный участок</a> и обновить страницу</span>",
+                        'help'          =>  "Необходимо привязать 'Районный', 'Мировой' и 'Арбитражный' суды<br><span style='color: blue;'>Если в списке нет нужных судебных участков, необходимо <a target='_blank' href='{$this->getRouter()->generate('admin_app_judicialsector_create')}'>добавить судебные участоки</a> и обновить страницу</span>",
                         'constraints'   =>  [
-                            new NotBlank(['message' => 'Укажите судебный участок'])
-                        ]
+                            new NotBlank(['message' => 'Укажите судебный участок']),
+                            new JudicialSector(['types' =>  [
+                                \AppBundle\Entity\JudicialSector::DISTRICT,
+                                \AppBundle\Entity\JudicialSector::MAGISTRATE,
+                                \AppBundle\Entity\JudicialSector::ARBITRATION
+                            ]])
+                        ],
+                        'multiple'      =>  true
                     ])
                     ->add('fsspDepartment', 'entity', [
                         'label'         =>  'Отделение ФССП',

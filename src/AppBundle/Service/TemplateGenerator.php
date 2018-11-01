@@ -768,7 +768,8 @@ class TemplateGenerator
      */
     private function getJudicialSectorNameFieldValue(Flat $flat)
     {
-        return $flat->getHouse()->getJudicialSector()->getName();
+//        нужна логика мультипривязки
+//        return $flat->getHouse()->getJudicialSector()->getName();
     }
 
     /**
@@ -778,7 +779,8 @@ class TemplateGenerator
      */
     private function getJudicialSectorAddressFieldValue(Flat $flat)
     {
-        return $flat->getHouse()->getJudicialSector()->getAddress();
+//        нужна логика мультипривязки
+//        return $flat->getHouse()->getJudicialSector()->getAddress();
     }
 
     /**

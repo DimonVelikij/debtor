@@ -73,8 +73,11 @@ class House
     private $legalDocumentNumber;
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\JudicialSector")
-     * @ORM\JoinColumn(name="judicial_sector_id", referencedColumnName="id", nullable=false)
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\JudicialSector")
+     * @ORM\JoinTable(name="houses_judicial_sectors",
+     *     joinColumns={@ORM\JoinColumn(name="house_id", referencedColumnName="id", onDelete="CASCADE")},
+     *     inverseJoinColumns={@ORM\JoinColumn(name="judicial_sector_id", referencedColumnName="id", onDelete="CASCADE")})
+     * судебные участки
      */
     private $judicialSector;
 
@@ -98,6 +101,7 @@ class House
     public function __construct()
     {
         $this->flats = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->judicialSector = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -337,23 +341,33 @@ class House
     }
 
     /**
-     * Set judicialSector
+     * Add judicialSector
      *
      * @param \AppBundle\Entity\JudicialSector $judicialSector
      *
      * @return House
      */
-    public function setJudicialSector(\AppBundle\Entity\JudicialSector $judicialSector)
+    public function addJudicialSector(\AppBundle\Entity\JudicialSector $judicialSector)
     {
-        $this->judicialSector = $judicialSector;
+        $this->judicialSector[] = $judicialSector;
 
         return $this;
     }
 
     /**
+     * Remove judicialSector
+     *
+     * @param \AppBundle\Entity\JudicialSector $judicialSector
+     */
+    public function removeJudicialSector(\AppBundle\Entity\JudicialSector $judicialSector)
+    {
+        $this->judicialSector->removeElement($judicialSector);
+    }
+
+    /**
      * Get judicialSector
      *
-     * @return \AppBundle\Entity\JudicialSector
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getJudicialSector()
     {

@@ -2,12 +2,14 @@
 
 namespace AppBundle\Admin;
 
+use AppBundle\Entity\JudicialSector;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class JudicialSectorAdmin extends AbstractAdmin
@@ -57,6 +59,9 @@ class JudicialSectorAdmin extends AbstractAdmin
             ->add('requisites', null, [
                 'label' =>  'Реквизиты'
             ])
+            ->add('typeTitle', null, [
+                'label' =>  'Тип'
+            ])
             ->add('_action', null, array(
                 'actions' => array(
                     'show' => array(),
@@ -90,6 +95,14 @@ class JudicialSectorAdmin extends AbstractAdmin
                 'label'         =>  'Реквизиты',
                 'required'      =>  false
             ])
+            ->add('type', ChoiceType::class, [
+                'label'         =>  'Тип',
+                'required'      =>  true,
+                'constraints'   =>  [
+                    new NotBlank(['message' => 'Укажите тип'])
+                ],
+                'choices'       =>  JudicialSector::$sonataTypeChoice
+            ])
         ;
     }
 
@@ -107,6 +120,9 @@ class JudicialSectorAdmin extends AbstractAdmin
             ])
             ->add('requisites', null, [
                 'label' =>  'Реквизиты'
+            ])
+            ->add('typeTitle', null, [
+                'label' =>  'Тип'
             ])
         ;
     }
