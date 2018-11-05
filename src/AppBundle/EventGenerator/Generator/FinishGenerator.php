@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\EventGenerator;
+namespace AppBundle\EventGenerator\Generator;
 
 use AppBundle\Entity\Flat;
 use AppBundle\Entity\FlatEvent;

@@ -3,7 +3,7 @@
 namespace AppBundle\Twig;
 
 use AppBundle\Entity\FlatEvent;
-use AppBundle\EventGenerator\Generator\GeneratorAggregate;
+use AppBundle\EventGenerator\GeneratorAggregate;
 use AppBundle\EventGenerator\Generator\GeneratorInterface;
 
 class EventExtension extends \Twig_Extension

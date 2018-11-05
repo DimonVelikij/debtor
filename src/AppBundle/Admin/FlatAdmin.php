@@ -7,7 +7,7 @@ use AppBundle\Entity\Event;
 use AppBundle\Entity\Flat;
 use AppBundle\Entity\FlatEvent;
 use AppBundle\Entity\User;
-use AppBundle\EventGenerator\Generator\GeneratorAggregate;
+use AppBundle\EventGenerator\GeneratorAggregate;
 use AppBundle\Service\FlatLogger;
 use AppBundle\Validator\Constraints\FlatExist;
 use Doctrine\ORM\EntityManager;

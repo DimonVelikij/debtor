@@ -3,7 +3,7 @@
 namespace AppBundle\Command;
 
 use AppBundle\Entity\Flat;
-use AppBundle\EventGenerator\Generator\GeneratorAggregate;
+use AppBundle\EventGenerator\GeneratorAggregate;
 use AppBundle\Service\FlatLogger;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;

@@ -4,7 +4,6 @@ namespace AppBundle\EventGenerator\Generator;
 
 use AppBundle\Entity\Flat;
 use AppBundle\Entity\FlatEvent;
-use AppBundle\EventGenerator\FinishGenerator;
 use AppBundle\Service\DateDiffer;
 use AppBundle\Service\FlatLogger;
 use AppBundle\Service\TemplateGenerator;

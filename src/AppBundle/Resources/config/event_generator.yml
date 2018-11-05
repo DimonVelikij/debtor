@@ -16,7 +16,7 @@ services:
 
     # аггрегатор генераторов
     app.generator.aggregate:
-        class: AppBundle\EventGenerator\Generator\GeneratorAggregate
+        class: AppBundle\EventGenerator\GeneratorAggregate
         arguments:
             - "@doctrine.orm.doctrine_entity_manager"
             - "@app.service.flat_logger"
@@ -164,8 +164,8 @@ services:
         calls:
             - [ addNextEventGenerator, ["@app.generator.control_enforcement_proceedings"] ]
 
-    # фильный генератор
+    # финальный генератор (завершение работы с должником)
     app.generator.finish:
-        class: AppBundle\EventGenerator\FinishGenerator
+        class: AppBundle\EventGenerator\Generator\FinishGenerator
         arguments:
             - "@doctrine.orm.doctrine_entity_manager"

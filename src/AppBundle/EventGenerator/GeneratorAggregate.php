@@ -1,9 +1,10 @@
 <?php
 
-namespace AppBundle\EventGenerator\Generator;
+namespace AppBundle\EventGenerator;
 
 use AppBundle\Entity\Flat;
 use AppBundle\Entity\FlatEvent;
+use AppBundle\EventGenerator\Generator\GeneratorInterface;
 use AppBundle\Exception\NoDebtorsException;
 use AppBundle\Exception\NoSubscribersException;
 use AppBundle\Exception\NoTemplateEventException;

@@ -8,7 +8,7 @@ use AppBundle\Entity\Log;
 use AppBundle\Entity\PersonalAccount;
 use AppBundle\Entity\Subscriber;
 use AppBundle\Entity\User;
-use AppBundle\EventGenerator\Generator\GeneratorAggregate;
+use AppBundle\EventGenerator\GeneratorAggregate;
 use AppBundle\EventGenerator\Generator\GeneratorInterface;
 use AppBundle\Validator\Constraints\OwnershipStatus;
 use AppBundle\Validator\Constraints\ShareSize;
@@ -575,6 +575,13 @@ class FlatAdminController extends CRUDController
      */
     public function processUserAction(Request $request, $event)
     {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        if (!$user) {
+            throw new AccessDeniedException('Bad credentials');
+        }
+
         /** @var GeneratorInterface $eventGenerator */
         $eventGenerator = $this->get('app.generator.' . $event);
 
@@ -591,11 +598,31 @@ class FlatAdminController extends CRUDController
      * @param Request $request
      * @param $event
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @throws \Exception
      */
     public function performAction(Request $request, $event)
     {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        if (!$user) {
+            throw new AccessDeniedException('Bad credentials');
+        }
+
         /** @var Flat $flat */
         $flat = $this->getDoctrine()->getRepository('AppBundle:Flat')->find((int)$request->get('flat_id'));
+
+        if (!$flat) {
+            throw new \Exception("Undefined flat by id: '{$request->get('flat_id')}'");
+        }
+
+        if (
+            //если пользователь не суперадмин и помещение не обслуживается УК пользователя
+            !$user->isSuperAdmin() &&
+            $flat->getHouse()->getCompany()->getId() !== $user->getCompany()->getId()
+        ) {
+            throw new AccessDeniedException('Bad credentials');
+        }
 
         //если сумма долга меньше 5000 - редиректим обратно
         if ($flat->getSumDebt() + $flat->getSumFine() < GeneratorAggregate::TOTAL_DEBT) {
@@ -612,11 +639,31 @@ class FlatAdminController extends CRUDController
      * @param Request $request
      * @param $event
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @throws \Exception
      */
     public function missAction(Request $request, $event)
     {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        if (!$user) {
+            throw new AccessDeniedException('Bad credentials');
+        }
+
         /** @var Flat $flat */
         $flat = $this->getDoctrine()->getRepository('AppBundle:Flat')->find((int)$request->get('flat_id'));
+
+        if (!$flat) {
+            throw new \Exception("Undefined flat by id: '{$request->get('flat_id')}'");
+        }
+
+        if (
+            //если пользователь не суперадмин и помещение не обслуживается УК пользователя
+            !$user->isSuperAdmin() &&
+            $flat->getHouse()->getCompany()->getId() !== $user->getCompany()->getId()
+        ) {
+            throw new AccessDeniedException('Bad credentials');
+        }
 
         //если сумма долга меньше 5000 - редиректим обратно
         if ($flat->getSumDebt() + $flat->getSumFine() < GeneratorAggregate::TOTAL_DEBT) {
