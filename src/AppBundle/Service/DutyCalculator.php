@@ -19,7 +19,7 @@ class DutyCalculator
             return $this->prepareValue(800 + ($value - 20000) * 0.03);
         } elseif ($value > 100000 && $value <= 200000) {//от 100001 до 200000
             return $this->prepareValue(3200 + ($value - 100000) * 0.02);
-        } elseif ($value > 200000 && $value <= 1000000) {//от 200000 до 1000000
+        } elseif ($value > 200000 && $value <= 1000000) {//от 200001 до 1000000
             return $this->prepareValue(5200 + ($value - 200000) * 0.01);
         } else {
             return 13200 + ($value - 1000000) * 0.005 > 60000 ?
