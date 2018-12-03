@@ -18,5 +18,5 @@ swiftmailer:
 doctrine:
     dbal:
         connections:
-            tradedealer:
+            doctrine:
                 dbname: 'debtor_test'

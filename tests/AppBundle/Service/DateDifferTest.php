@@ -3,9 +3,9 @@
 namespace Tests\AppBundle\Service;
 
 use AppBundle\Service\DateDiffer;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Tests\AppBundle\AppBundleTestCase;
 
-class DateDifferTest extends WebTestCase
+class DateDifferTest extends AppBundleTestCase
 {
     /**
      * @return array

@@ -2,9 +2,9 @@
 
 namespace AppBundle\Service;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Tests\AppBundle\AppBundleTestCase;
 
-class DutyCalculatorTest extends WebTestCase
+class DutyCalculatorTest extends AppBundleTestCase
 {
     /**
      * @return array
