@@ -17,7 +17,7 @@ $kernel->boot();
 $application = new Application($kernel);
 
 //удаляем тестовую базу, если она есть
-/*$command = new DropDatabaseDoctrineCommand();
+$command = new DropDatabaseDoctrineCommand();
 $application->add($command);
 $input = new ArrayInput(array(
     'command'       => 'doctrine:database:drop',
@@ -40,4 +40,4 @@ $application->add($command);
 $input = new ArrayInput(array(
     'command' => 'doctrine:schema:create',
 ));
-$command->run($input, new ConsoleOutput());*/
+$command->run($input, new ConsoleOutput());
