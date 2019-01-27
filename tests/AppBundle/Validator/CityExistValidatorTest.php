@@ -14,13 +14,14 @@ class CityExistValidatorTest extends ValidatorTestCase
         parent::setUp();
 
         $this->addFixtures([
-            new CityFixtures()
+            new CityFixtures(),
         ]);
+
         $this->executeFixtures();
     }
 
     /**
-     * добавлениего города "Москва", города "Москва" в базе не существует
+     * добавлениего города Москва, города Москва в базе не существует
      */
     public function testAddCityValidate()
     {
@@ -33,7 +34,7 @@ class CityExistValidatorTest extends ValidatorTestCase
     }
 
     /**
-     * редактирование города, меняем "Екатеринбург" на "Москва", города "Москва" в базе не существует
+     * редактирование города, меняем Екатеринбург на Москва, города Москва в базе не существует
      */
     public function testRenameCityValidate()
     {
@@ -46,7 +47,7 @@ class CityExistValidatorTest extends ValidatorTestCase
     }
 
     /**
-     * редактирование города "Екатеринбург" без переименования, город "Екатеринбург" в базе существует
+     * редактирование города Екатеринбург без переименования, город Екатеринбург в базе существует
      */
     public function testEditValidate()
     {
@@ -59,7 +60,7 @@ class CityExistValidatorTest extends ValidatorTestCase
     }
 
     /**
-     * добавление города "Екатеринбург", город "Екатерибург" в базе существует
+     * добавление города Екатеринбург, город Екатерибург в базе существует
      */
     public function testAddInvalidate()
     {
