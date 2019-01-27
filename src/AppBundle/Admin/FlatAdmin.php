@@ -171,11 +171,11 @@ class FlatAdmin extends AbstractAdmin
         $flat = $this->getSubject();
 
         $formMapper
-            /*->tab('Помещение')
+            ->tab('Помещение')
                 ->with('Адрес', [
-                    'class'     =>  'col-md-3',
+                    'class'     =>  'col-md-12',
                     'box_class' =>  'box box-solid box-success'
-                ])*/
+                ])
                     ->add('house', 'entity', [
                         'label'         =>  'Дом',
                         'class'         =>  'AppBundle\Entity\House',
@@ -218,7 +218,7 @@ class FlatAdmin extends AbstractAdmin
                         'label'         =>  'Больше не является должником (Отправить в архив)',
                         'required'      =>  false
                     ])
-                /*->end()*/
+                ->end()
                 /*->with('Период взыскания', [
                     'class'     =>  'col-md-3',
                     'box_class' =>  'box box-solid box-success'
@@ -289,7 +289,7 @@ class FlatAdmin extends AbstractAdmin
                         'required'      =>  false
                     ])
                 ->end()*/
-            /*->end()*/;
+            ->end();
 
 //        $formMapper->getFormBuilder()->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) {
 //            /** @var Flat $flat */

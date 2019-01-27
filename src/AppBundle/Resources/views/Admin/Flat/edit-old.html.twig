@@ -1,0 +1,143 @@
+{% extends '@SonataAdmin/CRUD/base_edit.html.twig' %}
+
+{% block sonata_tab_content %}
+    {% set has_tab = ((admin.formtabs|length == 1 and admin.formtabs|keys[0] != 'default') or admin.formtabs|length > 1 ) %}
+
+    <div class="col-md-12">
+        {% if has_tab %}
+            <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs" role="tablist">
+                    {% for name, form_tab in admin.formtabs %}
+                        <li{% if loop.index == 1 %} class="active"{% endif %}><a href="#tab_{{ admin.uniqid }}_{{ loop.index }}" data-toggle="tab"><i class="fa fa-exclamation-circle has-errors hide" aria-hidden="true"></i> {{ form_tab.label|trans({}, form_tab.translation_domain ?: admin.translationDomain) }}</a></li>
+                    {% endfor %}
+                    {% if object.id %}
+                        <li><a href="#tab_{{ admin.uniqid }}_4" data-toggle="tab"><i class="fa fa-exclamation-circle has-errors hide" aria-hidden="true"></i> Абоненты</a></li>
+                        <li><a href="#tab_{{ admin.uniqid }}_5" data-toggle="tab"><i class="fa fa-exclamation-circle has-errors hide" aria-hidden="true"></i> Собственники</a></li>
+                        <li><a href="#tab_{{ admin.uniqid }}_6" data-toggle="tab" id="tab-event"><i class="fa fa-exclamation-circle has-errors hide" aria-hidden="true"></i> События <span id="count-events" style="display: none; background-color: #00a65a; padding: 3px; border-radius: 3px; color: white;"></span></a></li>
+                    {% endif %}
+                </ul>
+                <div class="tab-content">
+                    {% for code, form_tab in admin.formtabs %}
+                        <div class="tab-pane fade{% if loop.first %} in active{% endif %}" id="tab_{{ admin.uniqid }}_{{ loop.index }}">
+                            <div class="box-body  container-fluid">
+                                <div class="sonata-ba-collapsed-fields">
+                                    {% if form_tab.description != false %}
+                                        <p>{{ form_tab.description|raw }}</p>
+                                    {% endif %}
+
+                                    {{ form_helper.render_groups(admin, form, form_tab['groups'], has_tab) }}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    {% if object.id %}
+                        <div class="tab-pane fade" id="tab_{{ admin.uniqid }}_4">
+                            <div class="box-body  container-fluid">
+                                <div class="sonata-ba-collapsed-fields">
+                                    <div class="sonata-ba-collapsed-fields">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="box box-primary">
+                                                    <div class="box-header">
+                                                        <h4 class="box-title"></h4>
+                                                    </div>
+                                                    <div class="box-body">
+                                                        <div class="sonata-ba-collapsed-fields">
+                                                            <div ng-controller="SubscriberCtrl" ng-cloak>
+                                                                <script type="text/ng-init" name="Path">{{ {
+                                                                        AdminSubscriberList: path('admin_app_flat_subscriber_list', {flat_id: object.id}),
+                                                                        AdminSubmitSubscriber: path('admin_app_flat_submit_subscriber')
+                                                                    } | json_encode | raw }}</script>
+                                                                <script type="text/ng-init" name="Settings">{{ {
+                                                                        FlatId: object.id
+                                                                    } | json_encode | raw }}</script>
+                                                                <div class="box-body table-responsive no-padding">
+                                                                    {% include '@App/Admin/Flat/Subscriber/subscriber_list.html.twig' %}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="tab_{{ admin.uniqid }}_5">
+                            <div class="box-body  container-fluid">
+                                <div class="sonata-ba-collapsed-fields">
+                                    <div class="sonata-ba-collapsed-fields">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="box box-primary">
+                                                    <div class="box-header">
+                                                        <h4 class="box-title"></h4>
+                                                    </div>
+                                                    <div class="box-body">
+                                                        <div class="sonata-ba-collapsed-fields">
+                                                            <div ng-controller="DebtorCtrl" ng-cloak>
+                                                                <script type="text/ng-init" name="Path">{{ {
+                                                                        AdminDebtorList: path('admin_app_flat_debtor_list', {flat_id: object.id}),
+                                                                        AdminDebtorTypes: path('admin_app_flat_debtor_types'),
+                                                                        AdminDebtorOwnershipStatuses: path('admin_app_flat_ownership_statuses'),
+                                                                        AdminSubmitDebtor: path('admin_app_flat_submit_debtor'),
+                                                                        AdminPersonalAccounts: path('admin_app_flat_personal_accounts', {flat_id: object.id})
+                                                                    } | json_encode | raw }}</script>
+                                                                <script type="text/ng-init" name="Settings">{{ {
+                                                                        FlatId: object.id
+                                                                    } | json_encode | raw }}</script>
+                                                                <div class="box-body table-responsive no-padding">
+                                                                    {% include '@App/Admin/Flat/Debtor/debtor_list.html.twig' %}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="tab_{{ admin.uniqid }}_6">
+                            <div class="box-body  container-fluid">
+                                <div class="sonata-ba-collapsed-fields">
+                                    <div class="sonata-ba-collapsed-fields">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="box box-primary">
+                                                    <div class="box-header">
+                                                        <h4 class="box-title"></h4>
+                                                    </div>
+                                                    <div class="box-body">
+                                                        <div class="sonata-ba-collapsed-fields">
+                                                            <div ng-controller="LogCtrl" ng-cloak>
+                                                                <script type="text/ng-init" name="Path">{{ {
+                                                                        AdminLogs: path('admin_app_flat_logs', {flat_id: object.id}),
+                                                                        AdminReadLogs: path('admin_app_flat_read_logs', {flat_id: object.id})
+                                                                    } | json_encode | raw }}</script>
+                                                                <script type="text/ng-init" name="Settings">{{ {
+                                                                        FlatId: object.id
+                                                                    } | json_encode | raw }}</script>
+                                                                <div class="box-body table-responsive no-padding">
+                                                                    {% include '@App/Admin/Flat/Log/log_list.html.twig' %}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% else %}
+            {{ form_helper.render_groups(admin, form, admin.formtabs['default'].groups, has_tab) }}
+        {% endif %}
+    </div>
+{% endblock %}
