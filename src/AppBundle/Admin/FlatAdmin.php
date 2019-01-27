@@ -95,9 +95,9 @@ class FlatAdmin extends AbstractAdmin
             ->add('number', null, [
                 'label' =>  'Квартира'
             ])
-            ->add('subscribers.personalAccount.account', null, [
+            /*->add('subscribers.personalAccount.account', null, [
                 'label' =>  'л/с'
-            ])
+            ])*/
         ;
     }
 
@@ -122,7 +122,7 @@ class FlatAdmin extends AbstractAdmin
             ->add('number', null, [
                 'label'     =>  'Квартира'
             ])
-            ->add('subscribers.personalAccount.account', null, [
+            /*->add('subscribers.personalAccount.account', null, [
                 'label'     =>  'л/с',
                 'template'  =>  '@App/Admin/Flat/List/personal_account.html.twig'
             ])
@@ -148,7 +148,7 @@ class FlatAdmin extends AbstractAdmin
             ->add('event.parent', null, [
                 'label'     =>  'Следующее событие',
                 'template'  =>  '@App/Admin/Flat/List/next_event.html.twig'
-            ])
+            ])*/
             ->add('_action', null, array(
                 'label'     =>  'Действия',
                 'actions'   => array(
@@ -171,11 +171,11 @@ class FlatAdmin extends AbstractAdmin
         $flat = $this->getSubject();
 
         $formMapper
-            ->tab('Помещение')
+            /*->tab('Помещение')
                 ->with('Адрес', [
                     'class'     =>  'col-md-3',
                     'box_class' =>  'box box-solid box-success'
-                ])
+                ])*/
                     ->add('house', 'entity', [
                         'label'         =>  'Дом',
                         'class'         =>  'AppBundle\Entity\House',
@@ -218,8 +218,8 @@ class FlatAdmin extends AbstractAdmin
                         'label'         =>  'Больше не является должником (Отправить в архив)',
                         'required'      =>  false
                     ])
-                ->end()
-                ->with('Период взыскания', [
+                /*->end()*/
+                /*->with('Период взыскания', [
                     'class'     =>  'col-md-3',
                     'box_class' =>  'box box-solid box-success'
                 ])
@@ -288,56 +288,56 @@ class FlatAdmin extends AbstractAdmin
                         'label'         =>  'За период оплачено',
                         'required'      =>  false
                     ])
-                ->end()
-            ->end();
+                ->end()*/
+            /*->end()*/;
 
-        $formMapper->getFormBuilder()->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) {
-            /** @var Flat $flat */
-            $flat = $event->getData();
-
-            if (!$flat->getDateFillDebt()) {
-                $flat->setDateFillDebt(new \DateTime());
-            }
-
-            if (!$flat->getDateFillFine()) {
-                $flat->setDateFillFine(new \DateTime());
-            }
-        });
+//        $formMapper->getFormBuilder()->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) {
+//            /** @var Flat $flat */
+//            $flat = $event->getData();
+//
+//            if (!$flat->getDateFillDebt()) {
+//                $flat->setDateFillDebt(new \DateTime());
+//            }
+//
+//            if (!$flat->getDateFillFine()) {
+//                $flat->setDateFillFine(new \DateTime());
+//            }
+//        });
 
         /** @var EntityManager $em */
-        $em = $this->getContainer()->get('doctrine.orm.doctrine_entity_manager');
-
-        /** @var FlatLogger $flatLogger */
-        $flatLogger = $this->getContainer()->get('app.service.flat_logger');
-
-        $formMapper->getFormBuilder()->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) use ($em, $flatLogger) {
-            /** @var Flat $flat */
-            $flat = $event->getData();
-
-            //если были ошибки генерации шаблона, при сохранени записи считаем что они исправлены
-            $flat->setIsGenerateErrors(false);
-
-            if (
-                !$flat->getId() ||
-                ($flat->getId() && !$flat->getFlatsEvents()->count() && $flat->getSumDebt() + $flat->getSumFine() >= GeneratorAggregate::TOTAL_DEBT)
-            ) {//если помещение новое или старое помещение у которого нет событий и сумма долга и пени больше либо равно 5000
-                /** @var Event $event */
-                $event = $em->getRepository('AppBundle:Event')->findOneBy(['alias' => 'entered_processing']);
-                //создаем событие "поступил в работу"
-                $flatEvent = new FlatEvent();
-                $flatEvent
-                    ->setFlat($flat)
-                    ->setEvent($event)
-                    ->setDateGenerate(new \DateTime())
-                    ->setData(['show' => '']);
-
-                $flat->addFlatsEvent($flatEvent);
-
-                //пишем лог
-                //если добавлять через метод log - будет ошибка вставки лога, т.к. помещения еще не существует
-                $flat->addLog($flatLogger->createLog($flat, "<b>{$event->getName()}</b>", $event));
-            }
-        });
+//        $em = $this->getContainer()->get('doctrine.orm.doctrine_entity_manager');
+//
+//        /** @var FlatLogger $flatLogger */
+//        $flatLogger = $this->getContainer()->get('app.service.flat_logger');
+//
+//        $formMapper->getFormBuilder()->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) use ($em, $flatLogger) {
+//            /** @var Flat $flat */
+//            $flat = $event->getData();
+//
+//            //если были ошибки генерации шаблона, при сохранени записи считаем что они исправлены
+//            $flat->setIsGenerateErrors(false);
+//
+//            if (
+//                !$flat->getId() ||
+//                ($flat->getId() && !$flat->getFlatsEvents()->count() && $flat->getSumDebt() + $flat->getSumFine() >= GeneratorAggregate::TOTAL_DEBT)
+//            ) {//если помещение новое или старое помещение у которого нет событий и сумма долга и пени больше либо равно 5000
+//                /** @var Event $event */
+//                $event = $em->getRepository('AppBundle:Event')->findOneBy(['alias' => 'entered_processing']);
+//                //создаем событие "поступил в работу"
+//                $flatEvent = new FlatEvent();
+//                $flatEvent
+//                    ->setFlat($flat)
+//                    ->setEvent($event)
+//                    ->setDateGenerate(new \DateTime())
+//                    ->setData(['show' => '']);
+//
+//                $flat->addFlatsEvent($flatEvent);
+//
+//                //пишем лог
+//                //если добавлять через метод log - будет ошибка вставки лога, т.к. помещения еще не существует
+//                $flat->addLog($flatLogger->createLog($flat, "<b>{$event->getName()}</b>", $event));
+//            }
+//        });
     }
 
     /**

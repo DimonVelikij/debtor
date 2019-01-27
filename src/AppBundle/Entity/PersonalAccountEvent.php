@@ -6,19 +6,19 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="flats_events")
+ * @ORM\Table(name="personal_accounts_events")
  *
- * Class FlatEvent
+ * Class PersonalAccountEvent
  * @package AppBundle\Entity
  */
-class FlatEvent
+class PersonalAccountEvent
 {
     /**
      * @ORM\Id
-     * @ORM\ManyToOne(targetEntity="Flat", inversedBy="flatsEvents")
-     * @ORM\JoinColumn(name="flat_id", referencedColumnName="id", onDelete="CASCADE")
+     * @ORM\ManyToOne(targetEntity="PersonalAccount", inversedBy="personalAccountsEvents")
+     * @ORM\JoinColumn(name="personal_account_id", referencedColumnName="id", onDelete="CASCADE")
      */
-    private $flat;
+    private $personalAcoount;
 
     /**
      * @ORM\Id
@@ -50,7 +50,7 @@ class FlatEvent
     /**
      * @param $parameter
      * @param $value
-     * @return FlatEvent
+     * @return PersonalAccountEvent
      */
     public function setParameter($parameter, $value)
     {
@@ -59,12 +59,13 @@ class FlatEvent
         return $this;
     }
 
+
     /**
      * Set dateGenerate
      *
      * @param \DateTime $dateGenerate
      *
-     * @return FlatEvent
+     * @return PersonalAccountEvent
      */
     public function setDateGenerate($dateGenerate)
     {
@@ -88,7 +89,7 @@ class FlatEvent
      *
      * @param \stdClass $data
      *
-     * @return FlatEvent
+     * @return PersonalAccountEvent
      */
     public function setData($data)
     {
@@ -108,27 +109,27 @@ class FlatEvent
     }
 
     /**
-     * Set flat
+     * Set personalAcoount
      *
-     * @param \AppBundle\Entity\Flat $flat
+     * @param \AppBundle\Entity\PersonalAccount $personalAcoount
      *
-     * @return FlatEvent
+     * @return PersonalAccountEvent
      */
-    public function setFlat(\AppBundle\Entity\Flat $flat)
+    public function setPersonalAcoount(\AppBundle\Entity\PersonalAccount $personalAcoount)
     {
-        $this->flat = $flat;
+        $this->personalAcoount = $personalAcoount;
 
         return $this;
     }
 
     /**
-     * Get flat
+     * Get personalAcoount
      *
-     * @return \AppBundle\Entity\Flat
+     * @return \AppBundle\Entity\PersonalAccount
      */
-    public function getFlat()
+    public function getPersonalAcoount()
     {
-        return $this->flat;
+        return $this->personalAcoount;
     }
 
     /**
@@ -136,7 +137,7 @@ class FlatEvent
      *
      * @param \AppBundle\Entity\Event $event
      *
-     * @return FlatEvent
+     * @return PersonalAccountEvent
      */
     public function setEvent(\AppBundle\Entity\Event $event)
     {

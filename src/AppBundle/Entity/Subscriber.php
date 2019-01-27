@@ -74,14 +74,8 @@ class Subscriber
     private $dateDebt;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Flat", inversedBy="subscribers")
-     * @ORM\JoinColumn(name="flat_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
-     */
-    private $flat;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="PersonalAccount", cascade={"persist"})
-     * @ORM\JoinColumn(name="personal_account_id", referencedColumnName="id", nullable=false)
+     * @ORM\ManyToOne(targetEntity="PersonalAccount", inversedBy="subscribers")
+     * @ORM\JoinColumn(name="personal_account_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      *
      * @JMS\Expose
      * @JMS\SerializedName("personalAccount")
@@ -205,30 +199,6 @@ class Subscriber
     public function getDateDebt()
     {
         return $this->dateDebt;
-    }
-
-    /**
-     * Set flat
-     *
-     * @param \AppBundle\Entity\Flat $flat
-     *
-     * @return Subscriber
-     */
-    public function setFlat(\AppBundle\Entity\Flat $flat)
-    {
-        $this->flat = $flat;
-
-        return $this;
-    }
-
-    /**
-     * Get flat
-     *
-     * @return \AppBundle\Entity\Flat
-     */
-    public function getFlat()
-    {
-        return $this->flat;
     }
 
     /**

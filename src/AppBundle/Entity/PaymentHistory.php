@@ -3,69 +3,43 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation as JMS;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="logs")
+ * @ORM\Table(name="payment_history")
  *
- * @JMS\ExclusionPolicy("all")
- *
- * Class Log
+ * Class PaymentHistory
  * @package AppBundle\Entity
  */
-class Log
+class PaymentHistory
 {
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
-     *
-     * @JMS\Expose
-     * @JMS\Type("integer")
-     * @JMS\SerializedName("id")
-     * @JMS\Groups({"cms-log"})
      */
     private $id;
 
     /**
-     * @ORM\Column(name="date", type="datetime", nullable=false)
-     *
-     * @JMS\Expose
-     * @JMS\Type("string")
-     * @JMS\SerializedName("date")
-     * @JMS\Accessor(getter="getDateString")
-     * @JMS\Groups({"cms-log"})
+     * @ORM\Column(name="date", type="date", nullable=false)
      */
     private $date;
 
     /**
-     * @ORM\Column(name="data", type="text", nullable=false)
-     *
-     * @JMS\Expose
-     * @JMS\Type("string")
-     * @JMS\SerializedName("data")
-     * @JMS\Groups({"cms-log"})
+     * @ORM\Column(name="debt", type="float", precision=10, scale=2, nullable=false)
      */
-    private $data;
+    private $debt;
 
     /**
-     * @ORM\ManyToOne(targetEntity="PersonalAccount", inversedBy="logs")
+     * @ORM\Column(name="fine", type="float", precision=10, scale=2, nullable=false)
+     */
+    private $fine;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="PersonalAccount", inversedBy="paymentHistory")
      * @ORM\JoinColumn(name="personal_account_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      */
     private $personalAccount;
-
-    /**
-     * @return null|string
-     */
-    public function getDateString()
-    {
-        if ($this->date instanceof \DateTime) {
-            return $this->date->format('dmYHi');
-        }
-
-        return null;
-    }
 
     /**
      * Get id
@@ -82,7 +56,7 @@ class Log
      *
      * @param \DateTime $date
      *
-     * @return Log
+     * @return PaymentHistory
      */
     public function setDate($date)
     {
@@ -102,27 +76,51 @@ class Log
     }
 
     /**
-     * Set data
+     * Set debt
      *
-     * @param string $data
+     * @param float $debt
      *
-     * @return Log
+     * @return PaymentHistory
      */
-    public function setData($data)
+    public function setDebt($debt)
     {
-        $this->data = $data;
+        $this->debt = $debt;
 
         return $this;
     }
 
     /**
-     * Get data
+     * Get debt
      *
-     * @return string
+     * @return float
      */
-    public function getData()
+    public function getDebt()
     {
-        return $this->data;
+        return $this->debt;
+    }
+
+    /**
+     * Set fine
+     *
+     * @param float $fine
+     *
+     * @return PaymentHistory
+     */
+    public function setFine($fine)
+    {
+        $this->fine = $fine;
+
+        return $this;
+    }
+
+    /**
+     * Get fine
+     *
+     * @return float
+     */
+    public function getFine()
+    {
+        return $this->fine;
     }
 
     /**
@@ -130,7 +128,7 @@ class Log
      *
      * @param \AppBundle\Entity\PersonalAccount $personalAccount
      *
-     * @return Log
+     * @return PaymentHistory
      */
     public function setPersonalAccount(\AppBundle\Entity\PersonalAccount $personalAccount)
     {

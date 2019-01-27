@@ -208,12 +208,6 @@ class Debtor
     private $bossPosition;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Flat", inversedBy="debtors")
-     * @ORM\JoinColumn(name="flat_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
-     */
-    private $flat;
-
-    /**
      * @ORM\ManyToOne(targetEntity="DebtorType")
      * @ORM\JoinColumn(name="type_id", referencedColumnName="id", nullable=false)
      *
@@ -234,12 +228,12 @@ class Debtor
     private $ownershipStatus;
 
     /**
-     * @ORM\ManyToOne(targetEntity="PersonalAccount", cascade={"persist"})
-     * @ORM\JoinColumn(name="personal_account_id", referencedColumnName="id", nullable=false)
+     * @ORM\ManyToOne(targetEntity="PersonalAccount", inversedBy="debtors")
+     * @ORM\JoinColumn(name="personal_account_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      *
      * @JMS\Expose
      * @JMS\SerializedName("personalAccount")
-     * @JMS\Groups({"cms-debtor"})
+     * @JMS\Groups({"cms-subscriber"})
      */
     private $personalAccount;
 
@@ -679,30 +673,6 @@ class Debtor
     public function getBossPosition()
     {
         return $this->bossPosition;
-    }
-
-    /**
-     * Set flat
-     *
-     * @param \AppBundle\Entity\Flat $flat
-     *
-     * @return Debtor
-     */
-    public function setFlat(\AppBundle\Entity\Flat $flat)
-    {
-        $this->flat = $flat;
-
-        return $this;
-    }
-
-    /**
-     * Get flat
-     *
-     * @return \AppBundle\Entity\Flat
-     */
-    public function getFlat()
-    {
-        return $this->flat;
     }
 
     /**

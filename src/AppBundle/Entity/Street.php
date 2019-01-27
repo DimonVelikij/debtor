@@ -39,7 +39,7 @@ class Street
     private $city;
 
     /**
-     * @ORM\OneToMany(targetEntity="Street", mappedBy="houses")
+     * @ORM\OneToMany(targetEntity="House", mappedBy="street")
      */
     private $houses;
 
