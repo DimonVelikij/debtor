@@ -7,6 +7,8 @@ use Symfony\Component\Validator\Constraint;
 
 class JudicialSector extends Constraint
 {
+    public $message = "Количество судебных участков должно быть: {{ count }}. Необходимо еще добавить судебные участки следующих типов: {{ types }}";
+
     public $types = [];
 
     public function __construct($options = null)
