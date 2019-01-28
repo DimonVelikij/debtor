@@ -43,7 +43,10 @@ class StreetExistValidator extends ConstraintValidator
             ->where('street.title = :street')
             ->innerJoin('street.city', 'city')
             ->andWhere('city.title = :city')
-            ->setParameters(['street' => $street->getTitle(), 'city' => $street->getCity()->getTitle()])
+            ->setParameters([
+                'street' => $street->getTitle(),
+                'city' => $street->getCity()->getTitle()
+            ])
             ->getQuery()
             ->getOneOrNullResult();
 

@@ -5,21 +5,9 @@ namespace Tests\AppBundle\Validator;
 use AppBundle\Entity\City;
 use AppBundle\Validator\Constraints\CityExist;
 use AppBundle\Validator\Constraints\CityExistValidator;
-use Tests\AppBundle\fixtures\CityFixtures;
 
 class CityExistValidatorTest extends ValidatorTestCase
 {
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->addFixtures([
-            new CityFixtures(),
-        ]);
-
-        $this->executeFixtures();
-    }
-
     /**
      * добавлениего города Москва, города Москва в базе не существует
      */

@@ -6,6 +6,7 @@ use AppBundle\Entity\House;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
+use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 class HouseExistValidator extends ConstraintValidator
 {
@@ -27,27 +28,42 @@ class HouseExistValidator extends ConstraintValidator
      */
     public function validate($value, Constraint $constraint)
     {
-        if ($value) {
-            /** @var House $house */
-            $house = $this->context->getObject()->getParent()->getData();
-            $searchHouse = $this->entityManager->getRepository('AppBundle:House')
-                ->createQueryBuilder('house')
-                ->where('house.number = :house_number')
-                ->innerJoin('house.street', 'street')
-                ->andWhere('street.title = :street')
-                ->innerJoin('street.city', 'city')
-                ->andWhere('city.title = :city')
-                ->setParameters(['house_number' => $house->getNumber(), 'street' => $house->getStreet()->getTitle(), 'city' => $house->getStreet()->getCity()->getTitle()])
-                ->getQuery()
-                ->getOneOrNullResult();
+        if (!$constraint instanceof HouseExist) {
+            throw new UnexpectedTypeException($constraint, HouseExist::class);
+        }
 
-            if ($searchHouse && $searchHouse->getId() != $house->getId()) {
-                $this->context->buildViolation("Дом №{$searchHouse->getNumber()} уже существует на улице '{$searchHouse->getStreet()->getTitle()}' в городе '{$searchHouse->getStreet()->getCity()->getTitle()}'. Обслуживается управляющей компанией '{$searchHouse->getCompany()->getTitle()}'")
-                    ->setParameter('{{ string }}', $value)
-                    ->addViolation();
+        if (!$value) {
+            return;
+        }
 
-                return;
-            }
+        /** @var House $house */
+        $house = $this->context->getObject()->getParent()->getData();
+        $searchHouse = $this->entityManager->getRepository('AppBundle:House')
+            ->createQueryBuilder('house')
+            ->where('house.number = :house_number')
+            ->innerJoin('house.street', 'street')
+            ->andWhere('street.title = :street')
+            ->innerJoin('street.city', 'city')
+            ->andWhere('city.title = :city')
+            ->setParameters([
+                'house_number' => $house->getNumber(),
+                'street' => $house->getStreet()->getTitle(),
+                'city' => $house->getStreet()->getCity()->getTitle()
+            ])
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        if ($searchHouse && $searchHouse->getId() != $house->getId()) {
+            $this->context->buildViolation($constraint->message)
+                ->setParameters([
+                    '{{ house }}'   =>  $searchHouse->getNumber(),
+                    '{{ street }}'  =>  $searchHouse->getStreet()->getTitle(),
+                    '{{ city }}'    =>  $searchHouse->getStreet()->getCity()->getTitle(),
+                    '{{ company }}' =>  $searchHouse->getCompany()->getTitle()
+                ])
+                ->addViolation();
+
+            return;
         }
     }
 }

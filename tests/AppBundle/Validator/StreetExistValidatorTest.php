@@ -6,25 +6,9 @@ use AppBundle\Entity\City;
 use AppBundle\Entity\Street;
 use AppBundle\Validator\Constraints\StreetExist;
 use AppBundle\Validator\Constraints\StreetExistValidator;
-use Tests\AppBundle\fixtures\CityFixtures;
-use Tests\AppBundle\fixtures\StreetFixtures;
-use Tests\AppBundle\fixtures\StreetTypeFixtures;
 
 class StreetExistValidatorTest extends ValidatorTestCase
 {
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->addFixtures([
-            new CityFixtures(),
-            new StreetTypeFixtures(),
-            new StreetFixtures(),
-        ]);
-
-        $this->executeFixtures();
-    }
-
     /**
      * добавление улицы Малышева в Екатеринбург, улицы Малышева в базе не существует
      */
@@ -80,7 +64,10 @@ class StreetExistValidatorTest extends ValidatorTestCase
             ->setCity((new City())
                 ->setTitle('Екатеринбург')
             );
-        $streetExistValidator->initialize($this->configureContextValidator($formData, $streetExistConstraint->message, ['{{ city }}' => 'Екатеринбург', '{{ street }}' => 'Ленина']));
+        $streetExistValidator->initialize($this->configureContextValidator($formData, $streetExistConstraint->message, [
+            '{{ city }}' => 'Екатеринбург',
+            '{{ street }}' => 'Ленина'
+        ]));
 
         $streetExistValidator->validate('Ленина', $streetExistConstraint);
     }

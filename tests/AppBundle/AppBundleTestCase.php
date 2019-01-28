@@ -5,6 +5,14 @@ namespace Tests\AppBundle;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Tests\AppBundle\fixtures\CityFixtures;
+use Tests\AppBundle\fixtures\CompanyFixtures;
+use Tests\AppBundle\fixtures\FSSPDepartmentFixtures;
+use Tests\AppBundle\fixtures\HouseFixtures;
+use Tests\AppBundle\fixtures\JudicialSectorFixtures;
+use Tests\AppBundle\fixtures\StreetFixtures;
+use Tests\AppBundle\fixtures\StreetTypeFixtures;
+use Tests\AppBundle\fixtures\UserFixtures;
 
 /**
  * Базовый класс тестов
@@ -60,6 +68,19 @@ class AppBundleTestCase extends WebTestCase
     protected function setUp()
     {
         parent::setUp();
+
+        $this->addFixtures([
+            new CityFixtures(),
+            new StreetTypeFixtures(),
+            new StreetFixtures(),
+            new FSSPDepartmentFixtures(),
+            new CompanyFixtures(),
+            new UserFixtures(),
+            new JudicialSectorFixtures(),
+            new HouseFixtures()
+        ]);
+
+        $this->executeFixtures();
     }
 
     /**
