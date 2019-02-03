@@ -29,7 +29,7 @@ class OwnershipStatusValidatorTest extends ValidatorTestCase
         $ownershipStatusConstraint = new OwnershipStatus();
         $ownershipStatusValidator = new OwnershipStatusValidator($this->getEntityManager());
 
-        $context = $this->getExecutionContextErrorMock($ownershipStatusConstraint->message, ['']);
+        $context = $this->getExecutionContextErrorMock($ownershipStatusConstraint->message);
         $ownershipStatusValidator->initialize($context);
 
         $ownershipStatusValidator->validate(['children' => ['sub_status' => 'sub_status']], $ownershipStatusConstraint);

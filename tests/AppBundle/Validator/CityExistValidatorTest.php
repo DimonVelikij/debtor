@@ -63,7 +63,7 @@ class CityExistValidatorTest extends ValidatorTestCase
         $cityExistValidator = new CityExistValidator($this->getEntityManager());
         $formData = new City();
 
-        $context = $this->getExecutionContextErrorWithDataMock($formData, $cityExistConstraints->message, ['{{ string }}', 'Екатеринбург']);
+        $context = $this->getExecutionContextErrorWithDataMock($formData, $cityExistConstraints->message, ['{{ city }}', 'Екатеринбург']);
         $cityExistValidator->initialize($context);
 
         $cityExistValidator->validate('Екатеринбург', $cityExistConstraints);

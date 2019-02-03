@@ -39,7 +39,7 @@ class OldPasswordValidatorTest extends ValidatorTestCase
         $oldPasswordConstraint = new OldPassword(['user' => $user]);
         $oldPasswordValidator = new OldPasswordValidator($this->securityPasswordEncoder);
 
-        $context = $this->getExecutionContextErrorMock($oldPasswordConstraint->message, ['']);
+        $context = $this->getExecutionContextErrorMock($oldPasswordConstraint->message);
         $oldPasswordValidator->initialize($context);
 
         $oldPasswordValidator->validate('11111', $oldPasswordConstraint);

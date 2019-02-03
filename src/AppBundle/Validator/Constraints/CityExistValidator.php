@@ -42,7 +42,7 @@ class CityExistValidator extends ConstraintValidator
 
         if ($searchCity && $searchCity->getId() != $city->getId()) {
             $this->context->buildViolation($constraint->message)
-                ->setParameter('{{ string }}', $value)
+                ->setParameter('{{ city }}', $value)
                 ->addViolation();
 
             return;

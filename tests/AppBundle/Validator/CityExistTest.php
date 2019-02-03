@@ -10,6 +10,6 @@ class CityExistTest extends ValidatorTestCase
     {
         $cityExistConstraints = new CityExist();
         $this->assertInstanceOf(CityExist::class, $cityExistConstraints);
-        $this->assertEquals("Город '{{ string }}' уже существует", $cityExistConstraints->message);
+        $this->assertEquals("Город '{{ city }}' уже существует", $cityExistConstraints->message);
     }
 }

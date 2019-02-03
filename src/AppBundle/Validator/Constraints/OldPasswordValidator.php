@@ -33,7 +33,6 @@ class OldPasswordValidator extends ConstraintValidator
 
         if ($value && !$this->userPasswordEncoder->isPasswordValid($constraint->user, $value)) {
             $this->context->buildViolation($constraint->message)
-                ->setParameter('', $value)
                 ->addViolation();
 
             return;

@@ -96,16 +96,18 @@ class ValidatorTestCase extends AppBundleTestCase
     {
         $constraintViolationBuilder = $this->getConstraintViolationBuilderMock();
 
-        if (array_keys($params) === range(0, count($params) - 1)) {
-            $constraintViolationBuilder->expects($this->any())
-                ->method('setParameter')
-                ->with(...$params)
-                ->willReturn($constraintViolationBuilder);
-        } else {
-            $constraintViolationBuilder->expects($this->any())
-                ->method('setParameters')
-                ->with($params)
-                ->willReturn($constraintViolationBuilder);
+        if (count($params)) {
+            if (array_keys($params) === range(0, count($params) - 1)) {
+                $constraintViolationBuilder->expects($this->any())
+                    ->method('setParameter')
+                    ->with(...$params)
+                    ->willReturn($constraintViolationBuilder);
+            } else {
+                $constraintViolationBuilder->expects($this->any())
+                    ->method('setParameters')
+                    ->with($params)
+                    ->willReturn($constraintViolationBuilder);
+            }
         }
 
         $constraintViolationBuilder->expects($this->once())

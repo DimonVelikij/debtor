@@ -37,7 +37,6 @@ class OwnershipStatusValidator extends ConstraintValidator
 
         if (count($value['children'])) {
             $this->context->buildViolation($constraint->message)
-                ->setParameter('', '')
                 ->addViolation();
 
             return;

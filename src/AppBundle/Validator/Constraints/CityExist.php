@@ -6,5 +6,5 @@ use Symfony\Component\Validator\Constraint;
 
 class CityExist extends Constraint
 {
-    public $message = "Город '{{ string }}' уже существует";
+    public $message = "Город '{{ city }}' уже существует";
 }
