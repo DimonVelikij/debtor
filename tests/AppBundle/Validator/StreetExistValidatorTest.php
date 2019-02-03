@@ -46,7 +46,7 @@ class StreetExistValidatorTest extends ValidatorTestCase
     /**
      * редактирование улицы Ленина без переименования, улица Ленина в базе существует
      */
-    public function testEditValidate()
+    public function testEditStreetValidate()
     {
         $streetExistConstraint = new StreetExist();
         $streetExistValidator = new StreetExistValidator($this->getEntityManager());
@@ -61,7 +61,7 @@ class StreetExistValidatorTest extends ValidatorTestCase
     /**
      * добавление улицы Ленина, улица Ленина существует в базе
      */
-    public function testAddInvalidate()
+    public function testAddStreetInvalidate()
     {
         $streetExistConstraint = new StreetExist();
         $streetExistValidator = new StreetExistValidator($this->getEntityManager());

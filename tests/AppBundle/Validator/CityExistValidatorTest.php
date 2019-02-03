@@ -43,7 +43,7 @@ class CityExistValidatorTest extends ValidatorTestCase
     /**
      * редактирование города Екатеринбург без переименования, город Екатеринбург в базе существует
      */
-    public function testEditValidate()
+    public function testEditCityValidate()
     {
         $cityExistConstraints = new CityExist();
         $cityExistValidator = new CityExistValidator($this->getEntityManager());
@@ -58,7 +58,7 @@ class CityExistValidatorTest extends ValidatorTestCase
     /**
      * добавление города Екатеринбург, город Екатерибург в базе существует
      */
-    public function testAddInvalidate()
+    public function testAddCityInvalidate()
     {
         $cityExistConstraints = new CityExist();
         $cityExistValidator = new CityExistValidator($this->getEntityManager());
