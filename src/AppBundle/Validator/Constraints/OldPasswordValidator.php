@@ -2,6 +2,7 @@
 
 namespace AppBundle\Validator\Constraints;
 
+use Symfony\Component\Form\Exception\UnexpectedTypeException;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
@@ -26,9 +27,13 @@ class OldPasswordValidator extends ConstraintValidator
      */
     public function validate($value, Constraint $constraint)
     {
+        if (!$constraint instanceof OldPassword) {
+            throw new UnexpectedTypeException($constraint, OldPassword::class);
+        }
+
         if ($value && !$this->userPasswordEncoder->isPasswordValid($constraint->user, $value)) {
             $this->context->buildViolation($constraint->message)
-                ->setParameter('{{ string }}', $value)
+                ->setParameter('', $value)
                 ->addViolation();
 
             return;

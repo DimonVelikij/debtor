@@ -19,7 +19,6 @@ class CityExistValidatorTest extends ValidatorTestCase
             ->setTitle('Москва');
 
         $context = $this->getExecutionContextOkWithDataMock($formData);
-
         $cityExistValidator->initialize($context);
 
         $cityExistValidator->validate('Москва', $cityExistConstraints);
