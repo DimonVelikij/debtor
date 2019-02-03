@@ -21,7 +21,9 @@ class StreetExistValidatorTest extends ValidatorTestCase
             ->setCity((new City())
                 ->setTitle('Екатеринбург')
             );
-        $streetExistValidator->initialize($this->configureContextValidator($formData));
+
+        $context = $this->getExecutionContextOkWithDataMock($formData);
+        $streetExistValidator->initialize($context);
 
         $streetExistValidator->validate('Малышева', $streetExistConstraint);
     }
@@ -34,7 +36,9 @@ class StreetExistValidatorTest extends ValidatorTestCase
         $streetExistConstraint = new StreetExist();
         $streetExistValidator = new StreetExistValidator($this->getEntityManager());
         $formData = $this->getEntityManager()->getRepository('AppBundle:Street')->findOneBy(['title' => 'Ленина']);
-        $streetExistValidator->initialize($this->configureContextValidator($formData));
+
+        $context = $this->getExecutionContextOkWithDataMock($formData);
+        $streetExistValidator->initialize($context);
 
         $streetExistValidator->validate('Малышева', $streetExistConstraint);
     }
@@ -47,7 +51,9 @@ class StreetExistValidatorTest extends ValidatorTestCase
         $streetExistConstraint = new StreetExist();
         $streetExistValidator = new StreetExistValidator($this->getEntityManager());
         $formData = $this->getEntityManager()->getRepository('AppBundle:Street')->findOneBy(['title' => 'Ленина']);
-        $streetExistValidator->initialize($this->configureContextValidator($formData));
+
+        $context = $this->getExecutionContextOkWithDataMock($formData);
+        $streetExistValidator->initialize($context);
 
         $streetExistValidator->validate('Ленина', $streetExistConstraint);
     }
@@ -64,10 +70,12 @@ class StreetExistValidatorTest extends ValidatorTestCase
             ->setCity((new City())
                 ->setTitle('Екатеринбург')
             );
-        $streetExistValidator->initialize($this->configureContextValidator($formData, $streetExistConstraint->message, [
+
+        $context = $this->getExecutionContextErrorWithDataMock($formData, $streetExistConstraint->message, [
             '{{ city }}' => 'Екатеринбург',
             '{{ street }}' => 'Ленина'
-        ]));
+        ]);
+        $streetExistValidator->initialize($context);
 
         $streetExistValidator->validate('Ленина', $streetExistConstraint);
     }

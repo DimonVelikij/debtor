@@ -16,7 +16,10 @@ class CityExistValidatorTest extends ValidatorTestCase
         $cityExistConstraints = new CityExist();
         $cityExistValidator = new CityExistValidator($this->getEntityManager());
         $formData = new City();
-        $cityExistValidator->initialize($this->configureContextValidator($formData));
+
+        $context = $this->getExecutionContextOkWithDataMock($formData);
+
+        $cityExistValidator->initialize($context);
 
         $cityExistValidator->validate('Москва', $cityExistConstraints);
     }
@@ -29,7 +32,9 @@ class CityExistValidatorTest extends ValidatorTestCase
         $cityExistConstraints = new CityExist();
         $cityExistValidator = new CityExistValidator($this->getEntityManager());
         $formData = $this->getEntityManager()->getRepository('AppBundle:City')->findOneBy(['title' => 'Екатеринбург']);
-        $cityExistValidator->initialize($this->configureContextValidator($formData));
+
+        $context = $this->getExecutionContextOkWithDataMock($formData);
+        $cityExistValidator->initialize($context);
 
         $cityExistValidator->validate('Москва', $cityExistConstraints);
     }
@@ -42,7 +47,9 @@ class CityExistValidatorTest extends ValidatorTestCase
         $cityExistConstraints = new CityExist();
         $cityExistValidator = new CityExistValidator($this->getEntityManager());
         $formData = $this->getEntityManager()->getRepository('AppBundle:City')->findOneBy(['title' => 'Екатеринбург']);
-        $cityExistValidator->initialize($this->configureContextValidator($formData));
+
+        $context = $this->getExecutionContextOkWithDataMock($formData);
+        $cityExistValidator->initialize($context);
 
         $cityExistValidator->validate('Екатеринбург', $cityExistConstraints);
     }
@@ -55,7 +62,9 @@ class CityExistValidatorTest extends ValidatorTestCase
         $cityExistConstraints = new CityExist();
         $cityExistValidator = new CityExistValidator($this->getEntityManager());
         $formData = new City();
-        $cityExistValidator->initialize($this->configureContextValidator($formData, $cityExistConstraints->message, ['{{ string }}', 'Екатеринбург']));
+
+        $context = $this->getExecutionContextErrorWithDataMock($formData, $cityExistConstraints->message, ['{{ string }}', 'Екатеринбург']);
+        $cityExistValidator->initialize($context);
 
         $cityExistValidator->validate('Екатеринбург', $cityExistConstraints);
     }

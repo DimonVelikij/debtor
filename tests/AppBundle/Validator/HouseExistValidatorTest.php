@@ -25,7 +25,9 @@ class HouseExistValidatorTest extends ValidatorTestCase
                     ->setTitle('Екатеринбург')
                 )
             );
-        $houseExistValidator->initialize($this->configureContextValidator($formData));
+
+        $context = $this->getExecutionContextOkWithDataMock($formData);
+        $houseExistValidator->initialize($context);
 
         $houseExistValidator->validate(2, $houseExistConstraint);
     }
@@ -38,7 +40,9 @@ class HouseExistValidatorTest extends ValidatorTestCase
         $houseExistConstraint = new HouseExist();
         $houseExistValidator = new HouseExistValidator($this->getEntityManager());
         $formData = $this->getEntityManager()->getRepository('AppBundle:House')->findOneBy(['number' => 1]);
-        $houseExistValidator->initialize($this->configureContextValidator($formData));
+
+        $context = $this->getExecutionContextOkWithDataMock($formData);
+        $houseExistValidator->initialize($context);
 
         $houseExistValidator->validate(200, $houseExistConstraint);
     }
@@ -51,7 +55,9 @@ class HouseExistValidatorTest extends ValidatorTestCase
         $houseExistConstraint = new HouseExist();
         $houseExistValidator = new HouseExistValidator($this->getEntityManager());
         $formData = $this->getEntityManager()->getRepository('AppBundle:House')->findOneBy(['number' => 1]);
-        $houseExistValidator->initialize($this->configureContextValidator($formData));
+
+        $context = $this->getExecutionContextOkWithDataMock($formData);
+        $houseExistValidator->initialize($context);
 
         $houseExistValidator->validate(1, $houseExistConstraint);
     }
@@ -71,12 +77,14 @@ class HouseExistValidatorTest extends ValidatorTestCase
                     ->setTitle('Екатеринбург')
                 )
             );
-        $houseExistValidator->initialize($this->configureContextValidator($formData, $houseExistConstraint->message, [
+
+        $context = $this->getExecutionContextErrorWithDataMock($formData, $houseExistConstraint->message, [
             '{{ city }}' => 'Екатеринбург',
             '{{ street }}' => 'Ленина',
             '{{ house }}' => '1',
             '{{ company }}' => 'Управляющая компания 1'
-        ]));
+        ]);
+        $houseExistValidator->initialize($context);
 
         $houseExistValidator->validate(1, $houseExistConstraint);
     }
