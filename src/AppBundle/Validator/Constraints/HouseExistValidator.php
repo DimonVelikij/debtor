@@ -46,9 +46,9 @@ class HouseExistValidator extends ConstraintValidator
             ->innerJoin('street.city', 'city')
             ->andWhere('city.title = :city')
             ->setParameters([
-                'house_number' => $house->getNumber(),
-                'street' => $house->getStreet()->getTitle(),
-                'city' => $house->getStreet()->getCity()->getTitle()
+                'house_number'  => $value,
+                'street'        => $house->getStreet()->getTitle(),
+                'city'          => $house->getStreet()->getCity()->getTitle()
             ])
             ->getQuery()
             ->getOneOrNullResult();
@@ -56,7 +56,7 @@ class HouseExistValidator extends ConstraintValidator
         if ($searchHouse && $searchHouse->getId() != $house->getId()) {
             $this->context->buildViolation($constraint->message)
                 ->setParameters([
-                    '{{ house }}'   =>  $searchHouse->getNumber(),
+                    '{{ house }}'   =>  $value,
                     '{{ street }}'  =>  $searchHouse->getStreet()->getTitle(),
                     '{{ city }}'    =>  $searchHouse->getStreet()->getCity()->getTitle(),
                     '{{ company }}' =>  $searchHouse->getCompany()->getTitle()

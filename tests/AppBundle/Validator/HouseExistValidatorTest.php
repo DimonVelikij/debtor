@@ -11,7 +11,7 @@ use AppBundle\Validator\Constraints\HouseExistValidator;
 class HouseExistValidatorTest extends ValidatorTestCase
 {
     /**
-     * добаление дома №200 на улицу Ленина города Екатеринбурга, дома №2 в базе не существует
+     * добаление дома №200 на улицу Ленина города Екатеринбурга, дома №200 в базе не существует
      */
     public function testAddHouseValidate()
     {
@@ -29,7 +29,7 @@ class HouseExistValidatorTest extends ValidatorTestCase
         $context = $this->getExecutionContextOkWithDataMock($formData);
         $houseExistValidator->initialize($context);
 
-        $houseExistValidator->validate(2, $houseExistConstraint);
+        $houseExistValidator->validate(200, $houseExistConstraint);
     }
 
     /**
@@ -50,7 +50,7 @@ class HouseExistValidatorTest extends ValidatorTestCase
     /**
      * редактирование №1 без переименования, №1 в базе существует
      */
-    public function testEditValidate()
+    public function testEditHouseValidate()
     {
         $houseExistConstraint = new HouseExist();
         $houseExistValidator = new HouseExistValidator($this->getEntityManager());
@@ -65,7 +65,7 @@ class HouseExistValidatorTest extends ValidatorTestCase
     /**
      * добавление №1 на улицу Ленина города Екатеринбург, дом №1 в базе уже существует
      */
-    public function testAddInvalidate()
+    public function testAddHouseInvalidate()
     {
         $houseExistConstraint = new HouseExist();
         $houseExistValidator = new HouseExistValidator($this->getEntityManager());
@@ -79,9 +79,9 @@ class HouseExistValidatorTest extends ValidatorTestCase
             );
 
         $context = $this->getExecutionContextErrorWithDataMock($formData, $houseExistConstraint->message, [
-            '{{ city }}' => 'Екатеринбург',
-            '{{ street }}' => 'Ленина',
-            '{{ house }}' => '1',
+            '{{ city }}'    => 'Екатеринбург',
+            '{{ street }}'  => 'Ленина',
+            '{{ house }}'   => '1',
             '{{ company }}' => 'Управляющая компания 1'
         ]);
         $houseExistValidator->initialize($context);

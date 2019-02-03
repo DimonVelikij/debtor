@@ -7,6 +7,9 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Tests\AppBundle\fixtures\CityFixtures;
 use Tests\AppBundle\fixtures\CompanyFixtures;
+use Tests\AppBundle\fixtures\FixturesTrait;
+use Tests\AppBundle\fixtures\FlatFixtures;
+use Tests\AppBundle\fixtures\FlatTypeFixtures;
 use Tests\AppBundle\fixtures\FSSPDepartmentFixtures;
 use Tests\AppBundle\fixtures\HouseFixtures;
 use Tests\AppBundle\fixtures\JudicialSectorFixtures;
@@ -77,7 +80,9 @@ class AppBundleTestCase extends WebTestCase
             new CompanyFixtures(),
             new UserFixtures(),
             new JudicialSectorFixtures(),
-            new HouseFixtures()
+            new HouseFixtures(),
+            new FlatTypeFixtures(),
+            new FlatFixtures(),
         ]);
 
         $this->executeFixtures();

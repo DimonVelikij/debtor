@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\AppBundle;
+namespace Tests\AppBundle\fixtures;
 
 use Doctrine\Bundle\FixturesBundle\Loader\SymfonyFixturesLoader;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;

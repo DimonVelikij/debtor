@@ -9,13 +9,14 @@ use AppBundle\Validator\Constraints\CityExistValidator;
 class CityExistValidatorTest extends ValidatorTestCase
 {
     /**
-     * добавлениего города Москва, города Москва в базе не существует
+     * добавление города Москва, города Москва в базе не существует
      */
     public function testAddCityValidate()
     {
         $cityExistConstraints = new CityExist();
         $cityExistValidator = new CityExistValidator($this->getEntityManager());
-        $formData = new City();
+        $formData = (new City())
+            ->setTitle('Москва');
 
         $context = $this->getExecutionContextOkWithDataMock($formData);
 
