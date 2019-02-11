@@ -59,6 +59,11 @@
                 $scope.state.loading = false;
             });
 
+        /**
+         * сохранение помещения
+         * @param $event
+         * @param form
+         */
         $scope.submit = function ($event, form) {
             $event.preventDefault();
 
@@ -84,8 +89,9 @@
                     if (response.data.success) {
                         if (Initializer.Settings.FlatId) {
                             $scope.state.flat = response.data.flat;
+                            $scope.state.flatUpdated = true;
                         } else {
-                            $window.location.reload();
+                            $window.location = Initializer.Path.FlatEdit.replace('0', response.data.flat.id);
                         }
                     } else {
                         FormHelper.showBackendErrors(response.data.errors, form);

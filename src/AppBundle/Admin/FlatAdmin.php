@@ -185,7 +185,7 @@ class FlatAdmin extends AbstractAdmin
                         'help'          =>  $flat->getId() ? "" : "<span style='color: blue;'>Если в списке нет нужного дома, необходимо <a target='_blank' href='{$this->getRouter()->generate('admin_app_house_create')}'>добавить дом</a> и обновить страницу</span>",
                         'constraints'   =>  [
                             new NotBlank(['message' => 'Укажите дом']),
-                            new FlatExist()
+                            new FlatExist(['flatId' => $flat->getId()])
                         ],
                         'query_builder' =>  function (EntityRepository $er) use ($user) {
                             if (!$user->isSuperAdmin()) {

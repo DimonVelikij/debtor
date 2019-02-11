@@ -3,12 +3,17 @@
             FlatTypes: path('app_flat_types'),
             FlatHouses: path('app_flat_houses'),
             Flat: object.id ? path('app_flat_flat', {id: object.id}),
+            FlatEdit: object.id ? path('admin_app_flat_edit', {id: object.id}) : path('admin_app_flat_edit', {id: 0}),
             FlatSubmit: path('app_flat_submit')
         } | json_encode | raw }}</script>
     <div class="sonata-ba-collapsed-fields">
         <div class="sonata-ba-collapsed-fields">
             <div class="row">
                 <div class="col-md-12">
+                    <div class="alert alert-success alert-dismissable" ng-if="state.flatUpdated">
+                        <button type="button" class="close" aria-hidden="true" ng-click="state.flatUpdated = !state.flatUpdated">×</button>
+                        Элемент успешно обновлен.
+                    </div>
                     <div class="box box-solid box-success">
                         <div class="box-header">
                             <h4 class="box-title">

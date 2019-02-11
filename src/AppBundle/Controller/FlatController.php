@@ -150,7 +150,10 @@ class FlatController extends Controller
         $serializer = $this->get('jms_serializer');
         $context = SerializationContext::create()->setSerializeNull(true)->setGroups(['cms-flat']);
 
-        return new JsonResponse(json_decode($serializer->serialize($flat, 'json', $context)));
+        return new JsonResponse([
+            'success'   =>  true,
+            'flat'      =>  json_decode($serializer->serialize($flat, 'json', $context))
+        ]);
     }
 
     /**

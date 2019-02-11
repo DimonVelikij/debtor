@@ -25,16 +25,17 @@
          * @type {{flatTypes: Array, houses: Array, flat: {id: null, number: null, archive: boolean, house: {}, type: {}}}}
          */
         $scope.state = {
-            loading: true,
-            flatTypes: [],
-            houses: [],
-            flat: {
+            loading: true,//текущая загрузка
+            flatTypes: [],//типы помещений
+            houses: [],//дома
+            flat: {//объект помещения
                 id: null,
                 number: null,
                 archive: false,
                 house: null,
                 type: null
-            }
+            },
+            flatUpdated: false//помещение обновлено
         };
     }
 })(angular);
