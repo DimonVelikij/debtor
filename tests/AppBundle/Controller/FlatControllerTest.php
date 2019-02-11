@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 class FlatControllerTest extends ControllerTestCase
 {
     /**
-     * получение списка типов помещений
+     * получение списка типов помещений data-dismiss="alert"
      */
     public function testTypesAction()
     {
@@ -93,6 +93,54 @@ class FlatControllerTest extends ControllerTestCase
 
         $this->assertResponseIsCorrect($response);
         $this->assertIsFlat($flat);
+    }
+
+    /**
+     * сохранение помещения без ошибок
+     */
+    public function testSuccessSubmitAction()
+    {
+        $house = $this->getEntityManager()->getRepository('AppBundle:House')->findOneBy(['number' => '1']);
+        $flatType = $this->getEntityManager()->getRepository('AppBundle:FlatType')->findOneBy(['title' => 'квартира']);
+
+        $client = $this->getSuperAdminClient();
+        $client->request('POST', '/api/flat/submit', [], [], [], json_encode([
+            'number'    =>  10000,
+            'archive'   =>  false,
+            'house'     =>  $house->getId(),
+            'type'      =>  $flatType->getId()
+        ]));
+
+        /** @var Response $response */
+        $response = $client->getResponse();
+
+        $result = json_decode($response->getContent(), true);
+
+        $this->assertEquals(true, $result['success']);
+        $this->assertIsFlat($result['flat']);
+    }
+
+    /**
+     * сохранение помещения с ошибками
+     */
+    public function testErrorSubmitAction()
+    {
+        $client = $this->getSuperAdminClient();
+        $client->request('POST', '/api/flat/submit');
+
+        /** @var Response $response */
+        $response = $client->getResponse();
+
+        $expected = [
+            'success'   =>  false,
+            'errors'    =>  [
+                'number'    =>  'Укажите номер',
+                'house'     =>  'Укажите дом',
+                'type'      =>  'Укажите тип'
+            ]
+        ];
+
+        $this->assertEquals($expected, json_decode($response->getContent(), true));
     }
 
     /**
