@@ -37,33 +37,16 @@ class FlatExistValidator extends ConstraintValidator
         }
 
         /** @var Flat $flat */
-        $flat = $this->context->getObject()->getParent()->getData();
-        $searchFlat = $this->entityManager->getRepository('AppBundle:Flat')
-            ->createQueryBuilder('flat')
-            ->where('flat.number = :flat_number')
-            ->innerJoin('flat.house', 'house')
-            ->andWhere('house.number = :house_number')
-            ->innerJoin('house.street', 'street')
-            ->andWhere('street.title = :street')
-            ->innerJoin('street.city', 'city')
-            ->andWhere('city.title = :city')
-            ->setParameters([
-                'flat_number'   => $value,
-                'house_number'  => $flat->getHouse()->getNumber(),
-                'street'        => $flat->getHouse()->getStreet()->getTitle(),
-                'city'          => $flat->getHouse()->getStreet()->getCity()->getTitle()
-            ])
-            ->getQuery()
-            ->getOneOrNullResult();
+        $flat = $this->entityManager->getRepository('AppBundle:Flat')->findOneBy(['number' => $value]);
 
-        if ($searchFlat && $searchFlat->getId() != $flat->getId()) {
+        if ($flat && $constraint->flatId != $flat->getId()) {
             $this->context->buildViolation($constraint->message)
                 ->setParameters([
                     '{{ flat }}'    =>  $value,
-                    '{{ house }}'   =>  $searchFlat->getHouse()->getNumber(),
-                    '{{ street }}'  =>  $searchFlat->getHouse()->getStreet()->getTitle(),
-                    '{{ city }}'    =>  $searchFlat->getHouse()->getStreet()->getCity()->getTitle(),
-                    '{{ company }}' =>  $searchFlat->getHouse()->getCompany()->getTitle()
+                    '{{ house }}'   =>  $flat->getHouse()->getNumber(),
+                    '{{ street }}'  =>  $flat->getHouse()->getStreet()->getTitle(),
+                    '{{ city }}'    =>  $flat->getHouse()->getStreet()->getCity()->getTitle(),
+                    '{{ company }}' =>  $flat->getHouse()->getCompany()->getTitle()
                 ])
                 ->addViolation();
 

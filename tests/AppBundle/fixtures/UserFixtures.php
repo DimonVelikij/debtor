@@ -36,7 +36,7 @@ class UserFixtures extends Fixture
             ->setPassword('$2y$13$yp09M7.x.H3XJxgJb4jzP.WJF1gAtNEOqvs/TeqQQSNzEjH26/tO6')
             ->setLastLogin(new \DateTime())
             ->setRoles(['ROLE_ADMIN'])
-            ->setCompany($this->getReference(CompanyFixtures::TEST_COMPANY_ONE_REFERENCE));
+            ->setCompany($this->getReference(CompanyFixtures::TEST_COMPANY_TWO_REFERENCE));
 
         $manager->persist($userAdmin);
 

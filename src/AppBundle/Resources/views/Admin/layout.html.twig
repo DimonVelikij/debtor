@@ -2,13 +2,14 @@
 
 {% block body_attributes %}
     {{ parent() }}
-    ng-app="cms"
+    ng-app="cms" ng-controller="CoreCtrl"
 {% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
     {% stylesheets
         'bundles/app/css/libs.min.css'
+        'bundles/app/css/loader.css'
         filter='cssrewrite'
     %}
         <link rel="stylesheet" href="{{ asset(asset_url, 'css') }}">

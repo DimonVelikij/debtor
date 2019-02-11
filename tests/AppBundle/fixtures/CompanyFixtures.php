@@ -9,6 +9,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 class CompanyFixtures extends Fixture
 {
     const TEST_COMPANY_ONE_REFERENCE = 'company-one';
+    const TEST_COMPANY_TWO_REFERENCE = 'company-two';
 
     public function load(ObjectManager $manager)
     {
@@ -30,8 +31,29 @@ class CompanyFixtures extends Fixture
             ->setDirectorPosition('Директор');
 
         $manager->persist($companyOne);
+
+        $companyTwo = new Company();
+        $companyTwo
+            ->setTitle('Управляющая компания 2')
+            ->setAddress('Екатеринбург, ул. Московская, д.2')
+            ->setBankName('БИН Банк')
+            ->setBik('БИК УК2')
+            ->setCheckingAccount('Рачетный счет УК2')
+            ->setCorrespondentAccount('Корреспондентский счет УК2')
+            ->setEmail('uk2@mail.ru')
+            ->setInn('ИНН УК2')
+            ->setOgrn('ОГРН УК2')
+            ->setPhone('89223334455')
+            ->setPostAddress('Екатеринбург, ул. Московская, д.2')
+            ->setDirectorName('Петров Петр Петрович')
+            ->setDirectorDocument('Акт')
+            ->setDirectorPosition('Директор');
+
+        $manager->persist($companyTwo);
+
         $manager->flush();
 
         $this->addReference(self::TEST_COMPANY_ONE_REFERENCE, $companyOne);
+        $this->addReference(self::TEST_COMPANY_TWO_REFERENCE, $companyTwo);
     }
 }

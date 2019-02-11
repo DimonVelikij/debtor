@@ -2,7 +2,6 @@
 
 namespace Tests\AppBundle\Validator;
 
-use AppBundle\Entity\City;
 use AppBundle\Validator\Constraints\CityExist;
 use AppBundle\Validator\Constraints\CityExistValidator;
 
@@ -13,12 +12,10 @@ class CityExistValidatorTest extends ValidatorTestCase
      */
     public function testAddCityValidate()
     {
-        $cityExistConstraints = new CityExist();
+        $cityExistConstraints = new CityExist(['cityId' => null]);
         $cityExistValidator = new CityExistValidator($this->getEntityManager());
-        $formData = (new City())
-            ->setTitle('Москва');
 
-        $context = $this->getExecutionContextOkWithDataMock($formData);
+        $context = $this->getExecutionContextOkMock();
         $cityExistValidator->initialize($context);
 
         $cityExistValidator->validate('Москва', $cityExistConstraints);
@@ -29,11 +26,11 @@ class CityExistValidatorTest extends ValidatorTestCase
      */
     public function testRenameCityValidate()
     {
-        $cityExistConstraints = new CityExist();
+        $city = $this->getEntityManager()->getRepository('AppBundle:City')->findOneBy(['title' => 'Екатеринбург']);
+        $cityExistConstraints = new CityExist(['cityId' => $city->getId()]);
         $cityExistValidator = new CityExistValidator($this->getEntityManager());
-        $formData = $this->getEntityManager()->getRepository('AppBundle:City')->findOneBy(['title' => 'Екатеринбург']);
 
-        $context = $this->getExecutionContextOkWithDataMock($formData);
+        $context = $this->getExecutionContextOkMock();
         $cityExistValidator->initialize($context);
 
         $cityExistValidator->validate('Москва', $cityExistConstraints);
@@ -44,11 +41,11 @@ class CityExistValidatorTest extends ValidatorTestCase
      */
     public function testEditCityValidate()
     {
-        $cityExistConstraints = new CityExist();
+        $city = $this->getEntityManager()->getRepository('AppBundle:City')->findOneBy(['title' => 'Екатеринбург']);
+        $cityExistConstraints = new CityExist(['cityId' => $city->getId()]);
         $cityExistValidator = new CityExistValidator($this->getEntityManager());
-        $formData = $this->getEntityManager()->getRepository('AppBundle:City')->findOneBy(['title' => 'Екатеринбург']);
 
-        $context = $this->getExecutionContextOkWithDataMock($formData);
+        $context = $this->getExecutionContextOkMock();
         $cityExistValidator->initialize($context);
 
         $cityExistValidator->validate('Екатеринбург', $cityExistConstraints);
@@ -59,11 +56,10 @@ class CityExistValidatorTest extends ValidatorTestCase
      */
     public function testAddCityInvalidate()
     {
-        $cityExistConstraints = new CityExist();
+        $cityExistConstraints = new CityExist(['cityId' => false]);
         $cityExistValidator = new CityExistValidator($this->getEntityManager());
-        $formData = new City();
 
-        $context = $this->getExecutionContextErrorWithDataMock($formData, $cityExistConstraints->message, ['{{ city }}', 'Екатеринбург']);
+        $context = $this->getExecutionContextErrorMock($cityExistConstraints->message, ['{{ city }}', 'Екатеринбург']);
         $cityExistValidator->initialize($context);
 
         $cityExistValidator->validate('Екатеринбург', $cityExistConstraints);

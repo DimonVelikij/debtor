@@ -2,6 +2,7 @@
 
 namespace AppBundle\Admin;
 
+use AppBundle\Entity\City;
 use AppBundle\Validator\Constraints\CityExist;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -76,13 +77,16 @@ class CityAdmin extends AbstractAdmin
      */
     protected function configureFormFields(FormMapper $formMapper)
     {
+        /** @var City $city */
+        $city = $this->getSubject();
+
         $formMapper
             ->add('title', TextType::class, [
                 'label'         =>  'Название',
                 'required'      =>  true,
                 'constraints'   =>  [
                     new NotBlank(['message' => 'Укажите название города']),
-                    new CityExist()
+                    new CityExist(['cityId' => $city->getId()])
                 ]
             ])
             ->add('slug', TextType::class, [

@@ -1,0 +1,40 @@
+<div ng-controller="FlatCtrl">
+    <script type="text/ng-init" name="Path">{{ {
+            FlatTypes: path('app_flat_types'),
+            FlatHouses: path('app_flat_houses'),
+            Flat: object.id ? path('app_flat_flat', {id: object.id}),
+            FlatSubmit: path('app_flat_submit')
+        } | json_encode | raw }}</script>
+    <div class="sonata-ba-collapsed-fields">
+        <div class="sonata-ba-collapsed-fields">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="box box-solid box-success">
+                        <div class="box-header">
+                            <h4 class="box-title">
+                                Помещение
+                            </h4>
+                        </div>
+                        <div class="box-body">
+                            <div class="sonata-ba-collapsed-fields">
+                                <ng-form name="forms.flat" novalidate ng-cloak>
+                                    {#дом#}
+                                    {% include '@App/Admin/Flat/Edit/Flat/form_control/house.html.twig' %}
+                                    {#тип#}
+                                    {% include '@App/Admin/Flat/Edit/Flat/form_control/type.html.twig' %}
+                                    {#номер помещения#}
+                                    {% include '@App/Admin/Flat/Edit/Flat/form_control/number.html.twig' %}
+                                    {#архивность#}
+                                    {% include '@App/Admin/Flat/Edit/Flat/form_control/archive.html.twig' %}
+                                    {#кнопка отправки#}
+                                    {% include '@App/Admin/Flat/Edit/Flat/form_control/submit.html.twig' %}
+                                </ng-form>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

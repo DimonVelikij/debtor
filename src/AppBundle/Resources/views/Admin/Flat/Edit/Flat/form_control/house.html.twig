@@ -1,0 +1,17 @@
+<div class="form-group" ng-class="{'has-error': forms.flat.house.$invalid && forms.flat.house.$dirty}">
+    <label for="house" class="control-label required">Дом</label>
+    <ui-select id="house" name="house" ng-required="1" ng-model="state.flat.house" backend>
+        <ui-select-match>
+            <span ng-bind="$select.selected.address"></span>
+        </ui-select-match>
+        <ui-select-choices repeat="house in state.houses | filter: $select.search track by type.id">
+            <span ng-bind="house.address"></span>
+        </ui-select-choices>
+    </ui-select>
+    <div class="help-block sonata-ba-field-error-messages" ng-if="forms.flat.house.$invalid && forms.flat.house.$dirty" ng-messages="forms.flat.house.$error">
+        <ul class="list-unstyled">
+            <li ng-message="required"><i class="fa fa-exclamation-circle"></i>Укажите дом</li>
+            <li ng-message="backend"><i class="fa fa-exclamation-circle"></i>[[ forms.flat.house.errorMessages.backend ]]</li>
+        </ul>
+    </div>
+</div>

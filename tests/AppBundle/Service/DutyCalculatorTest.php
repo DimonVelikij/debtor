@@ -2,9 +2,9 @@
 
 namespace AppBundle\Service;
 
-use Tests\AppBundle\AppBundleTestCase;
+use Tests\AppBundle\Service\ServiceTestCase;
 
-class DutyCalculatorTest extends AppBundleTestCase
+class DutyCalculatorTest extends ServiceTestCase
 {
     /**
      * @return array

@@ -1,0 +1,13 @@
+.loader {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: #dfdfdf;
+    opacity: .3;
+    background-image: url('/bundles/app/images/loader.gif');
+    background-repeat: no-repeat;
+    background-position: center center;
+    z-index: 10000;
+}

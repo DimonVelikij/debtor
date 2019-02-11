@@ -14,15 +14,10 @@ class StreetExistValidatorTest extends ValidatorTestCase
      */
     public function testAddStreetValidate()
     {
-        $streetExistConstraint = new StreetExist();
+        $streetExistConstraint = new StreetExist(['streetId' => null]);
         $streetExistValidator = new StreetExistValidator($this->getEntityManager());
-        $formData = (new Street())
-            ->setTitle('Малышева')
-            ->setCity((new City())
-                ->setTitle('Екатеринбург')
-            );
 
-        $context = $this->getExecutionContextOkWithDataMock($formData);
+        $context = $this->getExecutionContextOkMock();
         $streetExistValidator->initialize($context);
 
         $streetExistValidator->validate('Малышева', $streetExistConstraint);
@@ -33,11 +28,11 @@ class StreetExistValidatorTest extends ValidatorTestCase
      */
     public function testRenameStreetValidate()
     {
-        $streetExistConstraint = new StreetExist();
+        $street = $this->getEntityManager()->getRepository('AppBundle:Street')->findOneBy(['title' => 'Ленина']);
+        $streetExistConstraint = new StreetExist(['streetId' => $street->getId()]);
         $streetExistValidator = new StreetExistValidator($this->getEntityManager());
-        $formData = $this->getEntityManager()->getRepository('AppBundle:Street')->findOneBy(['title' => 'Ленина']);
 
-        $context = $this->getExecutionContextOkWithDataMock($formData);
+        $context = $this->getExecutionContextOkMock();;
         $streetExistValidator->initialize($context);
 
         $streetExistValidator->validate('Малышева', $streetExistConstraint);
@@ -48,11 +43,11 @@ class StreetExistValidatorTest extends ValidatorTestCase
      */
     public function testEditStreetValidate()
     {
-        $streetExistConstraint = new StreetExist();
+        $street = $this->getEntityManager()->getRepository('AppBundle:Street')->findOneBy(['title' => 'Ленина']);
+        $streetExistConstraint = new StreetExist(['streetId' => $street->getId()]);
         $streetExistValidator = new StreetExistValidator($this->getEntityManager());
-        $formData = $this->getEntityManager()->getRepository('AppBundle:Street')->findOneBy(['title' => 'Ленина']);
 
-        $context = $this->getExecutionContextOkWithDataMock($formData);
+        $context = $this->getExecutionContextOkMock();
         $streetExistValidator->initialize($context);
 
         $streetExistValidator->validate('Ленина', $streetExistConstraint);
@@ -63,15 +58,10 @@ class StreetExistValidatorTest extends ValidatorTestCase
      */
     public function testAddStreetInvalidate()
     {
-        $streetExistConstraint = new StreetExist();
+        $streetExistConstraint = new StreetExist(['streetId' => null]);
         $streetExistValidator = new StreetExistValidator($this->getEntityManager());
-        $formData = (new Street())
-            ->setTitle('Ленина')
-            ->setCity((new City())
-                ->setTitle('Екатеринбург')
-            );
 
-        $context = $this->getExecutionContextErrorWithDataMock($formData, $streetExistConstraint->message, [
+        $context = $this->getExecutionContextErrorMock($streetExistConstraint->message, [
             '{{ city }}' => 'Екатеринбург',
             '{{ street }}' => 'Ленина'
         ]);

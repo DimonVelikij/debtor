@@ -37,10 +37,9 @@ class CityExistValidator extends ConstraintValidator
         }
 
         /** @var City $city */
-        $city = $this->context->getObject()->getParent()->getData();
-        $searchCity = $this->entityManager->getRepository('AppBundle:City')->findOneBy(['title' => $value]);
+        $city = $this->entityManager->getRepository('AppBundle:City')->findOneBy(['title' => $value]);
 
-        if ($searchCity && $searchCity->getId() != $city->getId()) {
+        if ($city && $constraint->cityId != $city->getId()) {
             $this->context->buildViolation($constraint->message)
                 ->setParameter('{{ city }}', $value)
                 ->addViolation();

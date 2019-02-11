@@ -3,10 +3,13 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="flats")
+ *
+ * @JMS\ExclusionPolicy("all")
  *
  * Class Flat
  * @package AppBundle\Entity
@@ -17,18 +20,33 @@ class Flat
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
+     *
+     * @JMS\Expose
+     * @JMS\Type("integer")
+     * @JMS\SerializedName("id")
+     * @JMS\Groups({"cms-flat"})
      */
     private $id;
 
     /**
      * @ORM\Column(name="number", type="string", length=255, nullable=true)
      *
+     * @JMS\Expose
+     * @JMS\Type("string")
+     * @JMS\SerializedName("number")
+     * @JMS\Groups({"cms-flat"})
+     *
      * номер помещения (квартиры)
      */
     private $number;
 
     /**
-     * @ORM\Column(name="arhive", type="boolean", nullable=true)
+     * @ORM\Column(name="archive", type="boolean", nullable=true)
+     *
+     * @JMS\Expose
+     * @JMS\Type("boolean")
+     * @JMS\SerializedName("archive")
+     * @JMS\Groups({"cms-flat"})
      *
      * перестал быть должником
      */
@@ -37,12 +55,20 @@ class Flat
     /**
      * @ORM\ManyToOne(targetEntity="House", inversedBy="flats")
      * @ORM\JoinColumn(name="house_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
+     *
+     * @JMS\Expose
+     * @JMS\SerializedName("house")
+     * @JMS\Groups({"cms-flat"})
      */
     private $house;
 
     /**
      * @ORM\ManyToOne(targetEntity="FlatType")
      * @ORM\JoinColumn(name="type_id", referencedColumnName="id", nullable=false)
+     *
+     * @JMS\Expose
+     * @JMS\SerializedName("type")
+     * @JMS\Groups({"cms-flat"})
      */
     private $type;
 

@@ -18,3 +18,8 @@ services:
 
     app.service.duty_calculator:
         class: AppBundle\Service\DutyCalculator
+
+    app.service.form_validator:
+        class: AppBundle\Service\FormValidator
+        arguments:
+            - "@validator"

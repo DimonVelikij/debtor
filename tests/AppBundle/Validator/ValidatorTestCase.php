@@ -21,24 +21,6 @@ class ValidatorTestCase extends AppBundleTestCase
     }
 
     /**
-     * mock формы с получением данных из отправленной формы
-     * @param $formData
-     * @return \PHPUnit_Framework_MockObject_MockObject
-     */
-    protected function getFormDataMock($formData)
-    {
-        $form = $this->getFormMock();
-        $form->expects($this->once())
-            ->method('getParent')
-            ->willReturn($form);
-        $form->expects($this->once())
-            ->method('getData')
-            ->willReturn($formData);
-
-        return $form;
-    }
-
-    /**
      * mock билдера ошибок
      * @return \PHPUnit_Framework_MockObject_MockObject
      */
@@ -66,22 +48,6 @@ class ValidatorTestCase extends AppBundleTestCase
 
         $context->expects($this->never())
             ->method('buildViolation');
-
-        return $context;
-    }
-
-    /**
-     * mock контекста формы без ошибок с получением данных из формы
-     * @param $formData
-     * @return \PHPUnit_Framework_MockObject_MockObject
-     */
-    protected function getExecutionContextOkWithDataMock($formData)
-    {
-        $context = $this->getExecutionContextOkMock();
-
-        $context->expects($this->once())
-            ->method('getObject')
-            ->willReturn($this->getFormDataMock($formData));
 
         return $context;
     }
@@ -118,24 +84,6 @@ class ValidatorTestCase extends AppBundleTestCase
             ->method('buildViolation')
             ->with($this->equalTo($errorMessage))
             ->willReturn($constraintViolationBuilder);
-
-        return $context;
-    }
-
-    /**
-     * mock контекста формы с ошибками с получением данных из формы
-     * @param $formData
-     * @param string $errorMessage
-     * @param array $params
-     * @return \PHPUnit_Framework_MockObject_MockObject
-     */
-    protected function getExecutionContextErrorWithDataMock($formData, string $errorMessage, array $params = [])
-    {
-        $context = $this->getExecutionContextErrorMock($errorMessage, $params);
-
-        $context->expects($this->once())
-            ->method('getObject')
-            ->willReturn($this->getFormDataMock($formData));
 
         return $context;
     }

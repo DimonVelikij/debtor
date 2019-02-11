@@ -37,29 +37,15 @@ class HouseExistValidator extends ConstraintValidator
         }
 
         /** @var House $house */
-        $house = $this->context->getObject()->getParent()->getData();
-        $searchHouse = $this->entityManager->getRepository('AppBundle:House')
-            ->createQueryBuilder('house')
-            ->where('house.number = :house_number')
-            ->innerJoin('house.street', 'street')
-            ->andWhere('street.title = :street')
-            ->innerJoin('street.city', 'city')
-            ->andWhere('city.title = :city')
-            ->setParameters([
-                'house_number'  => $value,
-                'street'        => $house->getStreet()->getTitle(),
-                'city'          => $house->getStreet()->getCity()->getTitle()
-            ])
-            ->getQuery()
-            ->getOneOrNullResult();
+        $house = $this->entityManager->getRepository('AppBundle:House')->findOneBy(['number' => $value]);
 
-        if ($searchHouse && $searchHouse->getId() != $house->getId()) {
+        if ($house && $constraint->houseId != $house->getId()) {
             $this->context->buildViolation($constraint->message)
                 ->setParameters([
                     '{{ house }}'   =>  $value,
-                    '{{ street }}'  =>  $searchHouse->getStreet()->getTitle(),
-                    '{{ city }}'    =>  $searchHouse->getStreet()->getCity()->getTitle(),
-                    '{{ company }}' =>  $searchHouse->getCompany()->getTitle()
+                    '{{ street }}'  =>  $house->getStreet()->getTitle(),
+                    '{{ city }}'    =>  $house->getStreet()->getCity()->getTitle(),
+                    '{{ company }}' =>  $house->getCompany()->getTitle()
                 ])
                 ->addViolation();
 

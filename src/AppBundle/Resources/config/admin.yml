@@ -41,7 +41,7 @@ services:
             - { name: sonata.admin, manager_type: orm, group: cms.flat, label: Помещения }
         public: true
         calls:
-            - [ setTemplate, [edit, AppBundle:Admin\Flat:edit.html.twig] ]
+            - [ setTemplate, [edit, AppBundle:Admin\Flat\Edit:edit.html.twig] ]
             - [ setTemplate, [button_create, AppBundle:Admin\Flat:button_create.html.twig] ]
 
     app.admin.event:

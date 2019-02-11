@@ -2,6 +2,7 @@
 
 namespace AppBundle\Admin;
 
+use AppBundle\Entity\Street;
 use AppBundle\Validator\Constraints\StreetExist;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -80,6 +81,9 @@ class StreetAdmin extends AbstractAdmin
      */
     protected function configureFormFields(FormMapper $formMapper)
     {
+        /** @var Street $street */
+        $street = $this->getSubject();
+
         $formMapper
             ->add('city', 'entity', [
                 'label'         =>  'Город',
@@ -104,7 +108,7 @@ class StreetAdmin extends AbstractAdmin
                 'required'      =>  true,
                 'constraints'   =>  [
                     new NotBlank(['message' => 'Укажите название улицы']),
-                    new StreetExist()
+                    new StreetExist(['streetId' => $street->getId()])
                 ]
             ])
             ->add('slug', TextType::class, [

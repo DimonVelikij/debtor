@@ -3,9 +3,8 @@
 namespace Tests\AppBundle\Service;
 
 use AppBundle\Service\DateDiffer;
-use Tests\AppBundle\AppBundleTestCase;
 
-class DateDifferTest extends AppBundleTestCase
+class DateDifferTest extends ServiceTestCase
 {
     /**
      * @return array

@@ -37,23 +37,12 @@ class StreetExistValidator extends ConstraintValidator
         }
 
         /** @var Street $street */
-        $street = $this->context->getObject()->getParent()->getData();
-        $searchStreet = $this->entityManager->getRepository('AppBundle:Street')
-            ->createQueryBuilder('street')
-            ->where('street.title = :street')
-            ->innerJoin('street.city', 'city')
-            ->andWhere('city.title = :city')
-            ->setParameters([
-                'street'    => $value,
-                'city'      => $street->getCity()->getTitle()
-            ])
-            ->getQuery()
-            ->getOneOrNullResult();
+        $street = $this->entityManager->getRepository('AppBundle:Street')->findOneBy(['title' => $value]);
 
-        if ($searchStreet && $searchStreet->getId() != $street->getId()) {
+        if ($street && $constraint->streetId != $street->getId()) {
             $this->context->buildViolation($constraint->message)
                 ->setParameters([
-                    '{{ city }}'    =>  $searchStreet->getCity()->getTitle(),
+                    '{{ city }}'    =>  $street->getCity()->getTitle(),
                     '{{ street }}'  =>  $value
                 ])
                 ->addViolation();

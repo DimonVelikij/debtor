@@ -15,18 +15,10 @@ class HouseExistValidatorTest extends ValidatorTestCase
      */
     public function testAddHouseValidate()
     {
-        $houseExistConstraint = new HouseExist();
+        $houseExistConstraint = new HouseExist(['houseId' => null]);
         $houseExistValidator = new HouseExistValidator($this->getEntityManager());
-        $formData = (new House())
-            ->setNumber(200)
-            ->setStreet((new Street())
-                ->setTitle('Ленина')
-                ->setCity((new City())
-                    ->setTitle('Екатеринбург')
-                )
-            );
 
-        $context = $this->getExecutionContextOkWithDataMock($formData);
+        $context = $this->getExecutionContextOkMock();
         $houseExistValidator->initialize($context);
 
         $houseExistValidator->validate(200, $houseExistConstraint);
@@ -37,11 +29,11 @@ class HouseExistValidatorTest extends ValidatorTestCase
      */
     public function testRenameHouseValidate()
     {
-        $houseExistConstraint = new HouseExist();
+        $house = $this->getEntityManager()->getRepository('AppBundle:House')->findOneBy(['number' => '1']);
+        $houseExistConstraint = new HouseExist(['houseId' => $house->getId()]);
         $houseExistValidator = new HouseExistValidator($this->getEntityManager());
-        $formData = $this->getEntityManager()->getRepository('AppBundle:House')->findOneBy(['number' => 1]);
 
-        $context = $this->getExecutionContextOkWithDataMock($formData);
+        $context = $this->getExecutionContextOkMock();
         $houseExistValidator->initialize($context);
 
         $houseExistValidator->validate(200, $houseExistConstraint);
@@ -52,11 +44,11 @@ class HouseExistValidatorTest extends ValidatorTestCase
      */
     public function testEditHouseValidate()
     {
-        $houseExistConstraint = new HouseExist();
+        $house = $this->getEntityManager()->getRepository('AppBundle:House')->findOneBy(['number' => '1']);
+        $houseExistConstraint = new HouseExist(['houseId' => $house->getId()]);
         $houseExistValidator = new HouseExistValidator($this->getEntityManager());
-        $formData = $this->getEntityManager()->getRepository('AppBundle:House')->findOneBy(['number' => 1]);
 
-        $context = $this->getExecutionContextOkWithDataMock($formData);
+        $context = $this->getExecutionContextOkMock();
         $houseExistValidator->initialize($context);
 
         $houseExistValidator->validate(1, $houseExistConstraint);
@@ -67,18 +59,10 @@ class HouseExistValidatorTest extends ValidatorTestCase
      */
     public function testAddHouseInvalidate()
     {
-        $houseExistConstraint = new HouseExist();
+        $houseExistConstraint = new HouseExist(['houseId' => null]);
         $houseExistValidator = new HouseExistValidator($this->getEntityManager());
-        $formData = (new House())
-            ->setNumber(1)
-            ->setStreet((new Street())
-                ->setTitle('Ленина')
-                ->setCity((new City())
-                    ->setTitle('Екатеринбург')
-                )
-            );
 
-        $context = $this->getExecutionContextErrorWithDataMock($formData, $houseExistConstraint->message, [
+        $context = $this->getExecutionContextErrorMock($houseExistConstraint->message, [
             '{{ city }}'    => 'Екатеринбург',
             '{{ street }}'  => 'Ленина',
             '{{ house }}'   => '1',

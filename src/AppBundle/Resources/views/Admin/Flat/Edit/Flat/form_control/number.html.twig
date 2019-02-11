@@ -1,0 +1,10 @@
+<div class="form-group" ng-class="{'has-error': forms.flat.number.$invalid && forms.flat.number.$dirty}">
+    <label for="number" class="control-label required">Номер</label>
+    <input name="number" id="number" type="text" class="form-control" ng-model="state.flat.number" required backend>
+    <div class="help-block sonata-ba-field-error-messages" ng-if="forms.flat.number.$invalid && forms.flat.number.$dirty" ng-messages="forms.flat.number.$error">
+        <ul class="list-unstyled">
+            <li ng-message="required"><i class="fa fa-exclamation-circle"></i>Укажите номер</li>
+            <li ng-message="backend"><i class="fa fa-exclamation-circle"></i>[[ forms.flat.number.errorMessages.backend ]]</li>
+        </ul>
+    </div>
+</div>

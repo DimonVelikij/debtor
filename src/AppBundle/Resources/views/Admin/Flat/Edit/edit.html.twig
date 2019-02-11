@@ -1,0 +1,24 @@
+{% extends '@SonataAdmin/CRUD/base_edit.html.twig' %}
+
+{% block form %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="nav-tabs-custom">
+                <div class="tab-content">
+                    <div class="tab-pane fade in active">
+                        <div class="box-body container-fluid" ng-controller="CommonCtrl" ng-cloak>
+                            {#конфиги#}
+                            <script type="text/ng-init" name="Settings">{{ {
+                                    FlatId: object.id
+                                } | json_encode | raw }}</script>
+                            {#лоадер#}
+                            <div class="loader" ng-show="state.loading"></div>
+                            {#блок заполнения параметров помещения#}
+                            {% include '@App/Admin/Flat/Edit/Flat/form.html.twig' %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

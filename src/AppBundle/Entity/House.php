@@ -3,10 +3,13 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="houses")
+ *
+ * @JMS\ExclusionPolicy("all")
  *
  * Class House
  * @package AppBundle\Entity
@@ -17,17 +20,33 @@ class House
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
+     *
+     * @JMS\Expose
+     * @JMS\Type("integer")
+     * @JMS\SerializedName("id")
+     * @JMS\Groups({"cms-flat"})
      */
     private $id;
 
     /**
      * @ORM\Column(name="number", type="string", length=255, nullable=false)
+     *
+     * @JMS\Expose
+     * @JMS\Type("string")
+     * @JMS\SerializedName("number")
+     * @JMS\Groups({"cms-flat"})
      */
     private $number;
 
     /**
      * @ORM\ManyToOne(targetEntity="Street", inversedBy="houses")
      * @ORM\JoinColumn(name="street_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
+     *
+     * @JMS\Expose
+     * @JMS\Type("string")
+     * @JMS\SerializedName("address")
+     * @JMS\Accessor(getter="getAddress")
+     * @JMS\Groups({"cms-flat"})
      */
     private $street;
 
@@ -93,6 +112,16 @@ class House
     public function __toString()
     {
         return $this->number ? $this->getStreet()->getCity()->getTitle() . ', ' . $this->getStreet()->getTitle() . ', ' . $this->number : '';
+    }
+
+    /**
+     * @return string
+     */
+    public function getAddress()
+    {
+        return 'г. ' . $this->getStreet()->getCity()->getTitle() . ', ' .
+            $this->getStreet()->getType()->getTitle() . ' ' .
+            $this->getStreet()->getTitle();
     }
 
     /**

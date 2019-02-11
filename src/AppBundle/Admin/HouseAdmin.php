@@ -3,6 +3,7 @@
 namespace AppBundle\Admin;
 
 use AppBundle\Admin\traits\UserTrait;
+use AppBundle\Entity\House;
 use AppBundle\Entity\User;
 use AppBundle\Validator\Constraints\HouseExist;
 use AppBundle\Validator\Constraints\JudicialSector;
@@ -167,6 +168,9 @@ class HouseAdmin extends AbstractAdmin
         /** @var User $user */
         $user = $this->getUser();
 
+        /** @var House $house */
+        $house = $this->getSubject();
+
         $formMapper
             ->tab('Дом и МКД')
                 ->with('Дом', [
@@ -204,7 +208,7 @@ class HouseAdmin extends AbstractAdmin
                         'required'      =>  true,
                         'constraints'   =>  [
                             new NotBlank(['message' => 'Укажите номер дома']),
-                            new HouseExist()
+                            new HouseExist(['houseId' => $house->getId()])
                         ]
                     ])
                 ->end()
