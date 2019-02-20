@@ -14,28 +14,37 @@
     ) {
         /**
          *
-         * @type {{flat: {}}}
-         */
-        $scope.forms = {
-            flat: {}
-        };
-
-        /**
-         *
          * @type {{flatTypes: Array, houses: Array, flat: {id: null, number: null, archive: boolean, house: {}, type: {}}}}
          */
         $scope.state = {
             loading: true,//текущая загрузка
-            flatTypes: [],//типы помещений
-            houses: [],//дома
-            flat: {//объект помещения
-                id: null,
-                number: null,
-                archive: false,
-                house: null,
-                type: null
-            },
-            flatUpdated: false//помещение обновлено
+            blocks: {//блоки
+                flat: {//помещение
+                    types: [],//типы помещения
+                    houses: [],//дома
+                    model: {//объект помещения
+                        id: null,
+                        number: null,
+                        archive: false,
+                        house: null,
+                        type: null
+                    },
+                    isUpdated: false//помещение обновлено
+                },
+                personalAccount: {//лицевые счета
+                    toggle: false,
+                    class: 'fa-plus-square'
+                }
+            }
         };
+
+        /**
+         * открытие закрытие блока
+         * @param blockName
+         */
+        $scope.toggleBlock = function (blockName) {
+            $scope.state.blocks[blockName].toggle = !$scope.state.blocks[blockName].toggle;
+            $scope.state.blocks[blockName].class = $scope.state.blocks[blockName].toggle ? 'fa-minus-square' : 'fa-plus-square';
+        }
     }
 })(angular);

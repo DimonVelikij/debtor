@@ -22,6 +22,12 @@
         Initializer,
         FormHelper
     ) {
+        /**
+         * форма
+         * @type {{}}
+         */
+        $scope.form = {};
+
         var queries = [
             $http.get(Initializer.Path.FlatTypes),
             $http.get(Initializer.Path.FlatHouses)
@@ -36,20 +42,20 @@
          */
         $q.all(queries)
             .then(function (response) {
-                $scope.state.flatTypes = response[0].data;
-                $scope.state.houses = response[1].data;
+                $scope.state.blocks.flat.types = response[0].data;
+                $scope.state.blocks.flat.houses = response[1].data;
 
                 if (Initializer.Settings.FlatId) {
-                    $scope.state.flat = response[2].data;
+                    $scope.state.blocks.flat.model = response[2].data;
 
                     //чекбоксы в сонате не работают через ng-model - приходится делать через iCheck и эвент ifChanged
                     //устанавливаем или снимаем чекбокс "Архивный"
-                    angular.element('#archive').iCheck($scope.state.flat.archive ? 'check' : 'uncheck');
+                    angular.element('#archive').iCheck($scope.state.blocks.flat.model.archive ? 'check' : 'uncheck');
                     /**
                      * отслеживаем изменение чекбокса "Архивный"
                      */
                     angular.element('#archive').on('ifChanged', function (event) {
-                        $scope.state.flat.archive = event.target.checked;
+                        $scope.state.blocks.flat.model.archive = event.target.checked;
                     });
                 }
             }, function (error) {
@@ -75,7 +81,7 @@
 
             $scope.state.loading = true;
 
-            var flat = $scope.state.flat;
+            var flat = $scope.state.blocks.flat.model;
             var submitData = {
                 id: Initializer.Settings.FlatId,
                 number: flat.number,
@@ -88,8 +94,8 @@
                 .then(function (response) {
                     if (response.data.success) {
                         if (Initializer.Settings.FlatId) {
-                            $scope.state.flat = response.data.flat;
-                            $scope.state.flatUpdated = true;
+                            $scope.state.blocks.flat.model = response.data.flat;
+                            $scope.state.blocks.flat.isUpdated = true;
                         } else {
                             $window.location = Initializer.Path.FlatEdit.replace('0', response.data.flat.id);
                         }

@@ -10,8 +10,8 @@
         <div class="sonata-ba-collapsed-fields">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="alert alert-success alert-dismissable" ng-if="state.flatUpdated">
-                        <button type="button" class="close" aria-hidden="true" ng-click="state.flatUpdated = !state.flatUpdated">×</button>
+                    <div class="alert alert-success alert-dismissable" ng-if="state.blocks.flat.isUpdated">
+                        <button type="button" class="close" aria-hidden="true" ng-click="state.blocks.flat.isUpdated = !state.blocks.flat.isUpdated">×</button>
                         Элемент успешно обновлен.
                     </div>
                     <div class="box box-solid box-success">
@@ -22,7 +22,7 @@
                         </div>
                         <div class="box-body">
                             <div class="sonata-ba-collapsed-fields">
-                                <ng-form name="forms.flat" novalidate ng-cloak>
+                                <ng-form name="form" novalidate ng-cloak>
                                     {#дом#}
                                     {% include '@App/Admin/Flat/Edit/Flat/form_control/house.html.twig' %}
                                     {#тип#}

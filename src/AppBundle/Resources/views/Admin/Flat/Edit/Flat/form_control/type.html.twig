@@ -1,17 +1,17 @@
-<div class="form-group" ng-class="{'has-error': forms.flat.type.$invalid && forms.flat.type.$dirty}">
+<div class="form-group" ng-class="{'has-error': form.type.$invalid && form.type.$dirty}">
     <label for="type" class="control-label required">Тип</label>
-    <ui-select id="type" name="type" ng-required="1" ng-model="state.flat.type" backend>
+    <ui-select id="type" name="type" ng-required="1" ng-model="state.blocks.flat.model.type" backend>
         <ui-select-match>
             <span ng-bind="$select.selected.title"></span>
         </ui-select-match>
-        <ui-select-choices repeat="type in state.flatTypes | filter: $select.search track by type.id">
+        <ui-select-choices repeat="type in state.blocks.flat.types | filter: $select.search track by type.id">
             <span ng-bind="type.title"></span>
         </ui-select-choices>
     </ui-select>
-    <div class="help-block sonata-ba-field-error-messages" ng-if="forms.flat.type.$invalid && forms.flat.type.$dirty" ng-messages="forms.flat.type.$error">
+    <div class="help-block sonata-ba-field-error-messages" ng-if="form.type.$invalid && form.type.$dirty" ng-messages="form.type.$error">
         <ul class="list-unstyled">
             <li ng-message="required"><i class="fa fa-exclamation-circle"></i>Укажите тип</li>
-            <li ng-message="backend"><i class="fa fa-exclamation-circle"></i>[[ forms.flat.type.errorMessages.backend ]]</li>
+            <li ng-message="backend"><i class="fa fa-exclamation-circle"></i>[[ form.type.errorMessages.backend ]]</li>
         </ul>
     </div>
 </div>

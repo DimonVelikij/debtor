@@ -15,6 +15,11 @@
                             <div class="loader" ng-show="state.loading"></div>
                             {#блок заполнения параметров помещения#}
                             {% include '@App/Admin/Flat/Edit/Flat/form.html.twig' %}
+
+                            {% if object.id %}
+                                {#лицевые счета#}
+                                {% include '@App/Admin/Flat/Edit/PersonalAccount/list.html.twig' %}
+                            {% endif %}
                         </div>
                     </div>
                 </div>

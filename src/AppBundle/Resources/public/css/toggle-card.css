@@ -1,0 +1,8 @@
+.box-title-width {
+    width: 100%;
+}
+
+.toggle-card-element {
+    float: right;
+    cursor: pointer;
+}

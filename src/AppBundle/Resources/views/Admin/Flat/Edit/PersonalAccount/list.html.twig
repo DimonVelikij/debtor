@@ -1,0 +1,36 @@
+<div ng-controller="PersonalAccountCtrl">
+    <script type="text/ng-init" name="Path">{{ {
+            PersonalAccountList: path('app_personalaccount_list', {flatId: object.id})
+        } | json_encode | raw }}</script>
+    <div class="sonata-ba-collapsed-fields">
+        <div class="sonata-ba-collapsed-fields">
+            <div class="row">
+                <div class="col-md-12">
+                    {#<div class="alert alert-success alert-dismissable" ng-if="state.flatUpdated">
+                        <button type="button" class="close" aria-hidden="true" ng-click="state.flatUpdated = !state.flatUpdated">×</button>
+                        Элемент успешно обновлен.
+                    </div>#}
+                    <div class="box box-solid box-success">
+                        <div class="box-header">
+                            <h4 class="box-title box-title-width">
+                                Лицевые счета
+                                <i class="fa toggle-card-element"
+                                   ng-class="state.blocks.personalAccount.class"
+                                   ng-click="toggleBlock('personalAccount')"
+                                ></i>
+                            </h4>
+                        </div>
+                        <div class="box-body" ng-show="state.blocks.personalAccount.toggle">
+                            <div class="sonata-ba-collapsed-fields">
+                                <ng-form name="forms.flat" novalidate ng-cloak>
+
+                                </ng-form>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
